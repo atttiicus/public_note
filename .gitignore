@@ -1,0 +1,21 @@
+node_modules
+.vscode
+.idea
+
+*/node_modules
+*/.vscode
+*/.idea
+/server/log/logs/
+/app/src/static/temp/
+/server/.env
+
+# Astro
+dist/
+.astro/
+
+# env
+.env
+.env.*
+!.env.example
+
+ai_docs

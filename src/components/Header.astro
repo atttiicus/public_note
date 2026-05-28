@@ -1,0 +1,111 @@
+---
+import ThemeToggle from './ThemeToggle.tsx'
+
+export interface Props {
+  currentPath?: string
+}
+
+const { currentPath = '/' } = Astro.props
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">&#x2615;</span>
+      <span class="logo-text">公开笔记</span>
+    </a>
+
+    <nav class="header-nav">
+      <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>首页</a>
+    </nav>
+
+    <div class="header-actions">
+      <ThemeToggle client:load />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-height);
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+    background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+    transition: background-color var(--transition-base), border-color var(--transition-base);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: color var(--transition-fast);
+  }
+
+  .site-logo:hover {
+    color: var(--color-primary);
+  }
+
+  .logo-icon {
+    font-size: 1.25rem;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 0.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .header-inner {
+      padding: 0 1rem;
+    }
+
+    .logo-text {
+      display: none;
+    }
+  }
+</style>

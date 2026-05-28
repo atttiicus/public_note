@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import NoteCard from '../components/NoteCard.astro'
+import { getCollection } from 'astro:content'
+
+const notes = await getCollection('notes')
+const sorted = notes.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-CN'))
+---
+
+<BaseLayout title="公开笔记" description="一个简洁的个人笔记网站，记录学习与思考。">
+    <main class="home-page">
+        <!-- 首屏 Hero -->
+        <section class="hero animate-fade-in">
+            <div class="hero-inner">
+                <p class="hero-label">NOTES</p>
+                <h1 class="hero-title">公开笔记</h1>
+                <p class="hero-subtitle">知识的碎片，思维的痕迹。<br />以书写整理思路，以阅读拓展边界。</p>
+                <div class="hero-divider"></div>
+                <div class="hero-stats">
+                <span>{notes.length} 篇笔记</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 笔记列表 -->
+        <section class="notes-section">
+        <div class="notes-inner">
+            <h2 class="section-title">所有笔记</h2>
+            <div class="notes-grid">
+            {
+                sorted.map((note, i) => (
+                <div style={`animation-delay: ${i * 80}ms`}>
+                    <NoteCard
+                    title={note.data.title}
+                    description={note.data.description}
+                    slug={note.slug}
+                    tags={note.data.tags}
+                    />
+                </div>
+                ))
+            }
+            </div>
+            {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
+        </div>
+        </section>
+    </main>
+</BaseLayout>
+
+<style>
+  .home-page {
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  /* Hero */
+  .hero {
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    padding: 5rem 1.5rem 4rem;
+    transition: background-color var(--transition-base);
+  }
+
+  .hero-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    margin: 0 0 1rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 1rem;
+    line-height: 1.15;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    margin: 0 0 2rem;
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .hero-divider {
+    width: 3rem;
+    height: 3px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-stats {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Notes section */
+  .notes-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .notes-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .notes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .empty-hint {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 3rem 1rem 2.5rem;
+    }
+
+    .notes-section {
+      padding: 2rem 1rem;
+    }
+  }
+</style>
