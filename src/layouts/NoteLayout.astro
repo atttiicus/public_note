@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro'
+import TableOfContents from '../components/TableOfContents.tsx'
 
 export interface Props {
   title: string
@@ -35,31 +36,104 @@ const { title, description, tags = [] } = Astro.props
         }
       </header>
 
-      <!-- 笔记正文 -->
-      <article class="note-content prose">
-        <slot />
-      </article>
+      <!-- 正文 + 目录双栏 -->
+      <div class="note-layout">
+        <article class="note-content prose">
+          <slot />
+        </article>
+        <aside class="note-toc-aside">
+          <TableOfContents client:load />
+        </aside>
+      </div>
     </div>
   </main>
 </BaseLayout>
 
+<!-- 代码块：语言标签 + 复制按钮 -->
+<script>
+  function setupCodeBlocks() {
+    document.querySelectorAll<HTMLElement>('pre.astro-code').forEach((pre) => {
+      if (pre.dataset.enhanced) return
+      pre.dataset.enhanced = '1'
+
+      const lang = pre.dataset.language || 'text'
+      const wrapper = document.createElement('div')
+      wrapper.className = 'code-wrapper'
+
+      const header = document.createElement('div')
+      header.className = 'code-header'
+
+      const langBadge = document.createElement('span')
+      langBadge.className = 'code-lang'
+      langBadge.textContent = lang
+
+      const copyBtn = document.createElement('button')
+      copyBtn.className = 'code-copy-btn'
+      copyBtn.setAttribute('aria-label', '复制代码')
+      copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span>`
+
+      copyBtn.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.textContent ?? ''
+        try {
+          await navigator.clipboard.writeText(code)
+          copyBtn.querySelector('span')!.textContent = '已复制'
+          copyBtn.classList.add('copied')
+          setTimeout(() => {
+            copyBtn.querySelector('span')!.textContent = '复制'
+            copyBtn.classList.remove('copied')
+          }, 2000)
+        } catch {
+          /* silent */
+        }
+      })
+
+      header.appendChild(langBadge)
+      header.appendChild(copyBtn)
+
+      pre.parentNode!.insertBefore(wrapper, pre)
+      wrapper.appendChild(header)
+      wrapper.appendChild(pre)
+    })
+  }
+
+  // 初始化 + 路由切换后重新初始化（Astro View Transitions）
+  setupCodeBlocks()
+  document.addEventListener('astro:after-swap', setupCodeBlocks)
+</script>
+
 <style>
+  /* ── 页面布局 ── */
   .note-page {
     min-height: calc(100vh - var(--header-height));
     padding: 3rem 1.5rem;
   }
 
   .note-container {
-    max-width: var(--content-max-width);
+    max-width: 1160px;
     margin: 0 auto;
   }
 
   .note-header {
+    max-width: var(--content-max-width);
     margin-bottom: 3rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--color-border);
   }
 
+  .note-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1100px) {
+    .note-layout {
+      grid-template-columns: minmax(0, 1fr) 220px;
+    }
+  }
+
+  /* ── 头部元素 ── */
   .back-link {
     display: inline-flex;
     align-items: center;
@@ -110,6 +184,76 @@ const { title, description, tags = [] } = Astro.props
 
   .note-content {
     animation: fadeIn 0.4s ease both;
+  }
+
+  /* ── TOC 侧边栏 ── */
+  .note-toc-aside {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .note-toc-aside {
+      display: block;
+    }
+  }
+
+  /* ── 代码块包装器 ── */
+  :global(.code-wrapper) {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+
+  :global(.code-wrapper pre.astro-code) {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+
+  :global(.code-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 1rem;
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  :global(.code-lang) {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+  }
+
+  :global(.code-copy-btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.2rem 0.55rem;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  :global(.code-copy-btn:hover) {
+    color: var(--color-primary);
+    border-color: var(--color-primary-light);
+    background-color: var(--color-hover);
+  }
+
+  :global(.code-copy-btn.copied) {
+    color: #3d9970;
+    border-color: #3d9970;
   }
 
   @media (max-width: 768px) {

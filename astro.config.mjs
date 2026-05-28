@@ -24,6 +24,13 @@ export default defineConfig({
         light: 'github-light',
         dark: 'github-dark',
       },
+      transformers: [
+        {
+          pre(node) {
+            node.properties['data-language'] = this.options.lang ?? 'text'
+          },
+        },
+      ],
     },
   },
 })
