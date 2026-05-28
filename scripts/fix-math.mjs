@@ -1,13 +1,10 @@
 /**
  * 将笔记中多行 $ ... $ 展示数学块转换为 $$ ... $$ 格式。
  *
- * remark-math 只支持单行 $expr$ 内联数学，不支持跨行单美元块。
- * 这些多行块在 CommonMark 解析时还会因为中间的 "=" 行触发 setext h1 heading。
- *
- * 转换规则：
- * - 段落开头的 $ expr $ (整行只有数学内容) → $$ expr $$
- * - 段落开头的 $ ... 跨行 ... $ → $$ ... $$ 块
- * - 句子中的 $ expr $ (前后有其他文字) → 保持不变（remark-math 正常处理）
+ * 关键改进：在多行收集模式中，查找行内第一个未转义 $ 作为关闭符，
+ * 而非只检查"行尾是 $"。这样能正确处理
+ *   \end{bmatrix} $即代表点 $ \left(...) $。
+ * 这类"关闭 $ 后面紧跟中文"的情况。
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs'
@@ -17,7 +14,7 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const notesDir = join(__dirname, '..', 'src', 'content', 'notes')
 
-/** 在字符串中找第一个非转义 $ 的位置 */
+/** 在字符串中找第一个非转义 $ 的位置，找不到返回 -1 */
 function findUnescapedDollar(str) {
   for (let i = 0; i < str.length; i++) {
     if (str[i] === '$' && (i === 0 || str[i - 1] !== '\\')) {
@@ -25,15 +22,6 @@ function findUnescapedDollar(str) {
     }
   }
   return -1
-}
-
-/** 判断字符串是否以单个非转义 $ 结尾（排除 $$） */
-function endsWithSingleDollar(str) {
-  const t = str.trimEnd()
-  if (!t.endsWith('$')) return false
-  if (t.endsWith('$$')) return false
-  if (t.length >= 2 && t[t.length - 2] === '\\') return false
-  return true
 }
 
 function fixDisplayMath(content) {
@@ -52,7 +40,7 @@ function fixDisplayMath(content) {
       i++
     }
     if (i < lines.length) {
-      out.push(lines[i]) // 关闭 ---
+      out.push(lines[i])
       i++
     }
     afterBlank = true
@@ -62,7 +50,7 @@ function fixDisplayMath(content) {
     const line = lines[i]
     const t = line.trim()
 
-    // 跟踪代码块（不处理代码块内的内容）
+    // 代码块：进入/退出，内部不处理
     if (t.startsWith('```') || t.startsWith('~~~')) {
       inCode = !inCode
       out.push(line)
@@ -70,24 +58,22 @@ function fixDisplayMath(content) {
       afterBlank = false
       continue
     }
-
     if (inCode) {
       out.push(line)
       i++
       continue
     }
 
-    // 展示数学块检测：段落开头 + 单 $ 开头
+    // 展示数学块检测：段落开头 + 单 $ 开头（非 $$）
     if (afterBlank && t.startsWith('$') && !t.startsWith('$$')) {
       const inner = t.slice(1) // 开头 $ 之后的内容
       const closeIdx = findUnescapedDollar(inner)
 
       if (closeIdx !== -1) {
-        // 在同一行找到了关闭 $
+        // 同一行找到了关闭 $
         const afterClose = inner.slice(closeIdx + 1).trim()
-
         if (afterClose === '') {
-          // 整行只有数学内容：$ expr $  →  $$\nexpr\n$$
+          // 整行只有数学，无尾随文本 → 单行展示数学
           const mathInner = inner.slice(0, closeIdx).trim()
           out.push('$$')
           out.push(mathInner)
@@ -96,47 +82,57 @@ function fixDisplayMath(content) {
           afterBlank = false
           continue
         }
-        // 有尾随文字 → 是句子中的内联数学，直接输出
+        // afterClose 非空 → 句子中的内联数学，直接输出
       } else {
-        // 同行无关闭 $ → 多行展示数学块，收集直到找到关闭 $
+        // 同行无关闭 $ → 多行展示数学块
         const mathLines = []
         const firstContent = inner.trim()
         if (firstContent) mathLines.push(firstContent)
         i++
         let closed = false
+        let afterMath = '' // 关闭 $ 之后的剩余文本
 
         while (i < lines.length) {
           const ml = lines[i]
           const mt = ml.trim()
 
-          if (endsWithSingleDollar(mt)) {
-            // 关闭行：去掉末尾的 $
-            const c = mt.slice(0, -1).trimEnd()
-            if (c) mathLines.push(c)
+          // 空行 = 块结束（未正常关闭）
+          if (mt === '') break
+
+          // 找行内第一个未转义 $ → 这就是关闭符
+          const dollarIdx = findUnescapedDollar(mt)
+          if (dollarIdx !== -1) {
+            const before = mt.slice(0, dollarIdx).trimEnd()
+            if (before) mathLines.push(before)
+            afterMath = mt.slice(dollarIdx + 1).trim()
             closed = true
             i++
             break
           }
 
-          // 遇到空行且尚未关闭 → 放弃收集，回退输出原始行
-          if (mt === '') break
-
+          // 行内无 $ → 纯数学内容行
           mathLines.push(ml)
           i++
         }
 
         if (closed || mathLines.length > 0) {
           out.push('$$')
-          // 去除首尾空行
           while (mathLines.length && !mathLines[0].trim()) mathLines.shift()
           while (mathLines.length && !mathLines[mathLines.length - 1].trim()) mathLines.pop()
           out.push(...mathLines)
           out.push('$$')
+
+          // 关闭 $ 之后若还有文本（如中文说明），单独输出为新段落
+          if (afterMath) {
+            out.push('')
+            out.push(afterMath)
+          }
+
           afterBlank = false
           continue
         }
 
-        // 没有找到关闭，原样输出
+        // 收集失败 → 原样输出
         out.push(line)
         i++
         afterBlank = false
@@ -152,16 +148,43 @@ function fixDisplayMath(content) {
   return out.join('\n')
 }
 
-// 处理所有笔记文件
-const files = readdirSync(notesDir).filter((f) => f.endsWith('.md'))
+// 从原始文件重新生成（先复制，再处理）
+const aiNotesDir = join(__dirname, '..', 'ai_docs', 'note')
+const srcNotesDir = join(__dirname, '..', 'src', 'content', 'notes')
+
+const frontmatters = {
+  '堆.md': `---
+title: 堆
+description: 堆数据结构详解，包括小顶堆、大顶堆、堆的常用操作、实现原理和建堆操作的时间复杂度分析
+tags: ["数据结构", "算法", "堆"]
+---
+
+`,
+  '树.md': `---
+title: 二叉树
+description: 二叉树基本概念、常见术语（根节点、叶节点、高度、深度）及其结构特性
+tags: ["数据结构", "算法", "树"]
+---
+
+`,
+  '计算机图形学.md': `---
+title: 计算机图形学
+description: GAMES101 课程笔记，涵盖线性代数、变换、光栅化、着色模型、纹理映射、几何等核心内容
+tags: ["图形学", "GAMES101", "渲染"]
+---
+
+`,
+}
+
+const files = readdirSync(aiNotesDir).filter((f) => f.endsWith('.md'))
 for (const file of files) {
-  const filePath = join(notesDir, file)
-  const content = readFileSync(filePath, 'utf-8')
-  const fixed = fixDisplayMath(content)
-  if (fixed !== content) {
-    writeFileSync(filePath, fixed, 'utf-8')
-    console.log(`Fixed: ${file}`)
-  } else {
-    console.log(`No changes: ${file}`)
-  }
+  const srcPath = join(aiNotesDir, file)
+  const destPath = join(srcNotesDir, file)
+  const fm = frontmatters[file] ?? ''
+  const original = readFileSync(srcPath, 'utf-8')
+  const withFm = fm + original
+  const fixed = fixDisplayMath(withFm)
+  writeFileSync(destPath, fixed, 'utf-8')
+  const blocks = (fixed.match(/^\$\$$/gm) || []).length / 2
+  console.log(`${file}: ${blocks} display math blocks`)
 }

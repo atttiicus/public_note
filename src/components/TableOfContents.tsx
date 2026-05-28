@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Heading {
   id: string
@@ -9,7 +9,6 @@ interface Heading {
 export default function TableOfContents() {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>('')
-  const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
     const article = document.querySelector('.note-content')
@@ -26,33 +25,37 @@ export default function TableOfContents() {
     setHeadings(heads)
     if (heads.length === 0) return
 
-    // 用 IntersectionObserver 追踪当前可见标题
-    observerRef.current?.disconnect()
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        // 找第一个进入视口的标题
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id)
+    // 触发线：header 高度 + 16px 余量
+    const TRIGGER = 84
+
+    let rafId = 0
+    const onScroll = () => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        // 遍历所有标题（文档顺序），找最后一个"已滚过触发线"的
+        let current = ''
+        for (const { id } of heads) {
+          const el = document.getElementById(id)
+          if (!el) continue
+          if (el.getBoundingClientRect().top <= TRIGGER) {
+            current = id
+          } else {
+            break
+          }
         }
-      },
-      {
-        rootMargin: '-68px 0px -55% 0px',
-        threshold: 0,
-      }
-    )
+        setActiveId(current)
+      })
+    }
 
-    heads.forEach(({ id }) => {
-      const el = document.getElementById(id)
-      if (el) observerRef.current!.observe(el)
-    })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll() // 初始化一次
 
-    return () => observerRef.current?.disconnect()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(rafId)
+    }
   }, [])
 
-  // 不足 3 个标题不展示
   if (headings.length < 3) return null
 
   return (
@@ -70,11 +73,14 @@ export default function TableOfContents() {
               .filter(Boolean)
               .join(' ')}
           >
-            <a href={`#${h.id}`} onClick={(e) => {
-              e.preventDefault()
-              document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' })
-              setActiveId(h.id)
-            }}>
+            <a
+              href={`#${h.id}`}
+              onClick={(e) => {
+                e.preventDefault()
+                document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth' })
+                setActiveId(h.id)
+              }}
+            >
               {h.text}
             </a>
           </li>
@@ -95,7 +101,7 @@ export default function TableOfContents() {
 
         .toc-label {
           font-family: var(--font-sans);
-          font-size: 0.6875rem;
+          font-size: 1.05rem;
           font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -111,17 +117,17 @@ export default function TableOfContents() {
           padding: 0;
           display: flex;
           flex-direction: column;
-          gap: 0.1rem;
+          gap: 0.15rem;
         }
 
         .toc-item a {
           display: block;
           font-family: var(--font-sans);
-          font-size: 0.8125rem;
+          font-size: 0.9375rem;
           line-height: 1.5;
           color: var(--color-text-muted);
           text-decoration: none;
-          padding: 0.25rem 0.5rem;
+          padding: 0.3rem 0.5rem;
           border-radius: 4px;
           border-left: 2px solid transparent;
           transition: color var(--transition-fast), background-color var(--transition-fast),
@@ -145,8 +151,8 @@ export default function TableOfContents() {
 
         /* 缩进层级 */
         .toc-l1 a { padding-left: 0.5rem; }
-        .toc-l2 a { padding-left: 1rem; font-size: 0.8125rem; }
-        .toc-l3 a { padding-left: 1.625rem; font-size: 0.75rem; }
+        .toc-l2 a { padding-left: 1rem; font-size: 0.875rem; }
+        .toc-l3 a { padding-left: 1.625rem; font-size: 0.8125rem; }
       `}</style>
     </nav>
   )
