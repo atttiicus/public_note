@@ -148,6 +148,17 @@ function fixDisplayMath(content) {
   return out.join('\n')
 }
 
+/**
+ * KaTeX 在 \text{} 内部仍将 _ 解析为下标运算符，需转义为 \_
+ * 例：\text{aspect_ratio} → \text{aspect\_ratio}
+ */
+function fixTextUnderscores(content) {
+  return content.replace(/\\text\{([^}]+)\}/g, (match, inner) => {
+    const escaped = inner.replace(/(?<!\\)_/g, '\\_')
+    return `\\text{${escaped}}`
+  })
+}
+
 // 从原始文件重新生成（先复制，再处理）
 const aiNotesDir = join(__dirname, '..', 'ai_docs', 'note')
 const srcNotesDir = join(__dirname, '..', 'src', 'content', 'notes')
@@ -183,7 +194,7 @@ for (const file of files) {
   const fm = frontmatters[file] ?? ''
   const original = readFileSync(srcPath, 'utf-8')
   const withFm = fm + original
-  const fixed = fixDisplayMath(withFm)
+  const fixed = fixTextUnderscores(fixDisplayMath(withFm))
   writeFileSync(destPath, fixed, 'utf-8')
   const blocks = (fixed.match(/^\$\$$/gm) || []).length / 2
   console.log(`${file}: ${blocks} display math blocks`)
