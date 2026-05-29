@@ -12,6 +12,7 @@ const rehypePlugins = [rehypeKatex]
 
 export default defineConfig({
   integrations: [UnoCSS({ injectReset: true }), react(), mdx()],
+  devToolbar: { enabled: false },
   markdown: {
     remarkPlugins,
     rehypePlugins,

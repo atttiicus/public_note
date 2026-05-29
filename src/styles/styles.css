@@ -42,25 +42,35 @@
 
 /* 暗色主题 */
 .dark {
-  --color-bg: #1a1512;
-  --color-bg-secondary: #231d19;
-  --color-bg-card: #2a2220;
-  --color-text: #f0e8df;
-  --color-text-muted: #b09e8e;
-  --color-primary: #c4956a;
-  --color-primary-light: #d4b090;
-  --color-primary-hover: #d4a87a;
-  --color-border: #3d3229;
-  --color-hover: rgba(196, 149, 106, 0.1);
-  --color-code-bg: #2e2620;
-  --color-pre-bg: #221e1a;
+  /* 背景：暖棕深色，而非近黑 */
+  --color-bg: #1e1a16;
+  --color-bg-secondary: #28221d;
+  --color-bg-card: #302a24;
 
-  --callout-warning-bg: #2a2210;
-  --callout-warning-border: #c4962c;
-  --callout-tips-bg: #0f1f18;
-  --callout-tips-border: #3d9970;
-  --callout-note-bg: #0f1820;
-  --callout-note-border: #4a90d9;
+  /* 文字：暖白，保持高对比度 */
+  --color-text: #ede5da;
+  --color-text-muted: #b8a898;
+
+  /* 主色调：偏亮的暖棕，在深色背景上清晰可见 */
+  --color-primary: #cc9a72;
+  --color-primary-light: #d9ae88;
+  --color-primary-hover: #e0bc98;
+
+  /* 边框：提升至可感知的亮度 */
+  --color-border: #5a4d44;
+  --color-hover: rgba(204, 154, 114, 0.14);
+
+  /* 代码 */
+  --color-code-bg: #332d27;
+  --color-pre-bg: #2a2420;
+
+  /* Callout：亮度足够与背景区分 */
+  --callout-warning-bg: #2e2614;
+  --callout-warning-border: #c49630;
+  --callout-tips-bg: #142e21;
+  --callout-tips-border: #4db380;
+  --callout-note-bg: #142030;
+  --callout-note-border: #5a9fdb;
 }
 
 /* ============================
@@ -98,10 +108,14 @@ pre.astro-code span {
   background-color: var(--shiki-light-bg) !important;
 }
 
-.dark pre.astro-code,
 .dark pre.astro-code span {
   color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
+  background-color: transparent !important;
+}
+
+/* 暗色代码块背景用暖棕，覆盖 Shiki 的冷蓝灰 */
+.dark pre.astro-code {
+  background-color: var(--color-pre-bg) !important;
 }
 
 pre.astro-code {

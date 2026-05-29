@@ -38,7 +38,7 @@ const { title, description, tags = [] } = Astro.props
           tags.length > 0 && (
             <div class="note-tags">
               {tags.map((tag) => (
-                <span class="tag">{tag}</span>
+                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
               ))}
             </div>
           )
@@ -189,11 +189,23 @@ const { title, description, tags = [] } = Astro.props
 
   .tag {
     font-size: 0.8125rem;
-    padding: 0.2em 0.7em;
+    font-family: var(--font-sans);
+    padding: 0.25em 0.7em;
     background-color: var(--color-bg-secondary);
-    color: var(--color-primary);
-    border-radius: 100px;
+    color: var(--color-text-muted);
+    border-radius: 6px;
     border: 1px solid var(--color-border);
+    text-decoration: none;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .tag:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
   }
 
   .note-content {
