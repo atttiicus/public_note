@@ -17,9 +17,18 @@ const { title, description, tags = [] } = Astro.props
       <!-- 笔记头部 -->
       <header class="note-header">
         <a href="/" class="back-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           返回
         </a>
@@ -246,7 +255,9 @@ const { title, description, tags = [] } = Astro.props
     border-radius: 4px;
     padding: 0.2rem 0.55rem;
     cursor: pointer;
-    transition: color var(--transition-fast), border-color var(--transition-fast),
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast),
       background-color var(--transition-fast);
   }
 

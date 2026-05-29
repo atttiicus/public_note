@@ -17,31 +17,31 @@ const sorted = notes.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh
                 <p class="hero-subtitle">知识的碎片，思维的痕迹。<br />以书写整理思路，以阅读拓展边界。</p>
                 <div class="hero-divider"></div>
                 <div class="hero-stats">
-                <span>{notes.length} 篇笔记</span>
+                    <span>{notes.length} 篇笔记</span>
                 </div>
             </div>
         </section>
 
         <!-- 笔记列表 -->
         <section class="notes-section">
-        <div class="notes-inner">
-            <h2 class="section-title">所有笔记</h2>
-            <div class="notes-grid">
-            {
-                sorted.map((note, i) => (
-                <div style={`animation-delay: ${i * 80}ms`}>
-                    <NoteCard
-                    title={note.data.title}
-                    description={note.data.description}
-                    slug={note.slug}
-                    tags={note.data.tags}
-                    />
+            <div class="notes-inner">
+                <h2 class="section-title">所有笔记</h2>
+                <div class="notes-grid">
+                    {
+                        sorted.map((note, i) => (
+                            <div style={`animation-delay: ${i * 80}ms`}>
+                                <NoteCard
+                                title={note.data.title}
+                                description={note.data.description}
+                                slug={note.slug}
+                                tags={note.data.tags}
+                                />
+                            </div>
+                        ))
+                    }
                 </div>
-                ))
-            }
+                {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
             </div>
-            {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
-        </div>
         </section>
     </main>
 </BaseLayout>

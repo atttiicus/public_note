@@ -11,11 +11,7 @@ const remarkPlugins = [remarkMath, remarkDirective, remarkCallout]
 const rehypePlugins = [rehypeKatex]
 
 export default defineConfig({
-  integrations: [
-    UnoCSS({ injectReset: true }),
-    react(),
-    mdx(),
-  ],
+  integrations: [UnoCSS({ injectReset: true }), react(), mdx()],
   markdown: {
     remarkPlugins,
     rehypePlugins,

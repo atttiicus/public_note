@@ -139,14 +139,14 @@ def hello():
 
 ```css
 :root {
-    --color-primary: #7b5c44; /* 咖啡棕（亮色模式） */
-    --color-bg: #fdfaf6; /* 暖白背景 */
-    --font-serif: 'Lora', ...; /* 正文字体 */
+  --color-primary: #7b5c44; /* 咖啡棕（亮色模式） */
+  --color-bg: #fdfaf6; /* 暖白背景 */
+  --font-serif: 'Lora', ...; /* 正文字体 */
 }
 
 .dark {
-    --color-primary: #c4956a; /* 浅咖啡棕（暗色模式） */
-    --color-bg: #1a1512; /* 深棕背景 */
+  --color-primary: #c4956a; /* 浅咖啡棕（暗色模式） */
+  --color-bg: #1a1512; /* 深棕背景 */
 }
 ```
 

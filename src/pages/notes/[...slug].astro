@@ -14,10 +14,6 @@ const { note } = Astro.props
 const { Content } = await note.render()
 ---
 
-<NoteLayout
-  title={note.data.title}
-  description={note.data.description}
-  tags={note.data.tags}
->
+<NoteLayout title={note.data.title} description={note.data.description} tags={note.data.tags}>
   <Content />
 </NoteLayout>

@@ -24,11 +24,7 @@ function DesktopTOC({
         {headings.map((h) => (
           <li
             key={h.id}
-            className={[
-              'toc-item',
-              `toc-l${h.level}`,
-              h.id === activeId ? 'toc-active' : '',
-            ]
+            className={['toc-item', `toc-l${h.level}`, h.id === activeId ? 'toc-active' : '']
               .filter(Boolean)
               .join(' ')}
           >
@@ -76,11 +72,7 @@ function MobileTOC({
   return (
     <>
       {/* 浮动按钮 */}
-      <button
-        className="toc-fab"
-        onClick={() => setOpen(true)}
-        aria-label="打开目录"
-      >
+      <button className="toc-fab" onClick={() => setOpen(true)} aria-label="打开目录">
         <svg
           width="16"
           height="16"
@@ -229,11 +221,7 @@ export default function TableOfContents() {
       {/* 移动端 FAB + 抽屉，挂载到 body，不受父容器 display:none 影响 */}
       {mounted &&
         createPortal(
-          <MobileTOC
-            headings={headings}
-            activeId={activeId}
-            onItemClick={handleItemClick}
-          />,
+          <MobileTOC headings={headings} activeId={activeId} onItemClick={handleItemClick} />,
           document.body
         )}
 

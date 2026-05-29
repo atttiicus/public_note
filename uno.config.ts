@@ -1,9 +1,4 @@
-import {
-  defineConfig,
-  presetUno,
-  presetTypography,
-  presetWebFonts,
-} from 'unocss'
+import { defineConfig, presetUno, presetTypography, presetWebFonts } from 'unocss'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 

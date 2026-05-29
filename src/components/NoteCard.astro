@@ -116,7 +116,9 @@ const { title, description, slug, tags = [] } = Astro.props
     font-size: 1.25rem;
     color: var(--color-text-muted);
     flex-shrink: 0;
-    transition: color var(--transition-fast), transform var(--transition-fast);
+    transition:
+      color var(--transition-fast),
+      transform var(--transition-fast);
   }
 
   .note-card:hover .card-arrow {
