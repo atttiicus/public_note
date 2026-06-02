@@ -19,7 +19,19 @@ function DesktopTOC({
 }) {
   return (
     <nav className="toc" aria-label="文章目录">
-      <p className="toc-label">目录</p>
+      <div className="toc-header">
+        <p className="toc-label">目录</p>
+        <button
+          className="toc-top-btn"
+          aria-label="回到顶部"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          title="回到顶部"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
       <ul className="toc-list">
         {headings.map((h) => (
           <li
@@ -231,20 +243,45 @@ export default function TableOfContents() {
           padding-right: 0.25rem;
         }
 
-        .toc-label {
+        .toc-header {
           position: sticky;
           top: 0;
           z-index: 1;
           background-color: var(--color-bg);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin: 0 0 0.75rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid var(--color-border);
+        }
+        .toc-label {
           font-family: var(--font-sans);
           font-size: 1.05rem;
           font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: var(--color-text-muted);
-          margin: 0 0 0.75rem;
-          padding-bottom: 0.5rem;
-          border-bottom: 1px solid var(--color-border);
+          margin: 0;
+        }
+        .toc-top-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border: 1px solid var(--color-border);
+          border-radius: 4px;
+          background: none;
+          color: var(--color-text-muted);
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+        }
+        .toc-top-btn:hover {
+          color: var(--color-primary);
+          border-color: var(--color-primary-light);
+          background-color: var(--color-hover);
         }
 
         .toc-list {
