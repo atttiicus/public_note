@@ -4,26 +4,13 @@ import NoteCard from '../components/NoteCard.astro'
 import { getCollection } from 'astro:content'
 
 const notes = await getCollection('notes')
-const sorted = notes.sort((a, b) => {
-  const oa = a.data.order ?? Infinity
-  const ob = b.data.order ?? Infinity
-  if (oa !== ob) return oa - ob
-  return a.data.title.localeCompare(b.data.title, 'zh-CN')
-})
+// 主列表按标题排序（决定各系列组/独立笔记的显示顺序）
+const sorted = notes.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-CN'))
 
-// ── 按「前缀-子标题」分组，前缀出现 2+ 次则归为系列 ──────────────
-const prefixCount: Record<string, number> = {}
-for (const note of sorted) {
-  const i = note.data.title.indexOf('-')
-  if (i > 0) {
-    const p = note.data.title.slice(0, i)
-    prefixCount[p] = (prefixCount[p] ?? 0) + 1
-  }
-}
-
+// ── 按 frontmatter 的 series 字段分组 ────────────────────────────
 interface SeriesGroup {
   name: string
-  items: Array<{ slug: string; subtitle: string; description?: string }>
+  items: Array<{ slug: string; title: string; description?: string; order?: number }>
   tags: string[]
 }
 
@@ -34,21 +21,30 @@ const renderItems: Array<
 const seriesMap: Record<string, SeriesGroup> = {}
 
 for (const note of sorted) {
-  const i = note.data.title.indexOf('-')
-  const prefix = i > 0 ? note.data.title.slice(0, i) : ''
-  if (prefix && (prefixCount[prefix] ?? 0) >= 2) {
-    if (!seriesMap[prefix]) {
-      seriesMap[prefix] = { name: prefix, items: [], tags: [] }
-      renderItems.push({ type: 'series', group: seriesMap[prefix] })
+  const series = note.data.series
+  if (series) {
+    if (!seriesMap[series]) {
+      seriesMap[series] = { name: series, items: [], tags: [] }
+      renderItems.push({ type: 'series', group: seriesMap[series] })
     }
-    const g = seriesMap[prefix]
-    g.items.push({ slug: note.slug, subtitle: note.data.title.slice(i + 1), description: note.data.description })
+    const g = seriesMap[series]
+    g.items.push({ slug: note.slug, title: note.data.title, description: note.data.description, order: note.data.order })
     for (const tag of note.data.tags ?? []) {
       if (!g.tags.includes(tag)) g.tags.push(tag)
     }
   } else {
     renderItems.push({ type: 'single', note })
   }
+}
+
+// 每个系列内部按 order 排序（未设则按标题兜底）
+for (const group of Object.values(seriesMap)) {
+  group.items.sort((a, b) => {
+    const oa = a.order ?? Infinity
+    const ob = b.order ?? Infinity
+    if (oa !== ob) return oa - ob
+    return a.title.localeCompare(b.title, 'zh-CN')
+  })
 }
 ---
 
@@ -100,17 +96,21 @@ for (const note of sorted) {
                   )}
                 </div>
                 <ul class="series-list">
-                  {item.group.items.map(({ slug, subtitle, description }) => (
+                  {item.group.items.map(({ slug, title, description }) => {
+                    const prefix = item.group.name + '-'
+                    const label = title.startsWith(prefix) ? title.slice(prefix.length) : title
+                    return (
                     <li>
                       <a href={`/notes/${slug}`} class="series-item">
                         <div class="series-item-body">
-                          <span class="series-item-title">{subtitle}</span>
+                          <span class="series-item-title">{label}</span>
                           {description && <span class="series-item-desc">{description}</span>}
                         </div>
                         <span class="series-item-arrow" aria-hidden="true">→</span>
                       </a>
                     </li>
-                  ))}
+                    )
+                  })}
                 </ul>
               </div>
             )

@@ -17,5 +17,6 @@ dist/
 .env
 .env.*
 !.env.example
+*.test.md
 
 ai_docs
