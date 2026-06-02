@@ -60,9 +60,31 @@ const { title, description, tags = [] } = Astro.props
 
 <!-- 代码块：语言标签 + 复制按钮 -->
 <script>
+  async function setupMermaid() {
+    const blocks = document.querySelectorAll<HTMLElement>(
+      'pre.astro-code[data-language="mermaid"]',
+    )
+    if (blocks.length === 0) return
+
+    const mermaid = (await import('mermaid')).default
+    const isDark = document.documentElement.classList.contains('dark')
+    mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' })
+
+    blocks.forEach((pre) => {
+      const code = pre.querySelector('code')?.textContent ?? ''
+      const div = document.createElement('div')
+      div.className = 'mermaid-diagram'
+      div.textContent = code
+      pre.replaceWith(div)
+    })
+
+    await mermaid.run({ nodes: document.querySelectorAll<HTMLElement>('.mermaid-diagram') })
+  }
+
   function setupCodeBlocks() {
     document.querySelectorAll<HTMLElement>('pre.astro-code').forEach((pre) => {
       if (pre.dataset.enhanced) return
+      if (pre.dataset.language === 'mermaid') return
       pre.dataset.enhanced = '1'
 
       const lang = pre.dataset.language || 'text'
@@ -107,7 +129,11 @@ const { title, description, tags = [] } = Astro.props
 
   // 初始化 + 路由切换后重新初始化（Astro View Transitions）
   setupCodeBlocks()
-  document.addEventListener('astro:after-swap', setupCodeBlocks)
+  setupMermaid()
+  document.addEventListener('astro:after-swap', () => {
+    setupCodeBlocks()
+    setupMermaid()
+  })
 </script>
 
 <style>
@@ -220,6 +246,11 @@ const { title, description, tags = [] } = Astro.props
   @media (min-width: 1100px) {
     .note-toc-aside {
       display: block;
+      position: sticky;
+      top: calc(var(--header-height) + 2rem);
+      align-self: start;
+      max-height: calc(100vh - var(--header-height) - 4rem);
+      overflow-y: auto;
     }
   }
 
@@ -282,6 +313,17 @@ const { title, description, tags = [] } = Astro.props
   :global(.code-copy-btn.copied) {
     color: #3d9970;
     border-color: #3d9970;
+  }
+
+  :global(.mermaid-diagram) {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  :global(.mermaid-diagram svg) {
+    max-width: 100%;
+    height: auto;
   }
 
   @media (max-width: 768px) {

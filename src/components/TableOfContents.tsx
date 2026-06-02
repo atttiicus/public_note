@@ -228,16 +228,14 @@ export default function TableOfContents() {
       <style>{`
         /* ── 桌面端 ── */
         .toc {
-          position: sticky;
-          top: calc(var(--header-height) + 2rem);
-          max-height: calc(100vh - var(--header-height) - 4rem);
-          overflow-y: auto;
           padding-right: 0.25rem;
         }
-        .toc::-webkit-scrollbar { width: 4px; }
-        .toc::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
 
         .toc-label {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          background-color: var(--color-bg);
           font-family: var(--font-sans);
           font-size: 1.05rem;
           font-weight: 600;
