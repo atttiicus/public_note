@@ -93,9 +93,6 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  transition:
-    background-color var(--transition-base),
-    color var(--transition-base);
   min-height: 100vh;
 }
 
