@@ -19,13 +19,20 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
 <BaseLayout title="标签 — 公开笔记" description="按标签浏览所有笔记">
   <main class="tags-page">
     <div class="tags-container animate-fade-in-up">
-
       <header class="page-header">
         <a href="/" class="back-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           返回
         </a>
@@ -33,23 +40,24 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
         <p class="page-subtitle">共 {tags.length} 个标签，{notes.length} 篇笔记</p>
       </header>
 
-      {tags.length === 0 ? (
-        <p class="empty-hint">暂无标签。</p>
-      ) : (
-        <div class="tag-grid">
-          {tags.map(([tag, count], i) => (
-            <a
-              href={`/tags/${encodeURIComponent(tag)}`}
-              class="tag-card animate-fade-in-up"
-              style={`animation-delay: ${i * 50}ms`}
-            >
-              <span class="tag-name">{tag}</span>
-              <span class="tag-count">{count}</span>
-            </a>
-          ))}
-        </div>
-      )}
-
+      {
+        tags.length === 0 ? (
+          <p class="empty-hint">暂无标签。</p>
+        ) : (
+          <div class="tag-grid">
+            {tags.map(([tag, count], i) => (
+              <a
+                href={`/tags/${encodeURIComponent(tag)}`}
+                class="tag-card animate-fade-in-up"
+                style={`animation-delay: ${i * 50}ms`}
+              >
+                <span class="tag-name">{tag}</span>
+                <span class="tag-count">{count}</span>
+              </a>
+            ))}
+          </div>
+        )
+      }
     </div>
   </main>
 </BaseLayout>
@@ -81,7 +89,9 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
     margin-bottom: 1.5rem;
     transition: color var(--transition-fast);
   }
-  .back-link:hover { color: var(--color-primary); }
+  .back-link:hover {
+    color: var(--color-primary);
+  }
 
   .page-title {
     font-family: var(--font-display);
@@ -137,7 +147,9 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
     color: var(--color-text);
     transition: color var(--transition-fast);
   }
-  .tag-card:hover .tag-name { color: var(--color-primary); }
+  .tag-card:hover .tag-name {
+    color: var(--color-primary);
+  }
 
   .tag-count {
     font-family: var(--font-mono);
@@ -150,7 +162,9 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
     margin-right: 0.3em;
     opacity: 0.5;
   }
-  .tag-card:hover .tag-count { color: var(--color-primary-light); }
+  .tag-card:hover .tag-count {
+    color: var(--color-primary-light);
+  }
 
   .empty-hint {
     color: var(--color-text-muted);
@@ -160,6 +174,8 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
   }
 
   @media (max-width: 768px) {
-    .tags-page { padding: 2rem 1rem; }
+    .tags-page {
+      padding: 2rem 1rem;
+    }
   }
 </style>

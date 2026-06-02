@@ -22,13 +22,20 @@ const notes = allNotes
 <BaseLayout title={`${tag} — 标签 — 公开笔记`} description={`标签「${tag}」下的所有笔记`}>
   <main class="tag-page">
     <div class="tag-container animate-fade-in-up">
-
       <header class="page-header">
         <a href="/tags" class="back-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"/>
-            <polyline points="12 19 5 12 12 5"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
           所有标签
         </a>
@@ -39,19 +46,20 @@ const notes = allNotes
       </header>
 
       <div class="notes-grid">
-        {notes.map((note, i) => (
-          <div style={`animation-delay: ${i * 80}ms`}>
-            <NoteCard
-              title={note.data.title}
-              description={note.data.description}
-              slug={note.slug}
-              tags={note.data.tags}
-            />
-          </div>
-        ))}
+        {
+          notes.map((note, i) => (
+            <div style={`animation-delay: ${i * 80}ms`}>
+              <NoteCard
+                title={note.data.title}
+                description={note.data.description}
+                slug={note.slug}
+                tags={note.data.tags}
+              />
+            </div>
+          ))
+        }
       </div>
       {notes.length === 0 && <p class="empty-hint">该标签下暂无笔记。</p>}
-
     </div>
   </main>
 </BaseLayout>
@@ -83,7 +91,9 @@ const notes = allNotes
     margin-bottom: 1.25rem;
     transition: color var(--transition-fast);
   }
-  .back-link:hover { color: var(--color-primary); }
+  .back-link:hover {
+    color: var(--color-primary);
+  }
 
   .heading-row {
     display: flex;
@@ -129,6 +139,8 @@ const notes = allNotes
   }
 
   @media (max-width: 768px) {
-    .tag-page { padding: 2rem 1rem; }
+    .tag-page {
+      padding: 2rem 1rem;
+    }
   }
 </style>

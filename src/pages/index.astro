@@ -15,8 +15,7 @@ interface SeriesGroup {
 }
 
 const renderItems: Array<
-  | { type: 'single'; note: (typeof sorted)[number] }
-  | { type: 'series'; group: SeriesGroup }
+  { type: 'single'; note: (typeof sorted)[number] } | { type: 'series'; group: SeriesGroup }
 > = []
 const seriesMap: Record<string, SeriesGroup> = {}
 
@@ -28,7 +27,12 @@ for (const note of sorted) {
       renderItems.push({ type: 'series', group: seriesMap[series] })
     }
     const g = seriesMap[series]
-    g.items.push({ slug: note.slug, title: note.data.title, description: note.data.description, order: note.data.order })
+    g.items.push({
+      slug: note.slug,
+      title: note.data.title,
+      description: note.data.description,
+      order: note.data.order,
+    })
     for (const tag of note.data.tags ?? []) {
       if (!g.tags.includes(tag)) g.tags.push(tag)
     }
@@ -66,55 +70,72 @@ for (const group of Object.values(seriesMap)) {
       <div class="notes-inner">
         <h2 class="section-title">所有笔记</h2>
         <div class="notes-grid">
-          {renderItems.map((item, i) => (
-            item.type === 'single' ? (
-              <div class="animate-fade-in-up" style={`animation-delay:${i * 80}ms`}>
-                <NoteCard
-                  title={item.note.data.title}
-                  description={item.note.data.description}
-                  slug={item.note.slug}
-                  tags={item.note.data.tags}
-                />
-              </div>
-            ) : (
-              <div class="series-group animate-fade-in-up" style={`animation-delay:${i * 80}ms`}>
-                <div class="series-header">
-                  <div class="series-header-left">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="series-icon" aria-hidden="true">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    </svg>
-                    <span class="series-name">{item.group.name}</span>
-                    <span class="series-badge">{item.group.items.length} 篇</span>
-                  </div>
-                  {item.group.tags.length > 0 && (
-                    <div class="series-tags">
-                      {item.group.tags.map(tag => (
-                        <a href={`/tags/${encodeURIComponent(tag)}`} class="stag">{tag}</a>
-                      ))}
-                    </div>
-                  )}
+          {
+            renderItems.map((item, i) =>
+              item.type === 'single' ? (
+                <div class="animate-fade-in-up" style={`animation-delay:${i * 80}ms`}>
+                  <NoteCard
+                    title={item.note.data.title}
+                    description={item.note.data.description}
+                    slug={item.note.slug}
+                    tags={item.note.data.tags}
+                  />
                 </div>
-                <ul class="series-list">
-                  {item.group.items.map(({ slug, title, description }) => {
-                    const prefix = item.group.name + '-'
-                    const label = title.startsWith(prefix) ? title.slice(prefix.length) : title
-                    return (
-                    <li>
-                      <a href={`/notes/${slug}`} class="series-item">
-                        <div class="series-item-body">
-                          <span class="series-item-title">{label}</span>
-                          {description && <span class="series-item-desc">{description}</span>}
-                        </div>
-                        <span class="series-item-arrow" aria-hidden="true">→</span>
-                      </a>
-                    </li>
-                    )
-                  })}
-                </ul>
-              </div>
+              ) : (
+                <div class="series-group animate-fade-in-up" style={`animation-delay:${i * 80}ms`}>
+                  <div class="series-header">
+                    <div class="series-header-left">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="series-icon"
+                        aria-hidden="true"
+                      >
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                      <span class="series-name">{item.group.name}</span>
+                      <span class="series-badge">{item.group.items.length} 篇</span>
+                    </div>
+                    {item.group.tags.length > 0 && (
+                      <div class="series-tags">
+                        {item.group.tags.map((tag) => (
+                          <a href={`/tags/${encodeURIComponent(tag)}`} class="stag">
+                            {tag}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <ul class="series-list">
+                    {item.group.items.map(({ slug, title, description }) => {
+                      const prefix = item.group.name + '-'
+                      const label = title.startsWith(prefix) ? title.slice(prefix.length) : title
+                      return (
+                        <li>
+                          <a href={`/notes/${slug}`} class="series-item">
+                            <div class="series-item-body">
+                              <span class="series-item-title">{label}</span>
+                              {description && <span class="series-item-desc">{description}</span>}
+                            </div>
+                            <span class="series-item-arrow" aria-hidden="true">
+                              →
+                            </span>
+                          </a>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )
             )
-          ))}
+          }
         </div>
         {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
       </div>
@@ -123,7 +144,9 @@ for (const group of Object.values(seriesMap)) {
 </BaseLayout>
 
 <style>
-  .home-page { min-height: calc(100vh - var(--header-height)); }
+  .home-page {
+    min-height: calc(100vh - var(--header-height));
+  }
 
   /* ── Hero ── */
   .hero {
@@ -132,7 +155,10 @@ for (const group of Object.values(seriesMap)) {
     padding: 5rem 1.5rem 4rem;
     transition: background-color var(--transition-base);
   }
-  .hero-inner { max-width: 680px; margin: 0 auto; }
+  .hero-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
   .hero-label {
     font-family: var(--font-sans);
     font-size: 0.75rem;
@@ -165,11 +191,20 @@ for (const group of Object.values(seriesMap)) {
     border-radius: 2px;
     margin-bottom: 1.5rem;
   }
-  .hero-stats { font-family: var(--font-sans); font-size: 0.9375rem; color: var(--color-text-muted); }
+  .hero-stats {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
 
   /* ── Notes section ── */
-  .notes-section { padding: 3rem 1.5rem; }
-  .notes-inner { max-width: 780px; margin: 0 auto; }
+  .notes-section {
+    padding: 3rem 1.5rem;
+  }
+  .notes-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
   .section-title {
     font-family: var(--font-sans);
     font-size: 0.8125rem;
@@ -181,8 +216,17 @@ for (const group of Object.values(seriesMap)) {
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--color-border);
   }
-  .notes-grid { display: flex; flex-direction: column; gap: 1rem; }
-  .empty-hint { color: var(--color-text-muted); font-style: italic; text-align: center; padding: 3rem 0; }
+  .notes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .empty-hint {
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 3rem 0;
+  }
 
   /* ── 系列组 ── */
   .series-group {
@@ -190,7 +234,9 @@ for (const group of Object.values(seriesMap)) {
     border-radius: 8px;
     background-color: var(--color-bg-card);
     overflow: hidden;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
   .series-group:hover {
     border-color: var(--color-primary-light);
@@ -207,8 +253,15 @@ for (const group of Object.values(seriesMap)) {
     background-color: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border);
   }
-  .series-header-left { display: flex; align-items: center; gap: 0.5rem; }
-  .series-icon { color: var(--color-primary); flex-shrink: 0; }
+  .series-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .series-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
   .series-name {
     font-family: var(--font-serif);
     font-size: 1.0625rem;
@@ -225,7 +278,11 @@ for (const group of Object.values(seriesMap)) {
     border-radius: 100px;
     padding: 0.1em 0.6em;
   }
-  .series-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .series-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
   .stag {
     font-size: 0.75rem;
     font-family: var(--font-sans);
@@ -235,13 +292,28 @@ for (const group of Object.values(seriesMap)) {
     border-radius: 6px;
     border: 1px solid var(--color-border);
     text-decoration: none;
-    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
   }
-  .stag:hover { background-color: var(--color-hover); border-color: var(--color-primary-light); color: var(--color-primary); }
+  .stag:hover {
+    background-color: var(--color-hover);
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
+  }
 
-  .series-list { list-style: none; margin: 0; padding: 0; }
-  .series-list li { border-bottom: 1px solid var(--color-border); }
-  .series-list li:last-child { border-bottom: none; }
+  .series-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .series-list li {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .series-list li:last-child {
+    border-bottom: none;
+  }
 
   .series-item {
     display: flex;
@@ -253,9 +325,17 @@ for (const group of Object.values(seriesMap)) {
     color: inherit;
     transition: background-color var(--transition-fast);
   }
-  .series-item:hover { background-color: var(--color-hover); }
+  .series-item:hover {
+    background-color: var(--color-hover);
+  }
 
-  .series-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+  .series-item-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
   .series-item-title {
     font-family: var(--font-sans);
     font-size: 0.9375rem;
@@ -263,7 +343,9 @@ for (const group of Object.values(seriesMap)) {
     color: var(--color-text);
     transition: color var(--transition-fast);
   }
-  .series-item:hover .series-item-title { color: var(--color-primary); }
+  .series-item:hover .series-item-title {
+    color: var(--color-primary);
+  }
   .series-item-desc {
     font-size: 0.8125rem;
     color: var(--color-text-muted);
@@ -275,13 +357,24 @@ for (const group of Object.values(seriesMap)) {
     font-size: 1rem;
     color: var(--color-text-muted);
     flex-shrink: 0;
-    transition: color var(--transition-fast), transform var(--transition-fast);
+    transition:
+      color var(--transition-fast),
+      transform var(--transition-fast);
   }
-  .series-item:hover .series-item-arrow { color: var(--color-primary); transform: translateX(4px); }
+  .series-item:hover .series-item-arrow {
+    color: var(--color-primary);
+    transform: translateX(4px);
+  }
 
   @media (max-width: 768px) {
-    .hero { padding: 3rem 1rem 2.5rem; }
-    .notes-section { padding: 2rem 1rem; }
-    .series-item-desc { display: none; }
+    .hero {
+      padding: 3rem 1rem 2.5rem;
+    }
+    .notes-section {
+      padding: 2rem 1rem;
+    }
+    .series-item-desc {
+      display: none;
+    }
   }
 </style>

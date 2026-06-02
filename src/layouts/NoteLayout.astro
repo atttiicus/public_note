@@ -38,7 +38,9 @@ const { title, description, tags = [] } = Astro.props
           tags.length > 0 && (
             <div class="note-tags">
               {tags.map((tag) => (
-                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">{tag}</a>
+                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">
+                  {tag}
+                </a>
               ))}
             </div>
           )
@@ -61,9 +63,7 @@ const { title, description, tags = [] } = Astro.props
 <!-- 代码块：语言标签 + 复制按钮 -->
 <script>
   async function setupMermaid() {
-    const blocks = document.querySelectorAll<HTMLElement>(
-      'pre.astro-code[data-language="mermaid"]',
-    )
+    const blocks = document.querySelectorAll<HTMLElement>('pre.astro-code[data-language="mermaid"]')
     if (blocks.length === 0) return
 
     const mermaid = (await import('mermaid')).default
