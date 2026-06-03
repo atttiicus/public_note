@@ -22,6 +22,9 @@ const { currentPath = '/' } = Astro.props
       <a href="/websites" class:list={['nav-link', { active: currentPath.startsWith('/websites') }]}
         >网站</a
       >
+      <a href="/search" class:list={['nav-link', { active: currentPath.startsWith('/search') }]}
+        >搜索</a
+      >
     </nav>
 
     <div class="header-actions">
