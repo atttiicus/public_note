@@ -325,9 +325,9 @@ export default function TableOfContents() {
           background-color: var(--color-hover);
           font-weight: 500;
         }
-        .toc-l1 a { padding-left: 0.5rem; }
-        .toc-l2 a { padding-left: 1rem; font-size: 0.875rem; }
-        .toc-l3 a { padding-left: 1.625rem; font-size: 0.8125rem; }
+        .toc-l1 a { padding-left: 0.5rem; font-weight: 600; color: var(--color-text); }
+        .toc-l2 a { padding-left: 1.25rem; font-size: 0.875rem; }
+        .toc-l3 a { padding-left: 2.25rem; font-size: 0.8125rem; opacity: 0.85; }
 
         /* ── 移动端 FAB ── */
         .toc-fab {
@@ -450,8 +450,9 @@ export default function TableOfContents() {
           background-color: var(--color-hover);
           font-weight: 500;
         }
-        .toc-sheet-item.toc-l2 a { padding-left: 2rem; font-size: 0.875rem; }
-        .toc-sheet-item.toc-l3 a { padding-left: 2.75rem; font-size: 0.8125rem; }
+        .toc-sheet-item.toc-l1 a { font-weight: 600; color: var(--color-text); }
+        .toc-sheet-item.toc-l2 a { padding-left: 2.25rem; font-size: 0.875rem; }
+        .toc-sheet-item.toc-l3 a { padding-left: 3.25rem; font-size: 0.8125rem; opacity: 0.85; }
 
         /* ── 动画 ── */
         @keyframes tocFadeIn {
