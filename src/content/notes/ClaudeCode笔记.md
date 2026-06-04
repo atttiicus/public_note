@@ -2690,7 +2690,6 @@ issue_number: context.issue.number,
 owner: context.repo.owner,
 repo: context.repo.repo,
 body: `## 🤖 Claude Code 自动审查\n\n${review}`
-});
 ```
 
 ---

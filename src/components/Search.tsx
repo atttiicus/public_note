@@ -64,18 +64,15 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
     })
   )
 
-  const handleSearch = useCallback(
-    (q: string) => {
-      setQuery(q)
-      if (!q.trim()) {
-        setResults([])
-        return
-      }
-      const raw = fuse.current.search(q, { limit: 20 })
-      setResults(raw as SearchResult[])
-    },
-    []
-  )
+  const handleSearch = useCallback((q: string) => {
+    setQuery(q)
+    if (!q.trim()) {
+      setResults([])
+      return
+    }
+    const raw = fuse.current.search(q, { limit: 20 })
+    setResults(raw as SearchResult[])
+  }, [])
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -110,7 +107,16 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
         />
         {query && (
           <button className="search-clear" onClick={() => handleSearch('')} aria-label="清空">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -132,7 +138,7 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
             const contentMatched = matches?.some((m) => m.key === 'content')
             const snippet = contentMatched
               ? getContentSnippet(item.content, query)
-              : item.description ?? item.content.slice(0, 100)
+              : (item.description ?? item.content.slice(0, 100))
 
             return (
               <li key={item.slug} className="search-result-item">
@@ -144,9 +150,7 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
                         __html: highlight(item.title, titleIndices),
                       }}
                     />
-                    {item.series && (
-                      <span className="search-result-series">{item.series}</span>
-                    )}
+                    {item.series && <span className="search-result-series">{item.series}</span>}
                     {snippet && (
                       <span
                         className="search-result-snippet"
@@ -160,7 +164,9 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
                     {item.tags && item.tags.length > 0 && (
                       <div className="search-result-tags">
                         {item.tags.map((t) => (
-                          <span key={t} className="search-result-tag">{t}</span>
+                          <span key={t} className="search-result-tag">
+                            {t}
+                          </span>
                         ))}
                       </div>
                     )}
@@ -175,7 +181,17 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
 
       {!query.trim() && (
         <div className="search-empty">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.25 }}>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ opacity: 0.25 }}
+          >
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
