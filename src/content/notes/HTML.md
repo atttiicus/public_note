@@ -19,13 +19,13 @@ HTML 的全名是“超文本标记语言”（HyperText Markup Language），�
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <title>网页标题</title>
-  </head>
-  <body>
-    <p>Hello World</p>
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <title>网页标题</title>
+    </head>
+    <body>
+        <p>Hello World</p>
+    </body>
 </html>
 ```
 
@@ -146,11 +146,11 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <title></title>
-  </head>
-  <body></body>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body></body>
 </html>
 ```
 
@@ -195,9 +195,9 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 ```html
 <!doctype html>
 <html>
-  <head>
-    <title>网页标题</title>
-  </head>
+    <head>
+        <title>网页标题</title>
+    </head>
 </html>
 ```
 
@@ -221,9 +221,9 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 
 ```html
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Page Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page Title</title>
 </head>
 ```
 
@@ -249,9 +249,9 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 
 ```html
 <head>
-  <meta name="description" content="HTML 语言入门" />
-  <meta name="keywords" content="HTML,教程" />
-  <meta name="author" content="张三" />
+    <meta name="description" content="HTML 语言入门" />
+    <meta name="keywords" content="HTML,教程" />
+    <meta name="author" content="张三" />
 </head>
 ```
 
@@ -291,7 +291,7 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 
 ```html
 <head>
-  <title>网页标题</title>
+    <title>网页标题</title>
 </head>
 ```
 
@@ -305,12 +305,12 @@ HTML 提供大量属性，用来定制标签的行为，详细介绍请看《元
 
 ```html
 <html>
-  <head>
-    <title>网页标题</title>
-  </head>
-  <body>
-    <p>hello world</p>
-  </body>
+    <head>
+        <title>网页标题</title>
+    </head>
+    <body>
+        <p>hello world</p>
+    </body>
 </html>
 ```
 
@@ -502,7 +502,7 @@ URL 还可以使用两个特殊简写，表示特定位置。
 
 ```html
 <head>
-  <base href="https://www.example.com/files/" target="_blank" />
+    <base href="https://www.example.com/files/" target="_blank" />
 </head>
 ```
 
@@ -586,7 +586,7 @@ URL 还可以使用两个特殊简写，表示特定位置。
 
 ```html
 <div title="版权说明">
-  <p>本站内容使用创意共享许可证，可以自由使用。</p>
+    <p>本站内容使用创意共享许可证，可以自由使用。</p>
 </div>
 ```
 
@@ -745,17 +745,17 @@ Mobile only content
 </div>
 */
 div[data-role='mobile'] {
-  display: none;
+    display: none;
 }
 
 /* HTML 代码如下
 <div class="test" data-content="This is the div content">test</div>​
 */
 .test {
-  display: inline-block;
+    display: inline-block;
 }
 .test:after {
-  content: attr(data-content);
+    content: attr(data-content);
 }
 ```
 
@@ -856,14 +856,14 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <body>
-  <header>页眉</header>
-  <main>
-    <article>
-      <h1>文章标题</h1>
-      <p>文章内容</p>
-    </article>
-  </main>
-  <footer>页尾</footer>
+    <header>页眉</header>
+    <main>
+        <article>
+            <h1>文章标题</h1>
+            <p>文章内容</p>
+        </article>
+    </main>
+    <footer>页尾</footer>
 </body>
 ```
 
@@ -881,16 +881,16 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <header>
-  <h1>公司名称</h1>
-  <ul>
-    <li><a href="/home">首页</a></li>
-    <li><a href="/about">关于</a></li>
-    <li><a href="/contact">联系</a></li>
-  </ul>
-  <form target="/search">
-    <input name="q" type="search" />
-    <input type="submit" />
-  </form>
+    <h1>公司名称</h1>
+    <ul>
+        <li><a href="/home">首页</a></li>
+        <li><a href="/about">关于</a></li>
+        <li><a href="/contact">联系</a></li>
+    </ul>
+    <form target="/search">
+        <input name="q" type="search" />
+        <input type="submit" />
+    </form>
 </header>
 ```
 
@@ -898,10 +898,10 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <article>
-  <header>
-    <h2>文章标题</h2>
-    <p>张三，发表于2010年1月1日</p>
-  </header>
+    <header>
+        <h2>文章标题</h2>
+        <p>张三，发表于2010年1月1日</p>
+    </header>
 </article>
 ```
 
@@ -913,9 +913,9 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <body>
-  <footer>
-    <p>© 2018 xxx 公司</p>
-  </footer>
+    <footer>
+        <p>© 2018 xxx 公司</p>
+    </footer>
 </body>
 ```
 
@@ -925,12 +925,12 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <article>
-  <header>
-    <h1>文章标题</h1>
-  </header>
-  <footer>
-    <p>© 禁止转贴</p>
-  </footer>
+    <header>
+        <h1>文章标题</h1>
+    </header>
+    <footer>
+        <p>© 禁止转贴</p>
+    </footer>
 </article>
 ```
 
@@ -942,12 +942,12 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <body>
-  <header>页眉</header>
-  <main>
-    <article>文章</article>
-  </main>
-  <aside>侧边栏</aside>
-  <footer>页尾</footer>
+    <header>页眉</header>
+    <main>
+        <article>文章</article>
+    </main>
+    <aside>侧边栏</aside>
+    <footer>页尾</footer>
 </body>
 ```
 
@@ -963,8 +963,8 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <article>
-  <h2>文章标题</h2>
-  <p>文章内容</p>
+    <h2>文章标题</h2>
+    <p>文章内容</p>
 </article>
 ```
 
@@ -978,8 +978,8 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <body>
-  <main>主体内容</main>
-  <aside>侧边栏</aside>
+    <main>主体内容</main>
+    <aside>侧边栏</aside>
 </body>
 ```
 
@@ -988,7 +988,7 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 ```html
 <p>第一段</p>
 <aside>
-  <p>本段是文章的重点。</p>
+    <p>本段是文章的重点。</p>
 </aside>
 ```
 
@@ -998,15 +998,15 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <article>
-  <h1>文章标题</h1>
-  <section>
-    <h2>第一章</h2>
-    <p>...</p>
-  </section>
-  <section>
-    <h2>第二章</h2>
-    <p>...</p>
-  </section>
+    <h1>文章标题</h1>
+    <section>
+        <h2>第一章</h2>
+        <p>...</p>
+    </section>
+    <section>
+        <h2>第二章</h2>
+        <p>...</p>
+    </section>
 </article>
 ```
 
@@ -1027,20 +1027,20 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 ```html
 `：一级标题 - ` `：二级标题 - ` `：三级标题 - ` `：四级标题 - ` `：五级标题 - ` `：六级标题
 <h1>
-  是最高级别的标题，
-  <h6>
-    是最低级别的标题。下一级标题都是上一级标题的子标题，比如，一个
-    <h1>
-      后面可以有多个
-      <h2>
-        ，每个
-        <h2>
-          后面又可以有多个
-          <h3>。</h3>
-        </h2>
-      </h2>
-    </h1>
-  </h6>
+    是最高级别的标题，
+    <h6>
+        是最低级别的标题。下一级标题都是上一级标题的子标题，比如，一个
+        <h1>
+            后面可以有多个
+            <h2>
+                ，每个
+                <h2>
+                    后面又可以有多个
+                    <h3>。</h3>
+                </h2>
+            </h2>
+        </h1>
+    </h6>
 </h1>
 ```
 
@@ -1056,11 +1056,11 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <div class="main">
-  <div class="article">
-    <div class="title">
-      <h1>文章标题</h1>
+    <div class="article">
+        <div class="title">
+            <h1>文章标题</h1>
+        </div>
     </div>
-  </div>
 </div>
 ```
 
@@ -1068,11 +1068,11 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <main>
-  <article>
-    <header>
-      <h1>文章标题</h1>
-    </header>
-  </article>
+    <article>
+        <header>
+            <h1>文章标题</h1>
+        </header>
+    </article>
 </main>
 ```
 
@@ -1080,8 +1080,8 @@ HTML 标签的一个重要作用，就是声明网页元素的性质，使得用
 
 ```html
 <div>
-  <img src="warning.jpg" alt="警告" />
-  <p>小心</p>
+    <img src="warning.jpg" alt="警告" />
+    <p>小心</p>
 </div>
 ```
 
@@ -1121,10 +1121,10 @@ hello<br />world
 
 ```html
 <p>
-  床前明月光，<br />
-  疑是地上霜。<br />
-  举头望明月，<br />
-  低头思故乡。
+    床前明月光，<br />
+    疑是地上霜。<br />
+    举头望明月，<br />
+    低头思故乡。
 </p>
 ```
 
@@ -1259,7 +1259,7 @@ hello
 
 ```html
 <blockquote cite="https://quote.example.com">
-  <p>天才就是 1% 的天赋和99%的汗水。</p>
+    <p>天才就是 1% 的天赋和99%的汗水。</p>
 </blockquote>
 ```
 
@@ -1269,7 +1269,7 @@ hello
 
 ```html
 <blockquote cite="https://quote.example.com">
-  <p>天才就是 1% 的天赋和99%的汗水。</p>
+    <p>天才就是 1% 的天赋和99%的汗水。</p>
 </blockquote>
 <cite>-- 爱迪生</cite>
 ```
@@ -1284,8 +1284,8 @@ hello
 
 ```html
 <p>
-  莎士比亚的《哈姆雷特》有一句著名的台词：
-  <q cite="https://quote.example.com">活着还是死亡，这是一个问题。</q>
+    莎士比亚的《哈姆雷特》有一句著名的台词：
+    <q cite="https://quote.example.com">活着还是死亡，这是一个问题。</q>
 </p>
 ```
 
@@ -1326,9 +1326,9 @@ hello
 
 ```html
 <p>
-  Windows 可以按下
-  <kbd> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Del</kbd> </kbd>
-  重启。
+    Windows 可以按下
+    <kbd> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Del</kbd> </kbd>
+    重启。
 </p>
 ```
 
@@ -1336,7 +1336,8 @@ hello
 
 ```html
 <p>
-  如果使用没有定义的变量，浏览器会报错： <samp>Uncaught ReferenceError: foo is not defined</samp>。
+    如果使用没有定义的变量，浏览器会报错：
+    <samp>Uncaught ReferenceError: foo is not defined</samp>。
 </p>
 ```
 
@@ -1408,8 +1409,8 @@ hello
 <p>作者的联系方式：</p>
 
 <address>
-  <p><a href="mailto:foo@example.com">foo@example.com</a></p>
-  <p><a href="tel:+555-34762301">+555-34762301</a></p>
+    <p><a href="mailto:foo@example.com">foo@example.com</a></p>
+    <p><a href="tel:+555-34762301">+555-34762301</a></p>
 </address>
 ```
 
@@ -1425,7 +1426,7 @@ hello
 
 ```html
 <footer>
-  <address>文章的相关问题请联系<a href="mailto:zhangsan@example.com">张三 McClure</a>。</address>
+    <address>文章的相关问题请联系<a href="mailto:zhangsan@example.com">张三 McClure</a>。</address>
 </footer>
 ```
 
@@ -1456,7 +1457,7 @@ hello
 
 ```html
 <ins cite="./why.html" datetime="2018-05">
-  <p>项目比原定时间提前两周结束。</p>
+    <p>项目比原定时间提前两周结束。</p>
 </ins>
 ```
 
@@ -1472,8 +1473,8 @@ hello
 
 ```html
 <p>
-  通过 TCP/IP 协议连接的全球性计算机网络，叫做
-  <dfn title="全球性计算机网络">Internet</dfn>。
+    通过 TCP/IP 协议连接的全球性计算机网络，叫做
+    <dfn title="全球性计算机网络">Internet</dfn>。
 </p>
 ```
 
@@ -1483,8 +1484,8 @@ hello
 
 ```html
 <p>
-  <dfn><abbr title="acquired immune deficiency syndrome">AIDS</abbr></dfn>
-  的全称是获得性免疫缺陷综合征。
+    <dfn><abbr title="acquired immune deficiency syndrome">AIDS</abbr></dfn>
+    的全称是获得性免疫缺陷综合征。
 </p>
 ```
 
@@ -1524,11 +1525,11 @@ hello
 
 ```html
 <ruby>
-  <rb>汉</rb><rb>字</rb>
-  <rp>(</rp>
-  <rt>han</rt>
-  <rt>zi</rt>
-  <rp>)</rp>
+    <rb>汉</rb><rb>字</rb>
+    <rp>(</rp>
+    <rt>han</rt>
+    <rt>zi</rt>
+    <rp>)</rp>
 </ruby>
 ```
 
@@ -1596,9 +1597,9 @@ hello
 
 ```html
 <ol>
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1608,16 +1609,16 @@ hello
 
 ```html
 <ol>
-  <li>列表项 A</li>
-  <li>
-    列表项 B
-    <ol>
-      <li>列表项 B1</li>
-      <li>列表项 B2</li>
-      <li>列表项 B3</li>
-    </ol>
-  </li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>
+        列表项 B
+        <ol>
+            <li>列表项 B1</li>
+            <li>列表项 B2</li>
+            <li>列表项 B3</li>
+        </ol>
+    </li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1635,9 +1636,9 @@ hello
 
 ```html
 <ol reversed>
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1649,9 +1650,9 @@ hello
 
 ```html
 <ol start="5">
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1669,9 +1670,9 @@ hello
 
 ```html
 <ol type="a">
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1681,9 +1682,9 @@ hello
 
 ```html
 <ol type="a" start="3">
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1695,9 +1696,9 @@ hello
 
 ```html
 <ul>
-  <li>列表项 A</li>
-  <li>列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li>列表项 B</li>
+    <li>列表项 C</li>
 </ul>
 ```
 
@@ -1713,9 +1714,9 @@ hello
 
 ```html
 <ol>
-  <li>列表项 A</li>
-  <li value="4">列表项 B</li>
-  <li>列表项 C</li>
+    <li>列表项 A</li>
+    <li value="4">列表项 B</li>
+    <li>列表项 C</li>
 </ol>
 ```
 
@@ -1727,12 +1728,12 @@ hello
 
 ```html
 <dl>
-  <dt>CPU</dt>
-  <dd>中央处理器</dd>
-  <dt>Memory</dt>
-  <dd>内存</dd>
-  <dt>Hard Disk</dt>
-  <dd>硬盘</dd>
+    <dt>CPU</dt>
+    <dd>中央处理器</dd>
+    <dt>Memory</dt>
+    <dd>内存</dd>
+    <dt>Hard Disk</dt>
+    <dd>硬盘</dd>
 </dl>
 ```
 
@@ -1746,12 +1747,12 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <dl>
-  <dt>A</dt>
-  <dt>B</dt>
-  <dd>C</dd>
-  <dt>D</dt>
-  <dd>E</dd>
-  <dd>F</dd>
+    <dt>A</dt>
+    <dt>B</dt>
+    <dd>C</dd>
+    <dt>D</dt>
+    <dd>E</dd>
+    <dd>F</dd>
 </dl>
 ```
 
@@ -1785,7 +1786,7 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <a href="example.html">
-  <img src="foo.jpg" />
+    <img src="foo.jpg" />
 </a>
 ```
 
@@ -1870,8 +1871,8 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <figure>
-  <img src="https://example.com/foo.jpg" />
-  <figcaption>示例图片</figcaption>
+    <img src="https://example.com/foo.jpg" />
+    <figcaption>示例图片</figcaption>
 </figure>
 ```
 
@@ -1879,8 +1880,8 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <figure>
-  <figcaption>JavaScript 代码示例</figcaption>
-  <p><code>const foo = 'hello';</code></p>
+    <figcaption>JavaScript 代码示例</figcaption>
+    <p><code>const foo = 'hello';</code></p>
 </figure>
 ```
 
@@ -1948,8 +1949,8 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <img
-  srcset="foo-160.jpg 160w, foo-320.jpg 320w, foo-640.jpg 640w, foo-1280.jpg 1280w"
-  src="foo-1280.jpg"
+    srcset="foo-160.jpg 160w, foo-320.jpg 320w, foo-640.jpg 640w, foo-1280.jpg 1280w"
+    src="foo-1280.jpg"
 />
 ```
 
@@ -1963,11 +1964,11 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <img
-  srcset="foo-160.jpg 160w, foo-320.jpg 320w, foo-640.jpg 640w, foo-1280.jpg 1280w"
-  sizes="(max-width: 440px) 100vw,
+    srcset="foo-160.jpg 160w, foo-320.jpg 320w, foo-640.jpg 640w, foo-1280.jpg 1280w"
+    sizes="(max-width: 440px) 100vw,
             (max-width: 900px) 33vw,
             254px"
-  src="foo-1280.jpg"
+    src="foo-1280.jpg"
 />
 ```
 
@@ -1989,9 +1990,9 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <picture>
-  <source media="(max-width: 500px)" srcset="cat-vertical.jpg" />
-  <source media="(min-width: 501px)" srcset="cat-horizontal.jpg" />
-  <img src="cat.jpg" alt="cat" />
+    <source media="(max-width: 500px)" srcset="cat-vertical.jpg" />
+    <source media="(min-width: 501px)" srcset="cat-horizontal.jpg" />
+    <img src="cat.jpg" alt="cat" />
 </picture>
 ```
 
@@ -2009,18 +2010,18 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <picture>
-  <source
-    srcset="homepage-person@desktop.png, homepage-person@desktop-2x.png 2x"
-    media="(min-width: 990px)"
-  />
-  <source
-    srcset="homepage-person@tablet.png, homepage-person@tablet-2x.png 2x"
-    media="(min-width: 750px)"
-  />
-  <img
-    srcset="homepage-person@mobile.png, homepage-person@mobile-2x.png 2x"
-    alt="Shopify Merchant, Corrine Anestopoulos"
-  />
+    <source
+        srcset="homepage-person@desktop.png, homepage-person@desktop-2x.png 2x"
+        media="(min-width: 990px)"
+    />
+    <source
+        srcset="homepage-person@tablet.png, homepage-person@tablet-2x.png 2x"
+        media="(min-width: 750px)"
+    />
+    <img
+        srcset="homepage-person@mobile.png, homepage-person@mobile-2x.png 2x"
+        alt="Shopify Merchant, Corrine Anestopoulos"
+    />
 </picture>
 ```
 
@@ -2032,9 +2033,9 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <picture>
-  <source type="image/svg+xml" srcset="logo.xml" />
-  <source type="image/webp" srcset="logo.webp" />
-  <img src="logo.png" alt="ACME Corp" />
+    <source type="image/svg+xml" srcset="logo.xml" />
+    <source type="image/webp" srcset="logo.webp" />
+    <img src="logo.png" alt="ACME Corp" />
 </picture>
 ```
 
@@ -2060,7 +2061,7 @@ CPU 中央处理器 Memory 内存 Hard Disk 硬盘
 
 ```html
 <a href="https://www.example.com/">
-  <img src="https://www.example.com/foo.jpg" />
+    <img src="https://www.example.com/foo.jpg" />
 </a>
 ```
 
@@ -2527,7 +2528,7 @@ headers: {
 
 ```html
 <script>
-  console.log('hello world')
+    console.log('hello world')
 </script>
 ```
 
@@ -2589,7 +2590,7 @@ headers: {
 
 ```html
 <video src="example.mp4" controls>
-  <p>你的浏览器不支持 HTML5 视频，请下载<a href="example.mp4">视频文件</a>。</p>
+    <p>你的浏览器不支持 HTML5 视频，请下载<a href="example.mp4">视频文件</a>。</p>
 </video>
 ```
 
@@ -2623,9 +2624,9 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <video controls>
-  <source src="example.mp4" type="video/mp4" />
-  <source src="example.webm" type="video/webm" />
-  <p>你的浏览器不支持 HTML5 视频，请下载<a href="example.mp4">视频文件</a>。</p>
+    <source src="example.mp4" type="video/mp4" />
+    <source src="example.webm" type="video/webm" />
+    <p>你的浏览器不支持 HTML5 视频，请下载<a href="example.mp4">视频文件</a>。</p>
 </video>
 ```
 
@@ -2637,9 +2638,9 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <audio controls>
-  <source src="foo.mp3" type="audio/mp3" />
-  <source src="foo.ogg" type="audio/ogg" />
-  <p>你的浏览器不支持 HTML5 音频，请直接下载<a href="foo.mp3">音频文件</a>。</p>
+    <source src="foo.mp3" type="audio/mp3" />
+    <source src="foo.ogg" type="audio/ogg" />
+    <p>你的浏览器不支持 HTML5 音频，请直接下载<a href="foo.mp3">音频文件</a>。</p>
 </audio>
 ```
 
@@ -2661,8 +2662,8 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <video controls src="sample.mp4">
-  <track label="英文" kind="subtitles" src="subtitles_en.vtt" srclang="en" />
-  <track label="中文" kind="subtitles" src="subtitles_cn.vtt" srclang="cn" default />
+    <track label="英文" kind="subtitles" src="subtitles_en.vtt" srclang="en" />
+    <track label="中文" kind="subtitles" src="subtitles_cn.vtt" srclang="cn" default />
 </video>
 ```
 
@@ -2719,17 +2720,17 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <embed
-  src="whoosh.swf"
-  quality="medium"
-  bgcolor="#ffffff"
-  width="550"
-  height="400"
-  name="whoosh"
-  align="middle"
-  allowScriptAccess="sameDomain"
-  allowFullScreen="false"
-  type="application/x-shockwave-flash"
-  pluginspage="http://www.macromedia.com/go/getflashplayer"
+    src="whoosh.swf"
+    quality="medium"
+    bgcolor="#ffffff"
+    width="550"
+    height="400"
+    name="whoosh"
+    align="middle"
+    allowScriptAccess="sameDomain"
+    allowFullScreen="false"
+    type="application/x-shockwave-flash"
+    pluginspage="http://www.macromedia.com/go/getflashplayer"
 />
 ```
 
@@ -2766,7 +2767,7 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <object data="movie.swf" type="application/x-shockwave-flash">
-  <param name="foo" value="bar" />
+    <param name="foo" value="bar" />
 </object>
 ```
 
@@ -2780,14 +2781,14 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <iframe
-  src="https://www.example.com"
-  width="100%"
-  height="500"
-  frameborder="0"
-  allowfullscreen
-  sandbox
+    src="https://www.example.com"
+    width="100%"
+    height="500"
+    frameborder="0"
+    allowfullscreen
+    sandbox
 >
-  <p><a href="https://www.example.com">点击打开嵌入页面</a></p>
+    <p><a href="https://www.example.com">点击打开嵌入页面</a></p>
 </iframe>
 ```
 
@@ -2867,7 +2868,7 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  ... ...
+    ... ...
 </table>
 ```
 
@@ -2875,9 +2876,9 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <caption>
-    示例表格
-  </caption>
+    <caption>
+        示例表格
+    </caption>
 </table>
 ```
 
@@ -2887,15 +2888,15 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <thead>
-    ... ...
-  </thead>
-  <tbody>
-    ... ...
-  </tbody>
-  <tfoot>
-    ... ...
-  </tfoot>
+    <thead>
+        ... ...
+    </thead>
+    <tbody>
+        ... ...
+    </tbody>
+    <tfoot>
+        ... ...
+    </tfoot>
 </table>
 ```
 
@@ -2909,11 +2910,11 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <colgroup>
-    <col />
-    <col />
-    <col />
-  </colgroup>
+    <colgroup>
+        <col />
+        <col />
+        <col />
+    </colgroup>
 </table>
 ```
 
@@ -2923,16 +2924,16 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <colgroup>
-    <col class="c1" />
-    <col class="c2" />
-    <col class="c3" />
-  </colgroup>
-  <tr>
-    <td>1</td>
-    <td>2</td>
-    <td>3</td>
-  </tr>
+    <colgroup>
+        <col class="c1" />
+        <col class="c2" />
+        <col class="c3" />
+    </colgroup>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>
 </table>
 ```
 
@@ -2942,11 +2943,11 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <colgroup>
-    <col />
-    <col span="2" />
-    <col />
-  </colgroup>
+    <colgroup>
+        <col />
+        <col span="2" />
+        <col />
+    </colgroup>
 </table>
 ```
 
@@ -2958,15 +2959,15 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <tr>
-    ...
-  </tr>
-  <tr>
-    ...
-  </tr>
-  <tr>
-    ...
-  </tr>
+    <tr>
+        ...
+    </tr>
+    <tr>
+        ...
+    </tr>
+    <tr>
+        ...
+    </tr>
 </table>
 ```
 
@@ -2978,18 +2979,18 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <tr>
-    <th>学号</th>
-    <th>姓名</th>
-  </tr>
-  <tr>
-    <td>001</td>
-    <td>张三</td>
-  </tr>
-  <tr>
-    <td>002</td>
-    <td>李四</td>
-  </tr>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+    </tr>
+    <tr>
+        <td>001</td>
+        <td>张三</td>
+    </tr>
+    <tr>
+        <td>002</td>
+        <td>李四</td>
+    </tr>
 </table>
 ```
 
@@ -3001,15 +3002,15 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <tr>
-    <td colspan="2">A</td>
-    <td>B</td>
-  </tr>
-  <tr>
-    <td>A</td>
-    <td>B</td>
-    <td>C</td>
-  </tr>
+    <tr>
+        <td colspan="2">A</td>
+        <td>B</td>
+    </tr>
+    <tr>
+        <td>A</td>
+        <td>B</td>
+        <td>C</td>
+    </tr>
 </table>
 ```
 
@@ -3021,18 +3022,18 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <tr>
-    <th id="no">学号</th>
-    <th id="names">姓名</th>
-  </tr>
-  <tr>
-    <td headers="no">001</td>
-    <td headers="names">张三</td>
-  </tr>
-  <tr>
-    <td headers="no">002</td>
-    <td headers="names">李四</td>
-  </tr>
+    <tr>
+        <th id="no">学号</th>
+        <th id="names">姓名</th>
+    </tr>
+    <tr>
+        <td headers="no">001</td>
+        <td headers="names">张三</td>
+    </tr>
+    <tr>
+        <td headers="no">002</td>
+        <td headers="names">李四</td>
+    </tr>
 </table>
 ```
 
@@ -3046,21 +3047,21 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <tr>
-    <th scope="col">姓名</th>
-    <th scope="col">学号</th>
-    <th scope="col">性别</th>
-  </tr>
-  <tr>
-    <th scope="row">张三</th>
-    <td>001</td>
-    <td>男</td>
-  </tr>
-  <tr>
-    <th scope="row">李四</th>
-    <td>002</td>
-    <td>男</td>
-  </tr>
+    <tr>
+        <th scope="col">姓名</th>
+        <th scope="col">学号</th>
+        <th scope="col">性别</th>
+    </tr>
+    <tr>
+        <th scope="row">张三</th>
+        <td>001</td>
+        <td>男</td>
+    </tr>
+    <tr>
+        <th scope="row">李四</th>
+        <td>002</td>
+        <td>男</td>
+    </tr>
 </table>
 ```
 
@@ -3078,34 +3079,34 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <table>
-  <thead>
-    <tr>
-      <th scope="col">海报名称</th>
-      <th scope="col">颜色</th>
-      <th colspan="3" scope="colgroup">尺寸</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th rowspan="3" scope="rowgroup">Zodiac</th>
-      <th scope="row">Full color</th>
-      <td>A2</td>
-      <td>A3</td>
-      <td>A4</td>
-    </tr>
-    <tr>
-      <th scope="row">Black and white</th>
-      <td>A1</td>
-      <td>A2</td>
-      <td>A3</td>
-    </tr>
-    <tr>
-      <th scope="row">Sepia</th>
-      <td>A3</td>
-      <td>A4</td>
-      <td>A5</td>
-    </tr>
-  </tbody>
+    <thead>
+        <tr>
+            <th scope="col">海报名称</th>
+            <th scope="col">颜色</th>
+            <th colspan="3" scope="colgroup">尺寸</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th rowspan="3" scope="rowgroup">Zodiac</th>
+            <th scope="row">Full color</th>
+            <td>A2</td>
+            <td>A3</td>
+            <td>A4</td>
+        </tr>
+        <tr>
+            <th scope="row">Black and white</th>
+            <td>A1</td>
+            <td>A2</td>
+            <td>A3</td>
+        </tr>
+        <tr>
+            <th scope="row">Sepia</th>
+            <td>A3</td>
+            <td>A4</td>
+            <td>A5</td>
+        </tr>
+    </tbody>
 </table>
 ```
 
@@ -3133,7 +3134,7 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <form>
-  <!-- 各种表单控件-->
+    <!-- 各种表单控件-->
 </form>
 ```
 
@@ -3143,9 +3144,9 @@ HTML 标准没有规定浏览器需要支持哪些视频格式，完全由浏览
 
 ```html
 <form action="https://example.com/api" method="post">
-  <label for="POST-name">用户名：</label>
-  <input id="POST-name" type="text" name="user" />
-  <input type="submit" value="提交" />
+    <label for="POST-name">用户名：</label>
+    <input id="POST-name" type="text" name="user" />
+    <input type="submit" value="提交" />
 </form>
 ```
 
@@ -3184,9 +3185,9 @@ Content-Disposition: form-data; name="mycontrol"
 
 ```html
 <form action="https://example.com/api" enctype="multipart/form-data" method="post">
-  用户名：<input type="text" name="submit-name" /><br />
-  文件：<input type="file" name="files" /><br />
-  <input type="submit" value="上传" /> <input type="reset" value="清除" />
+    用户名：<input type="text" name="submit-name" /><br />
+    文件：<input type="file" name="files" /><br />
+    <input type="submit" value="上传" /> <input type="reset" value="清除" />
 </form>
 ```
 
@@ -3215,10 +3216,10 @@ Content-Type: text/plain
 
 ```html
 <form>
-  <fieldset>
-    <p>年龄：<input type="text" name="age" /></p>
-    <p>性别：<input type="text" name="gender" /></p>
-  </fieldset>
+    <fieldset>
+        <p>年龄：<input type="text" name="age" /></p>
+        <p>性别：<input type="text" name="gender" /></p>
+    </fieldset>
 </form>
 ```
 
@@ -3234,9 +3235,9 @@ Content-Type: text/plain
 
 ```html
 <fieldset>
-  <legend>学生情况登记</legend>
-  <p>年龄：<input type="text" name="age" /></p>
-  <p>性别：<input type="text" name="gender" /></p>
+    <legend>学生情况登记</legend>
+    <p>年龄：<input type="text" name="age" /></p>
+    <p>性别：<input type="text" name="gender" /></p>
 </fieldset>
 ```
 
@@ -3260,8 +3261,8 @@ Content-Type: text/plain
 
 ```html
 <label
-  >用户名：
-  <input type="text" name="user" />
+    >用户名：
+    <input type="text" name="user" />
 </label>
 ```
 
@@ -3338,8 +3339,8 @@ Content-Type: text/plain
 
 ```html
 <form>
-  <input type="search" id="mySearch" name="q" placeholder="输入搜索词……" required />
-  <input type="submit" value="搜索" />
+    <input type="search" id="mySearch" name="q" placeholder="输入搜索词……" required />
+    <input type="submit" value="搜索" />
 </form>
 ```
 
@@ -3424,15 +3425,15 @@ Content-Type: text/plain
 
 ```html
 <fieldset>
-  <legend>你的兴趣</legend>
-  <div>
-    <input type="checkbox" id="coding" name="interest" value="coding" />
-    <label for="coding">编码</label>
-  </div>
-  <div>
-    <input type="checkbox" id="music" name="interest" value="music" />
-    <label for="music">音乐</label>
-  </div>
+    <legend>你的兴趣</legend>
+    <div>
+        <input type="checkbox" id="coding" name="interest" value="coding" />
+        <label for="coding">编码</label>
+    </div>
+    <div>
+        <input type="checkbox" id="music" name="interest" value="music" />
+        <label for="music">音乐</label>
+    </div>
 </fieldset>
 ```
 
@@ -3444,15 +3445,15 @@ Content-Type: text/plain
 
 ```html
 <fieldset>
-  <legend>性别</legend>
-  <div>
-    <input type="radio" id="male" name="gender" value="male" />
-    <label for="male">男</label>
-  </div>
-  <div>
-    <input type="radio" id="female" name="gender" value="female" />
-    <label for="female">女</label>
-  </div>
+    <legend>性别</legend>
+    <div>
+        <input type="radio" id="male" name="gender" value="male" />
+        <label for="male">男</label>
+    </div>
+    <div>
+        <input type="radio" id="female" name="gender" value="female" />
+        <label for="female">女</label>
+    </div>
 </fieldset>
 ```
 
@@ -3500,11 +3501,11 @@ Content-Type: text/plain
 <input type="email" size="40" list="defaultEmails" />
 
 <datalist id="defaultEmails">
-  <option value="jbond007@mi6.defence.gov.uk"></option>
-  <option value="jbourne@unknown.net"></option>
-  <option value="nfury@shield.org"></option>
-  <option value="tony@starkindustries.com"></option>
-  <option value="hulk@grrrrrrrr.arg"></option>
+    <option value="jbond007@mi6.defence.gov.uk"></option>
+    <option value="jbourne@unknown.net"></option>
+    <option value="nfury@shield.org"></option>
+    <option value="tony@starkindustries.com"></option>
+    <option value="hulk@grrrrrrrr.arg"></option>
 </datalist>
 ```
 
@@ -3601,17 +3602,17 @@ Content-Type: text/plain
 <input type="range" list="tickmarks" />
 
 <datalist id="tickmarks">
-  <option value="0" label="0%"></option>
-  <option value="10"></option>
-  <option value="20"></option>
-  <option value="30"></option>
-  <option value="40"></option>
-  <option value="50" label="50%"></option>
-  <option value="60"></option>
-  <option value="70"></option>
-  <option value="80"></option>
-  <option value="90"></option>
-  <option value="100" label="100%"></option>
+    <option value="0" label="0%"></option>
+    <option value="10"></option>
+    <option value="20"></option>
+    <option value="30"></option>
+    <option value="40"></option>
+    <option value="50" label="50%"></option>
+    <option value="60"></option>
+    <option value="70"></option>
+    <option value="80"></option>
+    <option value="90"></option>
+    <option value="100" label="100%"></option>
 </datalist>
 ```
 
@@ -3625,13 +3626,13 @@ Content-Type: text/plain
 
 ```html
 <input
-  type="url"
-  name="url"
-  id="url"
-  placeholder="https://example.com"
-  pattern="https://.*"
-  size="30"
-  required
+    type="url"
+    name="url"
+    id="url"
+    placeholder="https://example.com"
+    pattern="https://.*"
+    size="30"
+    required
 />
 ```
 
@@ -3655,11 +3656,11 @@ Content-Type: text/plain
 <input id="myURL" name="myURL" type="url" list="defaultURLs" />
 
 <datalist id="defaultURLs">
-  <option value="https://developer.mozilla.org/" label="MDN Web Docs"></option>
-  <option value="http://www.google.com/" label="Google"></option>
-  <option value="http://www.microsoft.com/" label="Microsoft"></option>
-  <option value="https://www.mozilla.org/" label="Mozilla"></option>
-  <option value="http://w3.org/" label="W3C"></option>
+    <option value="https://developer.mozilla.org/" label="MDN Web Docs"></option>
+    <option value="http://www.google.com/" label="Google"></option>
+    <option value="http://www.microsoft.com/" label="Microsoft"></option>
+    <option value="https://www.mozilla.org/" label="Mozilla"></option>
+    <option value="http://w3.org/" label="W3C"></option>
 </datalist>
 ```
 
@@ -3773,12 +3774,12 @@ Content-Type: text/plain
 
 ```html
 <input
-  type="datetime-local"
-  id="meeting-time"
-  name="meeting-time"
-  value="2018-06-12T19:30"
-  min="2018-06-07T00:00"
-  max="2018-06-14T00:00"
+    type="datetime-local"
+    id="meeting-time"
+    name="meeting-time"
+    value="2018-06-12T19:30"
+    min="2018-06-07T00:00"
+    max="2018-06-14T00:00"
 />
 ```
 
@@ -3825,10 +3826,10 @@ Content-Type: text/plain
 ```html
 <label for="pet-select">宠物：</label>
 <select id="pet-select" name="pet-select">
-  <option value="">--请选择一项--</option>
-  <option value="dog">狗</option>
-  <option value="cat">猫</option>
-  <option value="others">其他</option>
+    <option value="">--请选择一项--</option>
+    <option value="dog">狗</option>
+    <option value="cat">猫</option>
+    <option value="others">其他</option>
 </select>
 ```
 
@@ -3840,9 +3841,9 @@ Content-Type: text/plain
 
 ```html
 <select name="choice">
-  <option value="first">First Value</option>
-  <option value="second" selected>Second Value</option>
-  <option value="third">Third Value</option>
+    <option value="first">First Value</option>
+    <option value="second" selected>Second Value</option>
+    <option value="third">Third Value</option>
 </select>
 ```
 
@@ -3873,17 +3874,17 @@ Content-Type: text/plain
 
 ```html
 <label
-  >宠物：
-  <select name="pets" multiple size="4">
-    <optgroup label="四条腿的宠物">
-      <option value="dog">狗</option>
-      <option value="cat">猫</option>
-    </optgroup>
-    <optgroup label="鸟类">
-      <option value="parrot">鹦鹉</option>
-      <option value="thrush">画眉</option>
-    </optgroup>
-  </select>
+    >宠物：
+    <select name="pets" multiple size="4">
+        <optgroup label="四条腿的宠物">
+            <option value="dog">狗</option>
+            <option value="cat">猫</option>
+        </optgroup>
+        <optgroup label="鸟类">
+            <option value="parrot">鹦鹉</option>
+            <option value="thrush">画眉</option>
+        </optgroup>
+    </select>
 </label>
 ```
 
@@ -3903,11 +3904,11 @@ Content-Type: text/plain
 <input type="text" list="ice-cream-flavors" id="ice-cream-choice" name="ice-cream-choice" />
 
 <datalist id="ice-cream-flavors">
-  <option value="巧克力"></option>
-  <option value="椰子"></option>
-  <option value="薄荷"></option>
-  <option value="草莓"></option>
-  <option value="香草"></option>
+    <option value="巧克力"></option>
+    <option value="椰子"></option>
+    <option value="薄荷"></option>
+    <option value="草莓"></option>
+    <option value="香草"></option>
 </datalist>
 ```
 
@@ -3919,8 +3920,8 @@ Content-Type: text/plain
 
 ```html
 <datalist id="ide">
-  <option value="Brackets" label="by Adobe"></option>
-  <option value="Coda" label="by Panic"></option>
+    <option value="Brackets" label="by Adobe"></option>
+    <option value="Coda" label="by Panic"></option>
 </datalist>
 ```
 
@@ -4009,7 +4010,7 @@ Chrome 浏览器使用三种颜色，表示指示条所处的位置。较好情�
 
 ```html
 <meter id="fuel" name="fuel" min="0" max="100" low="33" high="66" optimum="80" value="50">
-  at 50/100
+    at 50/100
 </meter>
 ```
 
@@ -4043,10 +4044,10 @@ Chrome 浏览器使用三种颜色，表示指示条所处的位置。较好情�
 
 ```html
 <dialog open>
-  <form method="dialog">
-    <input type="text" />
-    <button type="submit" value="foo">提交</button>
-  </form>
+    <form method="dialog">
+        <input type="text" />
+        <button type="submit" value="foo">提交</button>
+    </form>
 </dialog>
 ```
 
@@ -4081,15 +4082,15 @@ modal.returnValue // "Accepted"
 
 ```css
 dialog {
-  padding: 0;
-  border: 0;
-  border-radius: 0.6rem;
-  box-shadow: 0 0 1em black;
+    padding: 0;
+    border: 0;
+    border-radius: 0.6rem;
+    box-shadow: 0 0 1em black;
 }
 
 dialog::backdrop {
-  /* make the backdrop a semi-transparent black */
-  background-color: rgba(0, 0, 0, 0.4);
+    /* make the backdrop a semi-transparent black */
+    background-color: rgba(0, 0, 0, 0.4);
 }
 ```
 
@@ -4108,9 +4109,9 @@ dialog::backdrop {
 
 ```javascript
 modal.addEventListener('click', (event) => {
-  if (event.target === modal) {
-    modal.close('cancelled')
-  }
+    if (event.target === modal) {
+        modal.close('cancelled')
+    }
 })
 ```
 
@@ -4150,8 +4151,8 @@ modal.addEventListener('click', (event) => {
 
 ```html
 <details>
-  <summary>这是标题</summary>
-  这是一段解释文本。
+    <summary>这是标题</summary>
+    这是一段解释文本。
 </details>
 ```
 
@@ -4171,8 +4172,8 @@ modal.addEventListener('click', (event) => {
 
 ```css
 summary::-webkit-details-marker {
-  background: url(https://example.com/foo.svg);
-  color: transparent;
+    background: url(https://example.com/foo.svg);
+    color: transparent;
 }
 ```
 
@@ -4180,12 +4181,12 @@ summary::-webkit-details-marker {
 
 ```css
 summary::-webkit-details-marker {
-  display: none;
+    display: none;
 }
 summary:before {
-  content: '\2714';
-  color: #696f7c;
-  margin-right: 5px;
+    content: '\2714';
+    color: #696f7c;
+    margin-right: 5px;
 }
 ```
 
@@ -4197,9 +4198,9 @@ summary:before {
 const details = document.querySelector('details')
 
 if (detail.open === true) {
-  // 展开状态
+    // 展开状态
 } else {
-  // 折叠状态
+    // 折叠状态
 }
 ```
 
@@ -4207,10 +4208,10 @@ if (detail.open === true) {
 
 ```javascript
 details.addEventListener('toggle', (event) => {
-  if (details.open) {
-    /* 展开状况 */
-  } else {
-    /* 折叠状态 */
-  }
+    if (details.open) {
+        /* 展开状况 */
+    } else {
+        /* 折叠状态 */
+    }
 })
 ```

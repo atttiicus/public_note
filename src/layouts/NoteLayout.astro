@@ -3,332 +3,334 @@ import BaseLayout from './BaseLayout.astro'
 import TableOfContents from '../components/TableOfContents.tsx'
 
 export interface Props {
-  title: string
-  description?: string
-  tags?: string[]
+    title: string
+    description?: string
+    tags?: string[]
 }
 
 const { title, description, tags = [] } = Astro.props
 ---
 
 <BaseLayout title={`${title} — 笔记`} description={description}>
-  <main class="note-page">
-    <div class="note-container animate-fade-in-up">
-      <!-- 笔记头部 -->
-      <header class="note-header">
-        <a href="/" class="back-link">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          返回
-        </a>
-        <h1 class="note-title">{title}</h1>
-        {description && <p class="note-description">{description}</p>}
-        {
-          tags.length > 0 && (
-            <div class="note-tags">
-              {tags.map((tag) => (
-                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">
-                  {tag}
+    <main class="note-page">
+        <div class="note-container animate-fade-in-up">
+            <!-- 笔记头部 -->
+            <header class="note-header">
+                <a href="/" class="back-link">
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    返回
                 </a>
-              ))}
-            </div>
-          )
-        }
-      </header>
+                <h1 class="note-title">{title}</h1>
+                {description && <p class="note-description">{description}</p>}
+                {
+                    tags.length > 0 && (
+                        <div class="note-tags">
+                            {tags.map((tag) => (
+                                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">
+                                    {tag}
+                                </a>
+                            ))}
+                        </div>
+                    )
+                }
+            </header>
 
-      <!-- 正文 + 目录双栏 -->
-      <div class="note-layout">
-        <article class="note-content prose">
-          <slot />
-        </article>
-        <aside class="note-toc-aside">
-          <TableOfContents client:load />
-        </aside>
-      </div>
-    </div>
-  </main>
+            <!-- 正文 + 目录双栏 -->
+            <div class="note-layout">
+                <article class="note-content prose">
+                    <slot />
+                </article>
+                <aside class="note-toc-aside">
+                    <TableOfContents client:load />
+                </aside>
+            </div>
+        </div>
+    </main>
 </BaseLayout>
 
 <!-- 代码块：语言标签 + 复制按钮 -->
 <script>
-  async function setupMermaid() {
-    const blocks = document.querySelectorAll<HTMLElement>('pre.astro-code[data-language="mermaid"]')
-    if (blocks.length === 0) return
+    async function setupMermaid() {
+        const blocks = document.querySelectorAll<HTMLElement>(
+            'pre.astro-code[data-language="mermaid"]'
+        )
+        if (blocks.length === 0) return
 
-    const mermaid = (await import('mermaid')).default
-    const isDark = document.documentElement.classList.contains('dark')
-    mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' })
+        const mermaid = (await import('mermaid')).default
+        const isDark = document.documentElement.classList.contains('dark')
+        mermaid.initialize({ startOnLoad: false, theme: isDark ? 'dark' : 'default' })
 
-    blocks.forEach((pre) => {
-      const code = pre.querySelector('code')?.textContent ?? ''
-      const div = document.createElement('div')
-      div.className = 'mermaid-diagram'
-      div.textContent = code
-      pre.replaceWith(div)
-    })
+        blocks.forEach((pre) => {
+            const code = pre.querySelector('code')?.textContent ?? ''
+            const div = document.createElement('div')
+            div.className = 'mermaid-diagram'
+            div.textContent = code
+            pre.replaceWith(div)
+        })
 
-    await mermaid.run({ nodes: document.querySelectorAll<HTMLElement>('.mermaid-diagram') })
-  }
+        await mermaid.run({ nodes: document.querySelectorAll<HTMLElement>('.mermaid-diagram') })
+    }
 
-  function setupCodeBlocks() {
-    document.querySelectorAll<HTMLElement>('pre.astro-code').forEach((pre) => {
-      if (pre.dataset.enhanced) return
-      if (pre.dataset.language === 'mermaid') return
-      pre.dataset.enhanced = '1'
+    function setupCodeBlocks() {
+        document.querySelectorAll<HTMLElement>('pre.astro-code').forEach((pre) => {
+            if (pre.dataset.enhanced) return
+            if (pre.dataset.language === 'mermaid') return
+            pre.dataset.enhanced = '1'
 
-      const lang = pre.dataset.language || 'text'
-      const wrapper = document.createElement('div')
-      wrapper.className = 'code-wrapper'
+            const lang = pre.dataset.language || 'text'
+            const wrapper = document.createElement('div')
+            wrapper.className = 'code-wrapper'
 
-      const header = document.createElement('div')
-      header.className = 'code-header'
+            const header = document.createElement('div')
+            header.className = 'code-header'
 
-      const langBadge = document.createElement('span')
-      langBadge.className = 'code-lang'
-      langBadge.textContent = lang
+            const langBadge = document.createElement('span')
+            langBadge.className = 'code-lang'
+            langBadge.textContent = lang
 
-      const copyBtn = document.createElement('button')
-      copyBtn.className = 'code-copy-btn'
-      copyBtn.setAttribute('aria-label', '复制代码')
-      copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span>`
+            const copyBtn = document.createElement('button')
+            copyBtn.className = 'code-copy-btn'
+            copyBtn.setAttribute('aria-label', '复制代码')
+            copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span>`
 
-      copyBtn.addEventListener('click', async () => {
-        const code = pre.querySelector('code')?.textContent ?? ''
-        try {
-          await navigator.clipboard.writeText(code)
-          copyBtn.querySelector('span')!.textContent = '已复制'
-          copyBtn.classList.add('copied')
-          setTimeout(() => {
-            copyBtn.querySelector('span')!.textContent = '复制'
-            copyBtn.classList.remove('copied')
-          }, 2000)
-        } catch {
-          /* silent */
-        }
-      })
+            copyBtn.addEventListener('click', async () => {
+                const code = pre.querySelector('code')?.textContent ?? ''
+                try {
+                    await navigator.clipboard.writeText(code)
+                    copyBtn.querySelector('span')!.textContent = '已复制'
+                    copyBtn.classList.add('copied')
+                    setTimeout(() => {
+                        copyBtn.querySelector('span')!.textContent = '复制'
+                        copyBtn.classList.remove('copied')
+                    }, 2000)
+                } catch {
+                    /* silent */
+                }
+            })
 
-      header.appendChild(langBadge)
-      header.appendChild(copyBtn)
+            header.appendChild(langBadge)
+            header.appendChild(copyBtn)
 
-      pre.parentNode!.insertBefore(wrapper, pre)
-      wrapper.appendChild(header)
-      wrapper.appendChild(pre)
-    })
-  }
+            pre.parentNode!.insertBefore(wrapper, pre)
+            wrapper.appendChild(header)
+            wrapper.appendChild(pre)
+        })
+    }
 
-  // 初始化 + 路由切换后重新初始化（Astro View Transitions）
-  setupCodeBlocks()
-  setupMermaid()
-  document.addEventListener('astro:after-swap', () => {
+    // 初始化 + 路由切换后重新初始化（Astro View Transitions）
     setupCodeBlocks()
     setupMermaid()
-  })
+    document.addEventListener('astro:after-swap', () => {
+        setupCodeBlocks()
+        setupMermaid()
+    })
 </script>
 
 <style>
-  /* ── 页面布局 ── */
-  .note-page {
-    min-height: calc(100vh - var(--header-height));
-    padding: 3rem 1.5rem;
-  }
-
-  .note-container {
-    max-width: 1160px;
-    margin: 0 auto;
-  }
-
-  .note-header {
-    max-width: var(--content-max-width);
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .note-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 3rem;
-    /* 不设 align-items: start，让 aside 伸展至整行高度，sticky 才能生效 */
-  }
-
-  .note-content {
-    /* 内容列自身对齐到顶部 */
-    align-self: start;
-  }
-
-  @media (min-width: 1100px) {
-    .note-layout {
-      grid-template-columns: minmax(0, 1fr) 220px;
-    }
-  }
-
-  /* ── 头部元素 ── */
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    text-decoration: none;
-    margin-bottom: 1.5rem;
-    transition: color var(--transition-fast);
-  }
-
-  .back-link:hover {
-    color: var(--color-primary);
-  }
-
-  .note-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 0 0 0.75rem;
-    line-height: 1.25;
-  }
-
-  .note-description {
-    font-family: var(--font-serif);
-    font-size: 1.0625rem;
-    color: var(--color-text-muted);
-    margin: 0 0 1rem;
-    font-style: italic;
-    line-height: 1.7;
-  }
-
-  .note-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-  }
-
-  .tag {
-    font-size: 0.8125rem;
-    font-family: var(--font-sans);
-    padding: 0.25em 0.7em;
-    background-color: var(--color-bg-secondary);
-    color: var(--color-text-muted);
-    border-radius: 6px;
-    border: 1px solid var(--color-border);
-    text-decoration: none;
-    transition:
-      background-color var(--transition-fast),
-      border-color var(--transition-fast),
-      color var(--transition-fast);
-  }
-
-  .tag:hover {
-    background-color: var(--color-hover);
-    border-color: var(--color-primary-light);
-    color: var(--color-primary);
-  }
-
-  .note-content {
-    animation: fadeIn 0.4s ease both;
-  }
-
-  /* ── TOC 侧边栏 ── */
-  .note-toc-aside {
-    display: none;
-  }
-
-  @media (min-width: 1100px) {
-    .note-toc-aside {
-      display: block;
-      position: sticky;
-      top: calc(var(--header-height) + 2rem);
-      align-self: start;
-      max-height: calc(100vh - var(--header-height) - 4rem);
-      overflow-y: auto;
-    }
-  }
-
-  /* ── 代码块包装器 ── */
-  :global(.code-wrapper) {
-    margin: 1.5rem 0;
-    border-radius: 8px;
-    border: 1px solid var(--color-border);
-    overflow: hidden;
-  }
-
-  :global(.code-wrapper pre.astro-code) {
-    margin: 0;
-    border-radius: 0;
-    border: none;
-  }
-
-  :global(.code-header) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.45rem 1rem;
-    background-color: var(--color-bg-secondary);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  :global(.code-lang) {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-  }
-
-  :global(.code-copy-btn) {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    background: none;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 0.2rem 0.55rem;
-    cursor: pointer;
-    transition:
-      color var(--transition-fast),
-      border-color var(--transition-fast),
-      background-color var(--transition-fast);
-  }
-
-  :global(.code-copy-btn:hover) {
-    color: var(--color-primary);
-    border-color: var(--color-primary-light);
-    background-color: var(--color-hover);
-  }
-
-  :global(.code-copy-btn.copied) {
-    color: #3d9970;
-    border-color: #3d9970;
-  }
-
-  :global(.mermaid-diagram) {
-    margin: 1.5rem 0;
-    overflow-x: auto;
-    text-align: center;
-  }
-
-  :global(.mermaid-diagram svg) {
-    max-width: 100%;
-    height: auto;
-  }
-
-  @media (max-width: 768px) {
+    /* ── 页面布局 ── */
     .note-page {
-      padding: 2rem 1rem;
+        min-height: calc(100vh - var(--header-height));
+        padding: 3rem 1.5rem;
     }
-  }
+
+    .note-container {
+        max-width: 1160px;
+        margin: 0 auto;
+    }
+
+    .note-header {
+        max-width: var(--content-max-width);
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .note-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 3rem;
+        /* 不设 align-items: start，让 aside 伸展至整行高度，sticky 才能生效 */
+    }
+
+    .note-content {
+        /* 内容列自身对齐到顶部 */
+        align-self: start;
+    }
+
+    @media (min-width: 1100px) {
+        .note-layout {
+            grid-template-columns: minmax(0, 1fr) 220px;
+        }
+    }
+
+    /* ── 头部元素 ── */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: color var(--transition-fast);
+    }
+
+    .back-link:hover {
+        color: var(--color-primary);
+    }
+
+    .note-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0 0 0.75rem;
+        line-height: 1.25;
+    }
+
+    .note-description {
+        font-family: var(--font-serif);
+        font-size: 1.0625rem;
+        color: var(--color-text-muted);
+        margin: 0 0 1rem;
+        font-style: italic;
+        line-height: 1.7;
+    }
+
+    .note-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+    }
+
+    .tag {
+        font-size: 0.8125rem;
+        font-family: var(--font-sans);
+        padding: 0.25em 0.7em;
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-muted);
+        border-radius: 6px;
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
+            color var(--transition-fast);
+    }
+
+    .tag:hover {
+        background-color: var(--color-hover);
+        border-color: var(--color-primary-light);
+        color: var(--color-primary);
+    }
+
+    .note-content {
+        animation: fadeIn 0.4s ease both;
+    }
+
+    /* ── TOC 侧边栏 ── */
+    .note-toc-aside {
+        display: none;
+    }
+
+    @media (min-width: 1100px) {
+        .note-toc-aside {
+            display: block;
+            position: sticky;
+            top: calc(var(--header-height) + 2rem);
+            align-self: start;
+            max-height: calc(100vh - var(--header-height) - 4rem);
+            overflow-y: auto;
+        }
+    }
+
+    /* ── 代码块包装器 ── */
+    :global(.code-wrapper) {
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+    }
+
+    :global(.code-wrapper pre.astro-code) {
+        margin: 0;
+        border-radius: 0;
+        border: none;
+    }
+
+    :global(.code-header) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.45rem 1rem;
+        background-color: var(--color-bg-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    :global(.code-lang) {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-primary);
+        text-transform: lowercase;
+        letter-spacing: 0.03em;
+    }
+
+    :global(.code-copy-btn) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        background: none;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 0.2rem 0.55rem;
+        cursor: pointer;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    :global(.code-copy-btn:hover) {
+        color: var(--color-primary);
+        border-color: var(--color-primary-light);
+        background-color: var(--color-hover);
+    }
+
+    :global(.code-copy-btn.copied) {
+        color: #3d9970;
+        border-color: #3d9970;
+    }
+
+    :global(.mermaid-diagram) {
+        margin: 1.5rem 0;
+        overflow-x: auto;
+        text-align: center;
+    }
+
+    :global(.mermaid-diagram svg) {
+        max-width: 100%;
+        height: auto;
+    }
+
+    @media (max-width: 768px) {
+        .note-page {
+            padding: 2rem 1rem;
+        }
+    }
 </style>

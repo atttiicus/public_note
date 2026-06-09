@@ -5,8 +5,8 @@ import 'katex/dist/katex.min.css'
 import 'animate.css'
 
 export interface Props {
-  title: string
-  description?: string
+    title: string
+    description?: string
 }
 
 const { title, description = '一个简洁的个人笔记网站' } = Astro.props
@@ -15,50 +15,50 @@ const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : null
 
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="no-referrer" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
-    <title>{title}</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="referrer" content="no-referrer" />
+        <meta name="description" content={description} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+        <title>{title}</title>
 
-    <!-- 防止主题闪烁：在渲染前设置 dark class -->
-    <script is:inline>
-      ;(function () {
-        var saved = localStorage.getItem('theme')
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (saved === 'dark' || ((saved === 'system' || !saved) && prefersDark)) {
-          document.documentElement.classList.add('dark')
-        }
-      })()
-    </script>
-  </head>
-  <body>
-    <Header currentPath={Astro.url.pathname} />
-    <slot />
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <p>以书为友，以思为行。</p>
-      </div>
-    </footer>
-  </body>
+        <!-- 防止主题闪烁：在渲染前设置 dark class -->
+        <script is:inline>
+            ;(function () {
+                var saved = localStorage.getItem('theme')
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+                if (saved === 'dark' || ((saved === 'system' || !saved) && prefersDark)) {
+                    document.documentElement.classList.add('dark')
+                }
+            })()
+        </script>
+    </head>
+    <body>
+        <Header currentPath={Astro.url.pathname} />
+        <slot />
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <p>以书为友，以思为行。</p>
+            </div>
+        </footer>
+    </body>
 </html>
 
 <style>
-  .site-footer {
-    border-top: 1px solid var(--color-border);
-    margin-top: 4rem;
-    padding: 2rem 1.5rem;
-    text-align: center;
-  }
+    .site-footer {
+        border-top: 1px solid var(--color-border);
+        margin-top: 4rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
 
-  .footer-inner p {
-    font-family: var(--font-serif);
-    font-size: 0.9375rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-    margin: 0;
-  }
+    .footer-inner p {
+        font-family: var(--font-serif);
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        font-style: italic;
+        margin: 0;
+    }
 </style>

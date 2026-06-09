@@ -232,16 +232,16 @@ my-skill/
 
 ```json
 {
-  "name": "my-custom-skill",
-  "description": "我的自定义技能",
-  "version": "1.0.0",
-  "author": "Your Name",
-  "categories": ["automation"],
-  "license": "MIT",
-  "skill": {
-    "file": "skill.md",
-    "description": "这个技能用于..."
-  }
+    "name": "my-custom-skill",
+    "description": "我的自定义技能",
+    "version": "1.0.0",
+    "author": "Your Name",
+    "categories": ["automation"],
+    "license": "MIT",
+    "skill": {
+        "file": "skill.md",
+        "description": "这个技能用于..."
+    }
 }
 ```
 
@@ -314,21 +314,21 @@ npx skills-installer install ./my-skill --client claude-code
 
 ```json
 {
-  "hooks": {
-    "user-prompt-submit-hook": {
-      "command": "npm run validate-prompt",
-      "enabled": true
-    },
-    "tool-use-hook": {
-      "command": "~/.claude/hooks/check-permission.sh",
-      "enabled": true,
-      "blocking": true
-    },
-    "after-tool-use-hook": {
-      "command": "echo 'Tool used: {{toolName}}' >> ~/.claude/hooks.log",
-      "enabled": true
+    "hooks": {
+        "user-prompt-submit-hook": {
+            "command": "npm run validate-prompt",
+            "enabled": true
+        },
+        "tool-use-hook": {
+            "command": "~/.claude/hooks/check-permission.sh",
+            "enabled": true,
+            "blocking": true
+        },
+        "after-tool-use-hook": {
+            "command": "echo 'Tool used: {{toolName}}' >> ~/.claude/hooks.log",
+            "enabled": true
+        }
     }
-  }
 }
 ```
 
@@ -362,12 +362,12 @@ TOOL_NAME=$(jq -r '.toolName'
 
 ```json
 {
-  "hooks": {
-    "task-complete-hook": {
-      "command": "notify-send 'Claude Code' '任务已完成'",
-      "enabled": true
+    "hooks": {
+        "task-complete-hook": {
+            "command": "notify-send 'Claude Code' '任务已完成'",
+            "enabled": true
+        }
     }
-  }
 }
 ```
 
@@ -377,13 +377,13 @@ TOOL_NAME=$(jq -r '.toolName'
 
 ```json
 {
-  "hooks": {
-    "after-tool-use-hook": {
-      "command": "bun run format || true",
-      "enabled": true,
-      "blocking": false
+    "hooks": {
+        "after-tool-use-hook": {
+            "command": "bun run format || true",
+            "enabled": true,
+            "blocking": false
+        }
     }
-  }
 }
 ```
 
@@ -531,30 +531,30 @@ my-plugin/
 
 ```json
 {
-  "name": "my-plugin",
-  "version": "1.0.0",
-  "description": "我的自定义插件",
-  "author": "Your Name",
-  "skills": ["skills/skill1", "skills/skill2"],
-  "commands": [
-    {
-      "name": "/my-command",
-      "description": "我的自定义命令",
-      "file": "commands/my-command.md"
-    }
-  ],
-  "mcpServers": [
-    {
-      "name": "my-mcp",
-      "config": "mcp/mcp-config.json"
-    }
-  ],
-  "agents": [
-    {
-      "name": "my-agent",
-      "config": "agents/agent1.json"
-    }
-  ]
+    "name": "my-plugin",
+    "version": "1.0.0",
+    "description": "我的自定义插件",
+    "author": "Your Name",
+    "skills": ["skills/skill1", "skills/skill2"],
+    "commands": [
+        {
+            "name": "/my-command",
+            "description": "我的自定义命令",
+            "file": "commands/my-command.md"
+        }
+    ],
+    "mcpServers": [
+        {
+            "name": "my-mcp",
+            "config": "mcp/mcp-config.json"
+        }
+    ],
+    "agents": [
+        {
+            "name": "my-agent",
+            "config": "agents/agent1.json"
+        }
+    ]
 }
 ```
 
@@ -590,27 +590,27 @@ claude mcp add chrome-devtools npx chrome-devtools-mcp@latest
 
 ```json
 {
-  "mcpServers": {
-    "chrome-devtools": {
-      "command": "npx",
-      "args": ["chrome-devtools-mcp@latest"],
-      "disabled": false
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_TOKEN": "your_github_token_here"
-      }
-    },
-    "postgres": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres"],
-      "env": {
-        "POSTGRES_CONNECTION_STRING": "postgresql://user:password@localhost:5432/db"
-      }
+    "mcpServers": {
+        "chrome-devtools": {
+            "command": "npx",
+            "args": ["chrome-devtools-mcp@latest"],
+            "disabled": false
+        },
+        "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": {
+                "GITHUB_TOKEN": "your_github_token_here"
+            }
+        },
+        "postgres": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-postgres"],
+            "env": {
+                "POSTGRES_CONNECTION_STRING": "postgresql://user:password@localhost:5432/db"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -678,29 +678,29 @@ claude /agents
 
 ```json
 {
-  "agents": {
-    "code-reviewer": {
-      "description": "专门负责代码审查的子代理",
-      "model": "claude-opus-4-5",
-      "instructions": "你是一个专业的代码审查专家,专注于检查代码质量、安全漏洞和性能问题。",
-      "tools": ["read", "search", "git"],
-      "permissions": {
-        "allowWrite": false
-      }
-    },
-    "test-writer": {
-      "description": "专门负责编写测试的子代理",
-      "model": "claude-sonnet-4-5",
-      "instructions": "你是一个测试工程师,专注于编写全面的单元测试和集成测试。",
-      "tools": ["read", "write", "bash"]
-    },
-    "doc-generator": {
-      "description": "专门负责生成文档的子代理",
-      "model": "claude-sonnet-4-5",
-      "instructions": "你是一个技术文档专家,专注于生成清晰、准确的技术文档。",
-      "tools": ["read", "write"]
+    "agents": {
+        "code-reviewer": {
+            "description": "专门负责代码审查的子代理",
+            "model": "claude-opus-4-5",
+            "instructions": "你是一个专业的代码审查专家,专注于检查代码质量、安全漏洞和性能问题。",
+            "tools": ["read", "search", "git"],
+            "permissions": {
+                "allowWrite": false
+            }
+        },
+        "test-writer": {
+            "description": "专门负责编写测试的子代理",
+            "model": "claude-sonnet-4-5",
+            "instructions": "你是一个测试工程师,专注于编写全面的单元测试和集成测试。",
+            "tools": ["read", "write", "bash"]
+        },
+        "doc-generator": {
+            "description": "专门负责生成文档的子代理",
+            "model": "claude-sonnet-4-5",
+            "instructions": "你是一个技术文档专家,专注于生成清晰、准确的技术文档。",
+            "tools": ["read", "write"]
+        }
     }
-  }
 }
 ```
 
@@ -1271,17 +1271,17 @@ claude /permissions
 
 ```json
 {
-  "permissions": {
-    "allow": {
-      "bash": ["npm install", "npm test", "npm run build", "git *", "node -v", "npm -v"],
-      "write": ["src/**/*", "tests/**/*", "*.md"],
-      "read": ["**/*"]
-    },
-    "deny": {
-      "bash": ["rm -rf *", "format *", "shutdown", "reboot"],
-      "write": ["node_modules/**/*", ".git/**/*", "/etc/*", "/usr/*"]
+    "permissions": {
+        "allow": {
+            "bash": ["npm install", "npm test", "npm run build", "git *", "node -v", "npm -v"],
+            "write": ["src/**/*", "tests/**/*", "*.md"],
+            "read": ["**/*"]
+        },
+        "deny": {
+            "bash": ["rm -rf *", "format *", "shutdown", "reboot"],
+            "write": ["node_modules/**/*", ".git/**/*", "/etc/*", "/usr/*"]
+        }
     }
-  }
 }
 ```
 
@@ -1291,12 +1291,12 @@ claude /permissions
 
 ```json
 {
-  "permissions": {
-    "allow": {
-      "bash": ["npm test", "npm run build"],
-      "write": ["src/**/*", "tests/**/*"]
+    "permissions": {
+        "allow": {
+            "bash": ["npm test", "npm run build"],
+            "write": ["src/**/*", "tests/**/*"]
+        }
     }
-  }
 }
 ```
 
@@ -1305,15 +1305,15 @@ claude /permissions
 ```json
 // .claude/settings.json (项目级)
 {
-  "permissions": {
-    "allow": {
-      "bash": ["npm run dev:*", "npm run test:*", "npm run build:*"],
-      "write": ["src/**/*", "tests/**/*", "docs/**/*"]
-    },
-    "deny": {
-      "write": ["dist/**/*", "build/**/*"]
+    "permissions": {
+        "allow": {
+            "bash": ["npm run dev:*", "npm run test:*", "npm run build:*"],
+            "write": ["src/**/*", "tests/**/*", "docs/**/*"]
+        },
+        "deny": {
+            "write": ["dist/**/*", "build/**/*"]
+        }
     }
-  }
 }
 ```
 
@@ -1795,10 +1795,10 @@ claude --teleport session_id   # 把云端会话"拉"到本地
 
 ```json
 {
-  "statusline": {
-    "segments": ["git.branch", "model.name", "context.usage", "token.cost"],
-    "refreshInterval": 1000
-  }
+    "statusline": {
+        "segments": ["git.branch", "model.name", "context.usage", "token.cost"],
+        "refreshInterval": 1000
+    }
 }
 ```
 
@@ -2383,17 +2383,17 @@ export ANTHROPIC_MODEL=GLM-4.7
 
 ```json
 {
-  "permissions": {
-    "allow": {
-      "bash": ["npm run *", "git *"],
-      "write": ["src/**/*", "tests/**/*"],
-      "read": ["**/*.ts", "**/*.js", "**/*.json"]
-    },
-    "deny": {
-      "bash": ["rm -rf *", "format *", "shutdown"],
-      "write": ["node_modules/**/*", ".git/**/*", "/etc/*", "/usr/*"]
+    "permissions": {
+        "allow": {
+            "bash": ["npm run *", "git *"],
+            "write": ["src/**/*", "tests/**/*"],
+            "read": ["**/*.ts", "**/*.js", "**/*.json"]
+        },
+        "deny": {
+            "bash": ["rm -rf *", "format *", "shutdown"],
+            "write": ["node_modules/**/*", ".git/**/*", "/etc/*", "/usr/*"]
+        }
     }
-  }
 }
 ```
 
@@ -3007,16 +3007,16 @@ Claude Code 会自动检测项目中的 LSP 服务器:
 ```json
 // ~/.claude/settings.json
 {
-  "lsp": {
-    "typescript": {
-      "command": "typescript-language-server",
-      "args": ["--stdio"]
-    },
-    "python": {
-      "command": "pylsp",
-      "args": ["--stdio"]
+    "lsp": {
+        "typescript": {
+            "command": "typescript-language-server",
+            "args": ["--stdio"]
+        },
+        "python": {
+            "command": "pylsp",
+            "args": ["--stdio"]
+        }
     }
-  }
 }
 ```
 
@@ -3033,25 +3033,25 @@ import { Agent, Tool, Context } from '@anthropic-ai/agent-sdk'
 
 // 创建自定义 Agent
 const myAgent = new Agent({
-  model: 'claude-sonnet-4-5',
-  tools: [
-    new Tool({
-      name: 'readFile',
-      execute: async (path: string) => {
-        return fs.readFileSync(path, 'utf-8')
-      },
+    model: 'claude-sonnet-4-5',
+    tools: [
+        new Tool({
+            name: 'readFile',
+            execute: async (path: string) => {
+                return fs.readFileSync(path, 'utf-8')
+            },
+        }),
+        new Tool({
+            name: 'writeFile',
+            execute: async (path: string, content: string) => {
+                fs.writeFileSync(path, content)
+            },
+        }),
+    ],
+    context: new Context({
+        maxSize: 200_000, // 200K tokens
+        compression: 'auto',
     }),
-    new Tool({
-      name: 'writeFile',
-      execute: async (path: string, content: string) => {
-        fs.writeFileSync(path, content)
-      },
-    }),
-  ],
-  context: new Context({
-    maxSize: 200_000, // 200K tokens
-    compression: 'auto',
-  }),
 })
 
 // 运行 Agent
@@ -3066,35 +3066,35 @@ const result = await myAgent.run('创建一个用户认证系统')
 import { Agent, Tool } from '@anthropic-ai/agent-sdk'
 
 class TestGenerator extends Agent {
-  constructor() {
-    super({
-      model: 'claude-sonnet-4-5',
-      instructions: '你是一个测试专家,专门为代码编写全面的测试用例',
-      tools: [
-        new Tool({
-          name: 'readSource',
-          description: '读取源代码文件',
-          execute: async (path: string) => {
-            return fs.readFileSync(path, 'utf-8')
-          },
-        }),
-        new Tool({
-          name: 'writeTest',
-          description: '编写测试文件',
-          execute: async (path: string, content: string) => {
-            fs.writeFileSync(path, content)
-          },
-        }),
-        new Tool({
-          name: 'runTests',
-          description: '运行测试',
-          execute: async () => {
-            return execSync('npm test').toString()
-          },
-        }),
-      ],
-    })
-  }
+    constructor() {
+        super({
+            model: 'claude-sonnet-4-5',
+            instructions: '你是一个测试专家,专门为代码编写全面的测试用例',
+            tools: [
+                new Tool({
+                    name: 'readSource',
+                    description: '读取源代码文件',
+                    execute: async (path: string) => {
+                        return fs.readFileSync(path, 'utf-8')
+                    },
+                }),
+                new Tool({
+                    name: 'writeTest',
+                    description: '编写测试文件',
+                    execute: async (path: string, content: string) => {
+                        fs.writeFileSync(path, content)
+                    },
+                }),
+                new Tool({
+                    name: 'runTests',
+                    description: '运行测试',
+                    execute: async () => {
+                        return execSync('npm test').toString()
+                    },
+                }),
+            ],
+        })
+    }
 }
 
 // 使用
@@ -3116,10 +3116,10 @@ await testGen.run(`
 import { Agent, Tool } from '@anthropic-ai/agent-sdk'
 
 class CodeReviewer extends Agent {
-  constructor() {
-    super({
-      model: 'claude-opus-4-5',
-      instructions: `
+    constructor() {
+        super({
+            model: 'claude-opus-4-5',
+            instructions: `
 你是一个代码审查专家。审查代码时关注:
 1. 安全漏洞(OWASP Top 10)
 2. 性能问题
@@ -3132,22 +3132,22 @@ class CodeReviewer extends Agent {
 - 修复建议
 - 代码示例
 `,
-      tools: [
-        new Tool({
-          name: 'readFile',
-          execute: async (path: string) => {
-            return fs.readFileSync(path, 'utf-8')
-          },
-        }),
-        new Tool({
-          name: 'gitDiff',
-          execute: async () => {
-            return execSync('git diff').toString()
-          },
-        }),
-      ],
-    })
-  }
+            tools: [
+                new Tool({
+                    name: 'readFile',
+                    execute: async (path: string) => {
+                        return fs.readFileSync(path, 'utf-8')
+                    },
+                }),
+                new Tool({
+                    name: 'gitDiff',
+                    execute: async () => {
+                        return execSync('git diff').toString()
+                    },
+                }),
+            ],
+        })
+    }
 }
 
 // 使用
@@ -3181,10 +3181,10 @@ await db.query(query, [userId]);
 import { Agent, Tool } from '@anthropic-ai/agent-sdk'
 
 class DeploymentBot extends Agent {
-  constructor() {
-    super({
-      model: 'claude-sonnet-4-5',
-      instructions: `
+    constructor() {
+        super({
+            model: 'claude-sonnet-4-5',
+            instructions: `
 你是一个部署专家。部署流程:
 1. 运行测试
 2. 构建项目
@@ -3194,50 +3194,50 @@ class DeploymentBot extends Agent {
 6. 监控错误
 如果任何步骤失败,立即回滚
 `,
-      tools: [
-        new Tool({
-          name: 'runTests',
-          execute: async () => {
-            return execSync('npm test').toString()
-          },
-        }),
-        new Tool({
-          name: 'build',
-          execute: async () => {
-            return execSync('npm run build').toString()
-          },
-        }),
-        new Tool({
-          name: 'deploy',
-          execute: async (env: 'staging' | 'production') => {
-            return execSync(`npm run deploy:${env}`).toString()
-          },
-        }),
-        new Tool({
-          name: 'verify',
-          execute: async (url: string) => {
-            return fetch(`${url}/health`).then((r) => r.json())
-          },
-        }),
-        new Tool({
-          name: 'rollback',
-          execute: async () => {
-            return execSync('npm run rollback').toString()
-          },
-        }),
-        new Tool({
-          name: 'notify',
-          execute: async (message: string) => {
-            // 发送 Slack 通知
-            await slackClient.chat.postMessage({
-              channel: '#deployments',
-              text: message,
-            })
-          },
-        }),
-      ],
-    })
-  }
+            tools: [
+                new Tool({
+                    name: 'runTests',
+                    execute: async () => {
+                        return execSync('npm test').toString()
+                    },
+                }),
+                new Tool({
+                    name: 'build',
+                    execute: async () => {
+                        return execSync('npm run build').toString()
+                    },
+                }),
+                new Tool({
+                    name: 'deploy',
+                    execute: async (env: 'staging' | 'production') => {
+                        return execSync(`npm run deploy:${env}`).toString()
+                    },
+                }),
+                new Tool({
+                    name: 'verify',
+                    execute: async (url: string) => {
+                        return fetch(`${url}/health`).then((r) => r.json())
+                    },
+                }),
+                new Tool({
+                    name: 'rollback',
+                    execute: async () => {
+                        return execSync('npm run rollback').toString()
+                    },
+                }),
+                new Tool({
+                    name: 'notify',
+                    execute: async (message: string) => {
+                        // 发送 Slack 通知
+                        await slackClient.chat.postMessage({
+                            channel: '#deployments',
+                            text: message,
+                        })
+                    },
+                }),
+            ],
+        })
+    }
 }
 
 // 使用
@@ -3261,9 +3261,9 @@ await deployBot.run('部署最新版本到生产环境')
 
 ```typescript
 const context = new Context({
-  maxSize: 200_000,
-  compression: 'auto', // 自动压缩历史对话
-  priority: 'recent', // 优先保留最近的内容
+    maxSize: 200_000,
+    compression: 'auto', // 自动压缩历史对话
+    priority: 'recent', // 优先保留最近的内容
 })
 ```
 
@@ -3282,10 +3282,10 @@ const context = new Context({
 
 ```typescript
 const agent = new Agent({
-  onThink: (thought) => console.log('思考:', thought),
-  onToolUse: (tool, args) => console.log('调用工具:', tool),
-  onError: (error) => console.error('错误:', error),
-  onComplete: (result) => console.log('完成:', result),
+    onThink: (thought) => console.log('思考:', thought),
+    onToolUse: (tool, args) => console.log('调用工具:', tool),
+    onError: (error) => console.error('错误:', error),
+    onComplete: (result) => console.log('完成:', result),
 })
 ```
 

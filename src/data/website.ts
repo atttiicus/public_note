@@ -1,19 +1,19 @@
 type WebSite = {
-  site_name: string
-  site_description: string
-  logo_url?: string
-  site_url?: string
-  github_url?: string
-  tips?: string
-  tags: string[]
-  read_experience?: string
+    site_name: string
+    site_description: string
+    logo_url?: string
+    site_url?: string
+    github_url?: string
+    tips?: string
+    tags: string[]
+    read_experience?: string
 }
 
 const WEB_SITE_LIST: WebSite[] = [
     {
         site_name: '小林 Coding',
         site_description:
-        '图解计算机网络、操作系统、MySQL、Redis，覆盖后端技术面试，让天下没有难懂的八股文！',
+            '图解计算机网络、操作系统、MySQL、Redis，覆盖后端技术面试，让天下没有难懂的八股文！',
         logo_url: 'https://cdn.xiaolincoding.com/logo.png',
         site_url: 'https://xiaolincoding.com/',
         github_url: 'https://github.com/xiaolincoder/CS-Base',
@@ -23,8 +23,7 @@ const WEB_SITE_LIST: WebSite[] = [
     },
     {
         site_name: 'Hello 算法',
-        site_description:
-        '动画图解、一键运行的数据结构与算法教程',
+        site_description: '动画图解、一键运行的数据结构与算法教程',
         logo_url: 'https://www.hello-algo.com/assets/images/favicon.png',
         site_url: 'https://www.hello-algo.com/',
         github_url: 'https://github.com/krahets/hello-algo',
@@ -34,8 +33,7 @@ const WEB_SITE_LIST: WebSite[] = [
     },
     {
         site_name: '科技爱好者周刊',
-        site_description:
-        '这里记录每周值得分享的科技内容，周五发布。',
+        site_description: '这里记录每周值得分享的科技内容，周五发布。',
         logo_url: 'https://www.ruanyifeng.com/blog/images/person2_s.jpg',
         site_url: 'https://www.ruanyifeng.com/blog/archives.html',
         // github_url: 'https://github.com/krahets/hello-algo',

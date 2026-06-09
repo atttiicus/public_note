@@ -11,23 +11,23 @@ const remarkPlugins = [remarkMath, remarkDirective, remarkCallout]
 const rehypePlugins = [rehypeKatex]
 
 export default defineConfig({
-  integrations: [UnoCSS({ injectReset: true }), react(), mdx()],
-  devToolbar: { enabled: false },
-  markdown: {
-    remarkPlugins,
-    rehypePlugins,
-    shikiConfig: {
-      themes: {
-        light: 'github-light',
-        dark: 'github-dark',
-      },
-      transformers: [
-        {
-          pre(node) {
-            node.properties['data-language'] = this.options.lang ?? 'text'
-          },
+    integrations: [UnoCSS({ injectReset: true }), react(), mdx()],
+    devToolbar: { enabled: false },
+    markdown: {
+        remarkPlugins,
+        rehypePlugins,
+        shikiConfig: {
+            themes: {
+                light: 'github-light',
+                dark: 'github-dark',
+            },
+            transformers: [
+                {
+                    pre(node) {
+                        node.properties['data-language'] = this.options.lang ?? 'text'
+                    },
+                },
+            ],
         },
-      ],
     },
-  },
 })
