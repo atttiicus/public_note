@@ -9,7 +9,7 @@ export interface Props {
 const { title, description, slug, tags = [] } = Astro.props
 ---
 
-<article class="note-card animate-fade-in-up">
+<article class="note-card">
     <!-- 主链接：标题 + 描述 + 箭头 -->
     <a href={`/notes/${slug}`} class="card-link">
         <div class="card-content">

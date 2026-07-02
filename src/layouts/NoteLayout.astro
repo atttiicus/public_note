@@ -13,7 +13,7 @@ const { title, description, tags = [] } = Astro.props
 
 <BaseLayout title={`${title} — 笔记`} description={description}>
     <main class="note-page">
-        <div class="note-container animate-fade-in-up">
+        <div class="note-container animate-fade-in">
             <!-- 笔记头部 -->
             <header class="note-header">
                 <a href="/" class="back-link">
@@ -237,7 +237,6 @@ const { title, description, tags = [] } = Astro.props
     }
 
     .note-content {
-        animation: fadeIn 0.4s ease both;
     }
 
     /* ── TOC 侧边栏 ── */

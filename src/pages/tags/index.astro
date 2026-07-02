@@ -18,7 +18,7 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
 
 <BaseLayout title="标签 — 公开笔记" description="按标签浏览所有笔记">
     <main class="tags-page">
-        <div class="tags-container animate-fade-in-up">
+        <div class="tags-container">
             <header class="page-header">
                 <a href="/" class="back-link">
                     <svg
@@ -49,7 +49,7 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
                             <a
                                 href={`/tags/${encodeURIComponent(tag)}`}
                                 class="tag-card animate-fade-in-up"
-                                style={`animation-delay: ${i * 50}ms`}
+                                style={`animation-delay:${i * 35}ms`}
                             >
                                 <span class="tag-name">{tag}</span>
                                 <span class="tag-count">{count}</span>

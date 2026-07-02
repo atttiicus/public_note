@@ -21,7 +21,7 @@ const notes = allNotes
 
 <BaseLayout title={`${tag} — 标签 — 公开笔记`} description={`标签「${tag}」下的所有笔记`}>
     <main class="tag-page">
-        <div class="tag-container animate-fade-in-up">
+        <div class="tag-container">
             <header class="page-header">
                 <a href="/tags" class="back-link">
                     <svg
@@ -48,7 +48,7 @@ const notes = allNotes
             <div class="notes-grid">
                 {
                     notes.map((note, i) => (
-                        <div style={`animation-delay: ${i * 80}ms`}>
+                        <div class="animate-fade-in-up" style={`animation-delay:${i * 60}ms`}>
                             <NoteCard
                                 title={note.data.title}
                                 description={note.data.description}

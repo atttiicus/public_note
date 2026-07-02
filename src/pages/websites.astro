@@ -5,7 +5,7 @@ import { WEB_SITE_LIST } from '../data/website'
 
 <BaseLayout title="网站收藏 — 公开笔记" description="收藏的优质网站与学习资源">
     <main class="websites-page">
-        <div class="websites-container animate-fade-in-up">
+        <div class="websites-container">
             <header class="page-header">
                 <a href="/" class="back-link">
                     <svg
@@ -35,7 +35,7 @@ import { WEB_SITE_LIST } from '../data/website'
                         {WEB_SITE_LIST.map((site, i) => (
                             <div
                                 class="site-card animate-fade-in-up"
-                                style={`animation-delay: ${i * 80}ms`}
+                                style={`animation-delay:${i * 50}ms`}
                             >
                                 <div class="site-main">
                                     {site.logo_url && (
