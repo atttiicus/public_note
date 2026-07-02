@@ -70,6 +70,7 @@ export default defineConfig({
         }),
         presetWebFonts({
             provider: 'google',
+            download: false,
             fonts: {
                 serif: [{ name: 'Lora', weights: ['400', '500', '600', '700'], italic: true }],
                 display: [{ name: 'Playfair Display', weights: ['400', '600', '700'] }],

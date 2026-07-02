@@ -55,7 +55,7 @@ for (const group of Object.values(seriesMap)) {
 <BaseLayout title="公开笔记" description="一个简洁的个人笔记网站，记录学习与思考。">
     <main class="home-page">
         <!-- 首屏 Hero -->
-        <section class="hero animate-fade-in">
+        <section class="hero" data-enter>
             <div class="hero-inner">
                 <p class="hero-label">NOTES</p>
                 <h1 class="hero-title">公开笔记</h1>
@@ -75,10 +75,7 @@ for (const group of Object.values(seriesMap)) {
                     {
                         renderItems.map((item, i) =>
                             item.type === 'single' ? (
-                                <div
-                                    class="animate-fade-in-up"
-                                    style={`animation-delay:${i * 60}ms`}
-                                >
+                                <div data-enter="">
                                     <NoteCard
                                         title={item.note.data.title}
                                         description={item.note.data.description}
@@ -87,10 +84,7 @@ for (const group of Object.values(seriesMap)) {
                                     />
                                 </div>
                             ) : (
-                                <div
-                                    class="series-group animate-fade-in-up"
-                                    style={`animation-delay:${i * 60}ms`}
-                                >
+                                <div class="series-group" data-enter="">
                                     <div class="series-header">
                                         <div class="series-header-left">
                                             <svg

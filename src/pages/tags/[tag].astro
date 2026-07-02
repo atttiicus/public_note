@@ -48,7 +48,7 @@ const notes = allNotes
             <div class="notes-grid">
                 {
                     notes.map((note, i) => (
-                        <div class="animate-fade-in-up" style={`animation-delay:${i * 60}ms`}>
+                        <div data-enter="">
                             <NoteCard
                                 title={note.data.title}
                                 description={note.data.description}

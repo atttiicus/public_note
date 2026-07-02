@@ -48,8 +48,8 @@ const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeComp
                         {tags.map(([tag, count], i) => (
                             <a
                                 href={`/tags/${encodeURIComponent(tag)}`}
-                                class="tag-card animate-fade-in-up"
-                                style={`animation-delay:${i * 35}ms`}
+                                class="tag-card"
+                                data-enter=""
                             >
                                 <span class="tag-name">{tag}</span>
                                 <span class="tag-count">{count}</span>

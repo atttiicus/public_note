@@ -13,7 +13,7 @@ const { title, description, tags = [] } = Astro.props
 
 <BaseLayout title={`${title} — 笔记`} description={description}>
     <main class="note-page">
-        <div class="note-container animate-fade-in">
+        <div class="note-container" data-enter>
             <!-- 笔记头部 -->
             <header class="note-header">
                 <a href="/" class="back-link">

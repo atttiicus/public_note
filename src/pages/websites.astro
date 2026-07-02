@@ -33,10 +33,7 @@ import { WEB_SITE_LIST } from '../data/website'
                 ) : (
                     <div class="site-list">
                         {WEB_SITE_LIST.map((site, i) => (
-                            <div
-                                class="site-card animate-fade-in-up"
-                                style={`animation-delay:${i * 50}ms`}
-                            >
+                            <div class="site-card" data-enter="">
                                 <div class="site-main">
                                     {site.logo_url && (
                                         <img

@@ -319,28 +319,9 @@ pre.astro-code {
     text-decoration-color: var(--color-primary-light);
 }
 
-/* ============================
-   页面过渡动画
-   覆盖 UnoCSS 生成的 fade-in-up（含 translateY），改为纯淡入无位移
-   ============================ */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.animate-fade-in {
-    animation: fadeIn 0.4s ease both !important;
-}
-
-.animate-fade-in-up {
-    animation: fadeIn 0.35s ease both !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .animate-fade-in,
-    .animate-fade-in-up {
-        animation: none;
-    }
+/* 入场动画由 GSAP 控制（BaseLayout.astro script），目标选择器为 [data-enter] */
+[data-enter] {
+    opacity: 0;
 }
 
 /* ============================
