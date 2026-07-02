@@ -1,4 +1,4 @@
-import { defineConfig, presetUno, presetTypography, presetWebFonts } from 'unocss'
+import { defineConfig, presetUno, presetTypography } from 'unocss'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 
@@ -66,15 +66,6 @@ export default defineConfig({
                     'text-underline-offset': '3px',
                     'text-decoration-color': 'var(--color-primary)',
                 },
-            },
-        }),
-        presetWebFonts({
-            provider: 'google',
-            download: false,
-            fonts: {
-                serif: [{ name: 'Lora', weights: ['400', '500', '600', '700'], italic: true }],
-                display: [{ name: 'Playfair Display', weights: ['400', '600', '700'] }],
-                mono: [{ name: 'JetBrains Mono', weights: ['400', '500'] }],
             },
         }),
     ],
