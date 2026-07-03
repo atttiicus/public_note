@@ -336,12 +336,13 @@ npx skills-installer install ./my-skill --client claude-code
 
 **拦截危险命令:**
 
-````bash
+```bash
 #!/bin/bash
 # ~/.claude/hooks/check-dangerous.sh
 
 # 读取工具调用信息
-TOOL_NAME=$(jq -r '.toolName'
+TOOL_NAME=$(jq -r '.toolName')
+```
 
 **自动格式化代码:**
 
@@ -356,7 +357,7 @@ TOOL_NAME=$(jq -r '.toolName'
         }
     }
 }
-````
+```
 
 **发送通知:**
 
