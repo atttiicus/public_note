@@ -1,7 +1,7 @@
 ---
 title: atReport.js 逆向分析报告
-description: 逆向分析 atReport.js 代码，主要分析其接口机制、停留时长监听机制、用户PV的机制
-tags: ['逆向分析', 'AI', '前端', '埋点']
+description: 对腾讯/英雄联盟官网数据上报 SDK atReport.js（Webpack minified，约 226KB）的逆向分析。覆盖点击监听、数据上报接口、页面与区域停留时长计算、PV 上报及 SPA 路由支持等核心机制。
+tags: ['逆向分析', '前端', '埋点', '腾讯']
 ---
 
 # atReport.js 逆向分析报告
@@ -14,7 +14,7 @@ tags: ['逆向分析', 'AI', '前端', '埋点']
 
 ### 监听方式
 
-使用 `mousedown` 而非 `click` 事件，挂载在 `document` 上（事件委托）：
+使用 `mousedown` 而非 `click` 事件，以事件委托方式挂载在 `document` 上：
 
 ```javascript
 document.addEventListener("mousedown", this.handlerClickThis, false)
@@ -32,7 +32,7 @@ mousedown 触发
 
 ### autoClick 模式
 
-当 `setSite.autoClick = true` 时，SDK 自动监听所有 `<a>` 和 `<button>` 标签，无需手动埋点。`clickConfig` 中内置了对这两类标签的选择器规则。
+当 `setSite.autoClick = true` 时，SDK 自动监听所有 `<a>` 和 `<button>` 标签，无需手动埋点。`clickConfig` 内置了对这两类标签的选择器规则。
 
 ### 事件类型映射
 
@@ -109,8 +109,9 @@ fetch(`https://aegis.qq.com/collect?${queryString}`, {
 
 ### 唯一设备 ID 生成
 
+设备 ID 采用 UUID v4 算法生成，持久化存储于 `localStorage`：
+
 ```javascript
-// UUID v4
 "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16)
@@ -123,7 +124,7 @@ fetch(`https://aegis.qq.com/collect?${queryString}`, {
 
 ### 页面停留（stay_page）
 
-利用 **Visibility API** 精确排除页面不可见时间：
+利用 **Visibility API** 精确排除页面不可见时间，确保统计的是用户实际可见的停留时长：
 
 ```javascript
 // 监听页面可见性变化
@@ -145,7 +146,7 @@ const staytime = clamp(
 dtReport("stay_page", { url, staytime, isExit: true }, "onSendBeacon")
 ```
 
-页面关闭/跳转时通过 `sendBeacon` 保证数据不丢失。
+页面关闭或跳转时通过 `sendBeacon` 保证数据不丢失。
 
 ### 区域停留（stay_area / autoAreaStay）
 
@@ -159,7 +160,7 @@ dtReport("stay_page", { url, staytime, isExit: true }, "onSendBeacon")
 new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting && entry.intersectionRatio > threshold) {
-            startTimer(entry.target)   // 元素进入：开始计时
+            startTimer(entry.target)    // 元素进入：开始计时
         } else {
             reportAndStop(entry.target) // 元素离开：上报并停止
         }
@@ -167,11 +168,12 @@ new IntersectionObserver((entries) => {
 }, { threshold: [0.5] })   // 50% 可见才算进入
 ```
 
-关键配置：
+关键配置项：
+
 ```javascript
 {
-    keyAttribute: "dt-areaid",  // 标识停留区域的 HTML 属性名
-    areaDelay:    1000,          // 进入后延迟 1s 才开始计时（防抖）
+    keyAttribute:  "dt-areaid", // 标识停留区域的 HTML 属性名
+    areaDelay:     1000,         // 进入后延迟 1s 才开始计时（防抖）
     areaThreshold: 0.5,          // 交叉比例阈值：50%
 }
 ```
@@ -185,10 +187,10 @@ new IntersectionObserver((entries) => {
 ```javascript
 // 1. 页面端配置
 var setSite = {
-    siteType: "os",
-    pageType: "main",
-    project: "base",
-    autoClick: true,
+    siteType:     "os",
+    pageType:     "main",
+    project:      "base",
+    autoClick:    true,
     autoAreaStay: true
 }
 
@@ -212,7 +214,7 @@ LOL_SEND_DATA_FN_AT()
 
 ### SPA 路由变化支持
 
-监听多种路由事件，500ms 防抖：
+监听多种路由事件，500ms 防抖，每次路由变化自动上报新的 `show_page`（`at_imp`）：
 
 ```javascript
 ["replaceState", "pushState", "popstate", "hashchange"].forEach((ev) => {
@@ -220,19 +222,17 @@ LOL_SEND_DATA_FN_AT()
 })
 ```
 
-每次路由变化自动上报新的 `show_page`（`at_imp`）。
-
 ### LOLSetUserIDAT（用户 ID 绑定）
 
 ```javascript
 window.LOLSetUserIDAT({
-    openid: "xxx",     // 必须纯字母数字
+    openid:  "xxx",  // 必须为纯字母数字
     gopenid: "xxx",
-    roleid: "xxx"
+    roleid:  "xxx"
 })
 ```
 
-调用后将用户 ID 附加到后续所有上报参数中。
+调用后，用户 ID 将附加到后续所有上报参数中。
 
 ---
 
