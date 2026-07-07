@@ -1,0 +1,102 @@
+---
+interface Props {
+    currentPage: number
+    totalPages: number
+}
+
+const { currentPage, totalPages } = Astro.props
+
+const pageUrl = (page: number) => (page === 1 ? '/' : `/page/${page}`)
+---
+
+{
+    totalPages > 1 && (
+        <nav class="pagination" aria-label="分页导航">
+            {currentPage > 1 ? (
+                <a href={pageUrl(currentPage - 1)} class="page-arrow" aria-label="上一页">
+                    ←
+                </a>
+            ) : (
+                <span class="page-arrow disabled" aria-hidden="true">
+                    ←
+                </span>
+            )}
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <a
+                    href={pageUrl(page)}
+                    class:list={['page-num', { active: page === currentPage }]}
+                    aria-current={page === currentPage ? 'page' : undefined}
+                >
+                    {page}
+                </a>
+            ))}
+
+            {currentPage < totalPages ? (
+                <a href={pageUrl(currentPage + 1)} class="page-arrow" aria-label="下一页">
+                    →
+                </a>
+            ) : (
+                <span class="page-arrow disabled" aria-hidden="true">
+                    →
+                </span>
+            )}
+        </nav>
+    )
+}
+
+<style>
+    .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        padding: 2.5rem 0 0.5rem;
+    }
+
+    .page-num,
+    .page-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2rem;
+        height: 2rem;
+        padding: 0 0.5rem;
+        border-radius: 6px;
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--color-text-muted);
+        border: 1px solid transparent;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast),
+            border-color var(--transition-fast);
+        cursor: pointer;
+    }
+
+    .page-num:hover,
+    .page-arrow:not(.disabled):hover {
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border-color: var(--color-border);
+    }
+
+    .page-num.active {
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border-color: var(--color-primary-light);
+        font-weight: 600;
+    }
+
+    .page-arrow.disabled {
+        opacity: 0.25;
+        cursor: default;
+    }
+
+    .page-arrow {
+        font-size: 1rem;
+        padding: 0 0.625rem;
+    }
+</style>
