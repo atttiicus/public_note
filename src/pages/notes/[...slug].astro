@@ -3,17 +3,72 @@ import { getCollection } from 'astro:content'
 import NoteLayout from '../../layouts/NoteLayout.astro'
 
 export async function getStaticPaths() {
-    const notes = await getCollection('notes')
-    return notes.map((note) => ({
+    const allNotes = await getCollection('notes')
+    return allNotes.map((note) => ({
         params: { slug: note.slug },
-        props: { note },
+        props: { note, allNotes },
     }))
 }
 
-const { note } = Astro.props
+const { note, allNotes } = Astro.props
 const { Content } = await note.render()
+
+type RelatedNote = {
+    slug: string
+    title: string
+    description?: string
+    tags?: string[]
+    order?: number
+}
+
+let relatedNotes: RelatedNote[] = []
+let relatedType: 'series' | 'tags' | null = null
+let seriesName: string | undefined
+
+if (note.data.series) {
+    relatedNotes = allNotes
+        .filter((n) => n.data.series === note.data.series)
+        .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+        .map((n) => ({
+            slug: n.slug,
+            title: n.data.title,
+            description: n.data.description,
+            tags: n.data.tags,
+            order: n.data.order,
+        }))
+    relatedType = 'series'
+    seriesName = note.data.series
+} else if (note.data.tags && note.data.tags.length > 0) {
+    const currentTags = new Set(note.data.tags)
+    const candidates = allNotes
+        .filter((n) => n.slug !== note.slug && n.data.tags?.some((t) => currentTags.has(t)))
+        .map((n) => ({
+            slug: n.slug,
+            title: n.data.title,
+            description: n.data.description,
+            tags: n.data.tags,
+            overlap: n.data.tags?.filter((t) => currentTags.has(t)).length ?? 0,
+        }))
+        .sort((a, b) => b.overlap - a.overlap)
+        .slice(0, 4)
+    relatedNotes = candidates.map(({ slug, title, description, tags }) => ({
+        slug,
+        title,
+        description,
+        tags,
+    }))
+    if (relatedNotes.length > 0) relatedType = 'tags'
+}
 ---
 
-<NoteLayout title={note.data.title} description={note.data.description} tags={note.data.tags}>
+<NoteLayout
+    title={note.data.title}
+    description={note.data.description}
+    tags={note.data.tags}
+    relatedNotes={relatedNotes}
+    relatedType={relatedType}
+    currentSlug={note.slug}
+    seriesName={seriesName}
+>
     <Content />
 </NoteLayout>

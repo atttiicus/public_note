@@ -10,13 +10,13 @@ const allItems = buildRenderItems(notes)
 const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
 ---
 
-<BaseLayout title="公开笔记" description="一个简洁的个人笔记网站，记录学习与思考。">
+<BaseLayout title="Cafe Note" description="一个简洁的个人笔记网站，记录学习与思考。">
     <main class="home-page">
         <!-- 首屏 Hero -->
         <section class="hero" data-enter>
             <div class="hero-inner">
                 <p class="hero-label">NOTES</p>
-                <h1 class="hero-title">公开笔记</h1>
+                <h1 class="hero-title">Cafe Note</h1>
                 <p class="hero-subtitle">
                     知识的碎片，思维的痕迹。<br />以书写整理思路，以阅读拓展边界。
                 </p>
@@ -133,7 +133,7 @@ const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
         transition: background-color var(--transition-base);
     }
     .hero-inner {
-        max-width: 680px;
+        max-width: 780px;
         margin: 0 auto;
     }
     .hero-label {

@@ -11,6 +11,8 @@ tags: ['逆向分析', '前端', '埋点', '性能监控']
 **模块形式**：IIFE 自执行函数  
 **定性**：腾讯 TGIdeas 游戏平台综合客户端数据采集 SDK，集成性能监控、用户行为分析、DMP 上报三套体系。
 
+源代码（压缩）：[ping_tcss_tgideas_https.js](//ossweb-img.qq.com/images/js/PTT/ping_tcss_tgideas_https_min.js)
+
 ---
 
 ## 整体架构

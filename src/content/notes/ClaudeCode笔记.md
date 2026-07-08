@@ -1,6 +1,6 @@
 ---
 title: Claude Code 笔记
-description: 最近在深度使用 Claude Code，发现真的很香！即整理了一份全面的指南，从零开始逐步了解 Claude Code 的核心功能、高级特性和最佳实践。这篇博客实际上更像是一本工具书，让我自己在使用时也能随时参考其内容，更好的使用这个强大的 AI 工具。
+description: Claude Code 系统级 AI Agent 的完整使用指南，涵盖核心功能、文件与代码操作、Git 工作流、多代理并行协作、MCP 服务器集成、Hooks 自动化配置及 Skills 扩展机制，可作为日常参考手册。
 tags: ['AI', '工具教程', 'ClaudeCode']
 ---
 

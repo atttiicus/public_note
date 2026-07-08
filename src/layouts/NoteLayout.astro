@@ -1,14 +1,35 @@
 ---
 import BaseLayout from './BaseLayout.astro'
 import TableOfContents from '../components/TableOfContents.tsx'
+import NoteCard from '../components/NoteCard.astro'
+
+type RelatedNote = {
+    slug: string
+    title: string
+    description?: string
+    tags?: string[]
+    order?: number
+}
 
 export interface Props {
     title: string
     description?: string
     tags?: string[]
+    relatedNotes?: RelatedNote[]
+    relatedType?: 'series' | 'tags' | null
+    currentSlug?: string
+    seriesName?: string
 }
 
-const { title, description, tags = [] } = Astro.props
+const {
+    title,
+    description,
+    tags = [],
+    relatedNotes = [],
+    relatedType = null,
+    currentSlug,
+    seriesName,
+} = Astro.props
 ---
 
 <BaseLayout title={`${title} — 笔记`} description={description}>
@@ -56,6 +77,119 @@ const { title, description, tags = [] } = Astro.props
                     <TableOfContents client:load />
                 </aside>
             </div>
+
+            <!-- 相关文章 -->
+            {
+                relatedType && relatedNotes.length > 0 && (
+                    <section class="related-section">
+                        <div class="related-header">
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                {relatedType === 'series' ? (
+                                    <>
+                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                    </>
+                                ) : (
+                                    <>
+                                        <circle cx="18" cy="5" r="3" />
+                                        <circle cx="6" cy="12" r="3" />
+                                        <circle cx="18" cy="19" r="3" />
+                                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                                    </>
+                                )}
+                            </svg>
+                            <span class="related-label">
+                                {relatedType === 'series' ? '系列文章' : '相关文章'}
+                            </span>
+                            {seriesName && (
+                                <span class="related-series-name">{seriesName}</span>
+                            )}
+                            <span class="related-count">
+                                {relatedType === 'series'
+                                    ? `${relatedNotes.length} 篇`
+                                    : `${relatedNotes.length} 篇`}
+                            </span>
+                        </div>
+
+                        {relatedType === 'series' && (
+                            <ul class="related-series-list">
+                                {relatedNotes.map((n, i) => {
+                                    const isCurrent = n.slug === currentSlug
+                                    const prefix = seriesName ? seriesName + '-' : ''
+                                    const label =
+                                        prefix && n.title.startsWith(prefix)
+                                            ? n.title.slice(prefix.length)
+                                            : n.title
+                                    return (
+                                        <li>
+                                            {isCurrent ? (
+                                                <div class="related-series-item current">
+                                                    <span class="related-order">{i + 1}</span>
+                                                    <div class="related-item-body">
+                                                        <span class="related-item-title">
+                                                            {label}
+                                                        </span>
+                                                        {n.description && (
+                                                            <span class="related-item-desc">
+                                                                {n.description}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span class="current-badge">当前</span>
+                                                </div>
+                                            ) : (
+                                                <a
+                                                    href={`/notes/${n.slug}`}
+                                                    class="related-series-item"
+                                                >
+                                                    <span class="related-order">{i + 1}</span>
+                                                    <div class="related-item-body">
+                                                        <span class="related-item-title">
+                                                            {label}
+                                                        </span>
+                                                        {n.description && (
+                                                            <span class="related-item-desc">
+                                                                {n.description}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span class="related-arrow" aria-hidden="true">
+                                                        →
+                                                    </span>
+                                                </a>
+                                            )}
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        )}
+
+                        {relatedType === 'tags' && (
+                            <div class="related-tags-grid">
+                                {relatedNotes.map((n) => (
+                                    <NoteCard
+                                        title={n.title}
+                                        description={n.description}
+                                        slug={n.slug}
+                                        tags={n.tags}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                )
+            }
         </div>
     </main>
 </BaseLayout>
@@ -330,6 +464,195 @@ const { title, description, tags = [] } = Astro.props
     @media (max-width: 768px) {
         .note-page {
             padding: 2rem 1rem;
+        }
+    }
+
+    /* ── 相关文章模块 ── */
+    .related-section {
+        margin-top: 4rem;
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        border-top: 3px solid var(--color-primary);
+        background-color: var(--color-bg-secondary);
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(107, 79, 58, 0.07);
+    }
+
+    .dark .related-section {
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .related-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.9rem 1.5rem;
+        background-color: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-primary);
+    }
+
+    .related-label {
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--color-primary);
+    }
+
+    .related-series-name {
+        font-family: var(--font-serif);
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        margin-left: 0.25rem;
+    }
+
+    .related-count {
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border: 1px solid var(--color-primary-light);
+        border-radius: 100px;
+        padding: 0.1em 0.6em;
+        margin-left: auto;
+    }
+
+    /* 系列文章列表 */
+    .related-series-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .related-series-list li {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .related-series-list li:last-child {
+        border-bottom: none;
+    }
+
+    .related-series-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color var(--transition-fast);
+    }
+
+    a.related-series-item:hover {
+        background-color: var(--color-hover);
+    }
+
+    .related-series-item.current {
+        background-color: var(--color-hover);
+        border-left: 3px solid var(--color-primary);
+        padding-left: calc(1.5rem - 3px);
+        cursor: default;
+    }
+
+    .related-order {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        background-color: var(--color-bg-secondary);
+        border: 1px solid var(--color-border);
+        border-radius: 50%;
+    }
+
+    .related-series-item.current .related-order {
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border-color: var(--color-primary-light);
+    }
+
+    .related-item-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .related-item-title {
+        font-family: var(--font-sans);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--color-text);
+        transition: color var(--transition-fast);
+    }
+
+    a.related-series-item:hover .related-item-title {
+        color: var(--color-primary);
+    }
+
+    .related-series-item.current .related-item-title {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .related-item-desc {
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .current-badge {
+        flex-shrink: 0;
+        font-family: var(--font-sans);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border: 1px solid var(--color-primary-light);
+        border-radius: 100px;
+        padding: 0.15em 0.65em;
+    }
+
+    .related-arrow {
+        font-size: 1rem;
+        color: var(--color-text-muted);
+        flex-shrink: 0;
+        transition:
+            color var(--transition-fast),
+            transform var(--transition-fast);
+    }
+
+    a.related-series-item:hover .related-arrow {
+        color: var(--color-primary);
+        transform: translateX(4px);
+    }
+
+    /* 标签相关文章网格 */
+    .related-tags-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+        .related-tags-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .related-item-desc {
+            display: none;
         }
     }
 </style>
