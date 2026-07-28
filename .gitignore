@@ -20,3 +20,5 @@ dist/
 *.test.md
 
 ai_docs
+.docs/*.png
+.docs/*.jpg
