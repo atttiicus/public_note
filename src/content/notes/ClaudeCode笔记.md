@@ -1,6 +1,6 @@
 ---
 title: Claude Code 笔记
-description: Claude Code 系统级 AI Agent 的完整使用指南，涵盖核心功能、文件与代码操作、Git 工作流、多代理并行协作、MCP 服务器集成、Hooks 自动化配置及 Skills 扩展机制，可作为日常参考手册。
+description: Claude Code 系统级 AI Agent 使用指南，覆盖核心功能、Git 工作流、MCP 集成、Hooks 配置与 Skills 扩展，可作为日常参考手册。
 tags: ['AI', '工具教程', 'ClaudeCode']
 ---
 

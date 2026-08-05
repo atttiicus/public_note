@@ -1,6 +1,6 @@
 ---
 title: MongoDB使用
-description: MongoDB是一个开源的文档类型数据库，它具有高性能，高可用，可自动收缩的特性。
+description: MongoDB 的安装配置与基础使用，涵盖文档与集合模型、数据导入及常用命令行操作。
 tags: ['MongoDB', '数据库']
 ---
 
@@ -39,6 +39,10 @@ MongoDB是一个开源的文档类型数据库，它具有高性能，高可用�
    "restaurant_id" : "41704620"
 }
 ```
+
+
+
+
 
 ## 集合 ##
 

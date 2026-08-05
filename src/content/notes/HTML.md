@@ -1,6 +1,6 @@
 ---
 title: HTML
-description: HTML 是网页使用的语言，定义了网页的结构和内容。
+description: HTML 表格与表单元素的详细用法，涵盖 <colgroup>、<tr>、<th>、<td> 及 <form> 等常用标签的语法与实践。
 tags: ['WEB前端', 'HTML']
 ---
 
