@@ -1,6 +1,6 @@
 import type { CollectionEntry } from 'astro:content'
 
-export const ITEMS_PER_PAGE = 6
+export const ITEMS_PER_PAGE = 10
 
 export interface SeriesGroup {
     name: string

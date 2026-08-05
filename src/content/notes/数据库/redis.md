@@ -1,6 +1,6 @@
 ---
 title: Redis复习笔记
-description: Redis 是一个速度非常快的非关系型（NoSQL）内存键值数据库，可以存储键和五种不同类型的值之间的映射。。
+description: Redis 非关系型内存数据库的使用笔记，涵盖五种数据类型、持久化策略（RDB/AOF）、复制与 Sentinel、分片与集群，以及缓存、计数器等典型应用场景。
 tags: ['数据库', 'Redis', "NoSQL"]
 ---
 
