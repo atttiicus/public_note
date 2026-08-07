@@ -1,5 +1,6 @@
 ---
 title: Claude Code 笔记
+date: 2026-06-03
 description: Claude Code 系统级 AI Agent 使用指南，覆盖核心功能、Git 工作流、MCP 集成、Hooks 配置与 Skills 扩展，可作为日常参考手册。
 tags: ['AI', '工具教程', 'ClaudeCode']
 ---

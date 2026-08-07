@@ -1,5 +1,6 @@
 ---
 title: HTML
+date: 2026-06-03
 description: HTML 表格与表单元素的详细用法，涵盖 <colgroup>、<tr>、<th>、<td> 及 <form> 等常用标签的语法与实践。
 tags: ['WEB前端', 'HTML']
 ---
