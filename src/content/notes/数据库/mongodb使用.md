@@ -1,5 +1,6 @@
 ---
 title: MongoDB使用
+date: 2026-08-04
 description: MongoDB 的安装配置与基础使用，涵盖文档与集合模型、数据导入及常用命令行操作。
 tags: ['MongoDB', '数据库']
 ---

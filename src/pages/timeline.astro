@@ -4,40 +4,42 @@ import { getCollection } from 'astro:content'
 
 /**
  * 性能优化思路：
- * 1. 所有数据处理在 Astro 构建时完成（SSG），客户端零 JS 开销
- * 2. getCollection 是 Astro 内置的数据获取 API，构建时运行，不产生运行时请求
- * 3. 月份分组使用单次遍历 + Map，O(n) 复杂度
- * 4. 侧边归属（左/右）在编译时确定，避免客户端运行时计算
- * 5. 时间线视觉效果完全由 CSS 实现，无 JS 参与布局
- * 6. 卡片列表使用原生 <a> 标签，无 React 水合开销
+ * 1. 所有数据处理在 Astro SSG 构建时完成，客户端零 JS 开销
+ * 2. getCollection 是构建时 API，无运行时请求
+ * 3. 月份分组使用单次遍历，O(n) 复杂度
+ * 4. 侧边归属在编译时由索引奇偶确定，客户端无计算
+ * 5. 时间线视觉完全由 CSS flex + 伪元素实现，零 JS 布局
+ * 6. 卡片使用原生 <a> 标签，无 React 水合开销
+ * 7. hover 动效仅使用 transform，触发 GPU 合成层
  */
 
 const allNotes = await getCollection('notes')
 
-// 单次遍历：过滤有日期的笔记并按日期排序
-// .filter + .sort 是两个独立遍历，但数据量极小（< 1000），不影响性能
 const datedNotes = allNotes
     .filter((note) => note.data.date != null)
     .sort((a, b) => a.data.date!.valueOf() - b.data.date!.valueOf())
 
-// 按年月分组，单次 O(n) 遍历
 interface MonthGroup {
     year: number
     month: number
     label: string
+    iso: string
     notes: typeof datedNotes
 }
 
+// 单次遍历分组，O(n)
 const monthGroups: MonthGroup[] = []
 for (const note of datedNotes) {
     const d = note.data.date!
-    const key = `${d.getFullYear()}-${d.getMonth()}`
+    const y = d.getFullYear()
+    const m = d.getMonth() + 1
     const last = monthGroups[monthGroups.length - 1]
-    if (!last || `${last.year}-${last.month - 1}` !== key) {
+    if (!last || last.year !== y || last.month !== m) {
         monthGroups.push({
-            year: d.getFullYear(),
-            month: d.getMonth() + 1,
-            label: `${d.getFullYear()}年${d.getMonth() + 1}月`,
+            year: y,
+            month: m,
+            label: `${y}年${m}月`,
+            iso: `${y}-${String(m).padStart(2, '0')}`,
             notes: [],
         })
     }
@@ -50,7 +52,6 @@ const totalDated = datedNotes.length
 
 <BaseLayout title="时间线" description="按时间顺序浏览所有笔记。">
     <main class="timeline-page">
-        <!-- Hero 区域 -->
         <section class="hero" data-enter>
             <div class="hero-inner">
                 <p class="hero-label">TIMELINE</p>
@@ -65,52 +66,51 @@ const totalDated = datedNotes.length
             </div>
         </section>
 
-        <!-- 时间线主体 -->
         {
             totalDated === 0 ? (
                 <p class="empty-hint">暂无带日期的笔记，请先为笔记添加 date 字段。</p>
             ) : (
                 <div class="timeline">
-                    <!-- 中心线：CSS 实现，零 DOM 开销 -->
-                    <div class="timeline-line" aria-hidden="true"></div>
-
                     {
                         monthGroups.map((group, i) => {
-                            // 编译时确定侧边：偶数索引在右侧，奇数在左侧
+                            // 编译时确定侧边：偶右奇左，按月交替
                             const side = i % 2 === 0 ? 'right' : 'left'
-                            return (
-                                <div class={`timeline-month side-${side}`}>
-                                    {/* 时间轴标记点 */}
-                                    <div class="timeline-dot" aria-hidden="true">
-                                        <div class="dot-inner"></div>
-                                    </div>
-
-                                    {/* 月份标签 */}
-                                    <time
-                                        class="timeline-date"
-                                        datetime={`${group.year}-${String(group.month).padStart(2, '0')}`}
-                                    >
+                            const spacer = <div class="tl-spacer"></div>
+                            const marker = (
+                                <div class="tl-marker">
+                                    <div class="tl-dot" aria-hidden="true"></div>
+                                    <time class="tl-date" datetime={group.iso}>
                                         {group.label}
                                     </time>
-
-                                    {/* 笔记卡片列表 */}
-                                    <div class="timeline-cards">
-                                        {group.notes.map((note) => (
-                                            <a
-                                                href={`/notes/${note.slug}`}
-                                                class="timeline-card"
-                                            >
-                                                <span class="card-title">
-                                                    {note.data.title}
+                                </div>
+                            )
+                            const cards = (
+                                <div class="tl-cards">
+                                    {group.notes.map((note) => (
+                                        <a
+                                            href={`/notes/${note.slug}`}
+                                            class="tl-card"
+                                        >
+                                            <span class="card-title">
+                                                {note.data.title}
+                                            </span>
+                                            {note.data.description && (
+                                                <span class="card-desc">
+                                                    {note.data.description}
                                                 </span>
-                                                {note.data.description && (
-                                                    <span class="card-desc">
-                                                        {note.data.description}
-                                                    </span>
-                                                )}
-                                            </a>
-                                        ))}
-                                    </div>
+                                            )}
+                                        </a>
+                                    ))}
+                                </div>
+                            )
+
+                            return (
+                                <div class={`tl-row side-${side} `}>
+                                    {side === 'right' ? (
+                                        <>{spacer}{marker}{cards}</>
+                                    ) : (
+                                        <>{cards}{marker}{spacer}</>
+                                    )}
                                 </div>
                             )
                         })
@@ -122,15 +122,6 @@ const totalDated = datedNotes.length
 </BaseLayout>
 
 <style>
-    /* ═══════════════════════════════════════════════════════════════
-       时间线页面样式
-
-       性能优化：
-       - 所有动画仅使用 opacity 和 transform，触发 GPU 合成层，避免重排/重绘
-       - 移动端将时间线移至左侧，内容统一右侧，减少 CSS 分支逻辑
-       - 使用 CSS 变量复用颜色值，减少重复计算
-       ═══════════════════════════════════════════════════════════════ */
-
     .timeline-page {
         min-height: calc(100vh - var(--header-height));
     }
@@ -187,7 +178,6 @@ const totalDated = datedNotes.length
         margin: 0 0.5rem;
         color: var(--color-border);
     }
-
     .empty-hint {
         text-align: center;
         color: var(--color-text-muted);
@@ -196,22 +186,25 @@ const totalDated = datedNotes.length
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       时间线布局
+       时间线主体
 
-       桌面端：中心线 + 左右交替
-       移动端：左对齐线 + 内容统一右侧
+       布局原理：
+       - 每行是 flex 容器，结构为 [spacer 1fr] [marker auto] [cards 1fr]
+       - spacer 和 cards 各占剩余空间的一半，marker 居中（恰好在 50% 处）
+       - 中心线是 .timeline 的 ::before 伪元素，位于 left: 50%
+       - 中心线恰好穿过 marker 列的正中央
        ═══════════════════════════════════════════════════════════════ */
 
     .timeline {
         position: relative;
-        max-width: 900px;
+        max-width: 960px;
         margin: 0 auto;
         padding: 3rem 1.5rem 4rem;
     }
 
-    /* 中心垂直线
-       性能优化：使用伪元素而非额外 DOM 元素，减少布局计算节点 */
-    .timeline-line {
+    /* 中心垂直线：伪元素绘制，无额外 DOM 节点 */
+    .timeline::before {
+        content: '';
         position: absolute;
         top: 0;
         bottom: 0;
@@ -220,98 +213,85 @@ const totalDated = datedNotes.length
         background: linear-gradient(
             to bottom,
             transparent,
-            var(--color-primary-light, #b8956a) 5%,
-            var(--color-primary-light, #b8956a) 95%,
+            var(--color-primary-light) 4%,
+            var(--color-primary-light) 96%,
             transparent
         );
         transform: translateX(-50%);
+        pointer-events: none;
     }
 
-    /* ── 每个月份块 ── */
-    .timeline-month {
+    /* ── 每行：flex 三列布局 ── */
+    .tl-row {
         position: relative;
         display: flex;
-        align-items: flex-start;
-        margin-bottom: 3rem;
+        align-items: flex-start;tl-date
+        z-index: 10;
+    }
+    .tl-row + .tl-row {
+        margin-top: 2rem;
     }
 
-    .timeline-month:last-child {
-        margin-bottom: 0;
+    /* 左右各半的弹性区域 */
+    .tl-spacer,
+    .tl-cards {
+        flex: 1;
+        min-width: 0;
     }
 
-    /* 性能优化：左右布局通过 CSS Grid 实现，编译时确定类名，无运行时计算 */
-    .timeline-month.side-right {
-        flex-direction: row;
-    }
-    .timeline-month.side-left {
-        flex-direction: row-reverse;
+    /* ── 中心标记列 ──
+       固定宽度，内部垂直排列 dot + 日期标签 */
+    .tl-marker {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 1.25rem;
     }
 
-    /* ── 时间标记点 ──
-       绝对定位在中心线上，作为月份锚点 */
-    .timeline-dot {
-        position: absolute;
-        left: 50%;
-        top: 0.35rem;
-        width: 14px;
-        height: 14px;
-        transform: translateX(-50%);
+    /* ── 时间线圆点 ── */
+    .tl-dot {
+        width: 12px;
+        height: 12px;
         background-color: var(--color-primary);
         border: 3px solid var(--color-bg);
         border-radius: 50%;
-        z-index: 2;
-        box-shadow: 0 0 0 3px var(--color-primary-light, #b8956a);
+        box-shadow: 0 0 0 3px var(--color-primary-light);
+        flex-shrink: 0;
+        margin-top: 0.4rem;
         transition:
             background-color var(--transition-base),
             box-shadow var(--transition-base);
     }
-    .dot-inner {
-        display: none;
-    }
 
-    /* ── 月份日期标签 ──
-       标签与标记点对齐，位置跟随内容侧 */
-    .timeline-date {
-        position: absolute;
-        left: 50%;
-        top: 0;
-        transform: translateX(-50%);
+    /* ── 月份标签 ── */
+    .tl-date {
         font-family: var(--font-sans);
         font-size: 0.8125rem;
         font-weight: 600;
         color: var(--color-primary);
         letter-spacing: 0.05em;
         white-space: nowrap;
+        margin-top: 0.5rem;
         background-color: var(--color-bg);
-        padding: 0.15rem 0.75rem;
-        border: 1px solid var(--color-primary-light, #b8956a);
-        border-radius: 100px;
-        z-index: 1;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
         transition:
-            background-color var(--transition-base),
-            border-color var(--transition-base),
-            color var(--transition-base);
+            color var(--transition-base),
+            background-color var(--transition-base);
     }
 
-    /* ── 笔记卡片容器 ──
-       左右各占一半宽度，通过 padding 留出中心线空间 */
-    .timeline-cards {
-        width: 50%;
+    /* ── 卡片列表 ── */
+    .tl-cards {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+        padding-top: 0.15rem;
     }
 
-    .side-right .timeline-cards {
-        padding-left: 3rem;
-    }
-    .side-left .timeline-cards {
-        padding-right: 3rem;
-    }
-
-    /* ── 单张笔记卡片 ──
-       性能优化：使用 opacity + transform 做 hover 动效，只触发合成层 */
-    .timeline-card {
+    /* ── 单张卡片 ──
+       hover 仅修改 transform/box-shadow，GPU 合成 */
+    .tl-card {
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
@@ -324,33 +304,29 @@ const totalDated = datedNotes.length
         transition:
             border-color var(--transition-fast),
             box-shadow var(--transition-fast),
-            transform var(--transition-fast),
-            opacity var(--transition-fast);
+            transform var(--transition-fast);
     }
-
-    .timeline-card:hover {
-        border-color: var(--color-primary-light, #b8956a);
+    .tl-card:hover {
+        border-color: var(--color-primary-light);
         box-shadow: 0 4px 16px rgba(107, 79, 58, 0.1);
         transform: translateY(-2px);
     }
-
     .card-title {
         font-family: var(--font-sans);
         font-size: 0.9375rem;
         font-weight: 600;
         color: var(--color-text);
+        line-height: 1.4;
         transition: color var(--transition-fast);
     }
-    .timeline-card:hover .card-title {
+    .tl-card:hover .card-title {
         color: var(--color-primary);
     }
-
     .card-desc {
         font-family: var(--font-serif);
         font-size: 0.8125rem;
         color: var(--color-text-muted);
         line-height: 1.5;
-        /* 性能优化：省略号截断避免长文本撑开布局 */
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -358,69 +334,62 @@ const totalDated = datedNotes.length
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       响应式：移动端 (< 768px)
-
-       时间线从居中移至左侧，所有内容统一在右侧显示，
-       避免左右交替在小屏幕上造成阅读困难。
+       移动端 (< 768px)：时间线左移，内容统一右侧
        ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
         .hero {
             padding: 3rem 1rem 2.5rem;
         }
-
         .timeline {
             padding: 2rem 1rem 3rem;
         }
-
-        /* 移动端中心线移到左侧 */
-        .timeline-line {
-            left: 1.125rem;
+        .timeline::before {
+            left: 1.25rem;
         }
 
-        /* 移动端所有内容统一右侧 */
-        .timeline-month,
-        .timeline-month.side-right,
-        .timeline-month.side-left {
-            flex-direction: row;
+        /* 改为两列：固定 marker + 弹性 cards，spacer 隐藏 */
+        .tl-row {
+            flex-direction: row !important;
+        }
+        .tl-row + .tl-row {
+            margin-top: 1.75rem;
+        }
+        .tl-spacer {
+            display: none;
         }
 
-        .timeline-dot {
-            left: 1.125rem;
-            top: 0.3rem;
-            width: 12px;
-            height: 12px;
-            box-shadow: 0 0 0 2px var(--color-primary-light, #b8956a);
+        .tl-marker {
+            flex: 0 0 auto;
+            padding: 0 0.5rem 0 0;
+            min-width: 2.5rem;
+            align-items: center;
         }
-
-        .timeline-date {
-            position: static;
-            transform: none;
-            align-self: flex-start;
-            margin-left: 2rem;
-            margin-right: 0;
-            font-size: 0.75rem;
-            padding: 0.1rem 0.6rem;
-            border: none;
+        .tl-dot {
+            width: 10px;
+            height: 10px;
+            border-width: 2px;
+            box-shadow: 0 0 0 2px var(--color-primary-light);
+            margin-top: 0.35rem;
+        }
+        .tl-date {
+            font-size: 0.6875rem;
+            padding: 0;
             background: none;
+            margin-top: 0.35rem;
         }
 
-        /* 移动端卡片占满剩余空间 */
-        .timeline-cards,
-        .side-right .timeline-cards,
-        .side-left .timeline-cards {
-            width: 0;
+        .tl-cards {
             flex: 1;
-            padding-left: 1rem;
-            padding-right: 0;
+            min-width: 0;
+            padding-top: 0;
         }
-
         .card-desc {
             -webkit-line-clamp: 1;
         }
     }
 
     @media (max-width: 480px) {
-        .timeline-card {
+        .tl-card {
             padding: 0.7rem 0.875rem;
         }
         .card-desc {

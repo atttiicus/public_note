@@ -1,5 +1,6 @@
 ---
 title: MySQL复习笔记
+date: 2026-08-05
 description: MySQL 数据库复习笔记，涵盖索引、查询性能优化、存储引擎、数据类型、切分、复制等。
 tags: ['数据库', 'MySQL']
 ---

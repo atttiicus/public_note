@@ -1,5 +1,6 @@
 ---
 title: ping_tcss_tgideas_https.js 逆向分析
+date: 2026-07-03
 description: 腾讯 TGIdeas 客户端数据采集 SDK（tcss 3.4.6.8）的逆向分析，涵盖性能监控、行为埋点与 DMP 上报三套体系的接口格式与上报机制。
 tags: ['逆向分析', '前端', '埋点', '性能监控']
 ---

@@ -1,5 +1,6 @@
 ---
 title: atReport.js 逆向分析报告
+date: 2026-07-03
 description: 对腾讯/英雄联盟官网数据上报 SDK atReport.js（Webpack minified，约 226KB）的逆向分析。覆盖点击监听、数据上报接口、页面与区域停留时长计算、PV 上报及 SPA 路由支持等核心机制。
 tags: ['逆向分析', '前端', '埋点']
 ---
