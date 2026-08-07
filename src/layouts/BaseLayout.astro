@@ -1,9 +1,14 @@
 ---
 import Header from '../components/Header.astro'
-import '@fontsource-variable/lora/wght.css'
-import '@fontsource-variable/lora/wght-italic.css'
-import '@fontsource-variable/playfair-display'
-import '@fontsource-variable/jetbrains-mono'
+/**
+ * 字体加载策略：
+ * - Noto Sans SC（变量字体）：中文正文/标题，仅加载 Regular 400 字重以减少请求体积
+ * - JetBrains Mono（变量字体）：英文正文 + 代码块，利用 CSS font-family 回退
+ *   机制：'JetBrains Mono', 'Noto Sans SC', monospace
+ *   → 拉丁字符命中 JetBrains Mono，CJK 字符回退到 Noto Sans SC
+ */
+import '@fontsource-variable/noto-sans-sc/wght.css'
+import '@fontsource-variable/jetbrains-mono/wght.css'
 import '../styles/styles.css'
 import 'katex/dist/katex.min.css'
 

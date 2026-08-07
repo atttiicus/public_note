@@ -2,10 +2,17 @@
    CSS 变量 / 主题变量
    ============================ */
 :root {
-    /* 字体 */
-    --font-serif: 'Lora', 'Noto Serif SC', 'Songti SC', Georgia, serif;
-    --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    /*
+       字体策略：
+       - 'JetBrains Mono Variable' 在前，拉丁/英文优先命中
+       - 'Noto Sans SC Variable' 在后，CJK 中文未命中时回退
+       - 所有变量统一使用 Regular (400) 字重为默认值
+       - wght.css 仅加载 wght 轴，不加载 italic 轴以减小体积
+     */
+    --font-display: 'JetBrains Mono Variable', 'Noto Sans SC Variable', monospace;
+    --font-serif: 'JetBrains Mono Variable', 'Noto Sans SC Variable', monospace;
+    --font-sans: 'JetBrains Mono Variable', 'Noto Sans SC Variable', monospace;
+    --font-mono: 'JetBrains Mono Variable', 'Noto Sans SC Variable', monospace;
 
     /* 亮色主题 */
     --color-bg: #fdfaf6;
@@ -93,6 +100,7 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
+    font-weight: 400;
     min-height: 100vh;
 }
 
