@@ -1,6 +1,6 @@
 ---
 title: Java基础
-date: 2021-09-18
+date: 2021-09-22
 description: Java 基础知识，包括数据类型、包装类型、缓存池等。
 tags: ['Java']
 series: Java语言学习笔记

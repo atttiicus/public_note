@@ -1,6 +1,6 @@
 ---
 title: Redis复习笔记
-date: 2026-08-05
+date: 2024-01-05
 description: Redis 非关系型内存数据库的使用笔记，涵盖五种数据类型、持久化策略（RDB/AOF）、复制与 Sentinel、分片与集群，以及缓存、计数器等典型应用场景。
 tags: ['数据库', 'Redis', "NoSQL"]
 ---

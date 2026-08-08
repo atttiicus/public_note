@@ -1,6 +1,6 @@
 ---
 title: Java虚拟机
-date: 2021-09-18
+date: 2021-10-29
 description: Java 虚拟机知识, 包括运行时数据区域、内存管理、垃圾回收等。
 tags: ['Java', 'JVM']
 series: Java语言学习笔记

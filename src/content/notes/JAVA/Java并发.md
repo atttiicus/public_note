@@ -1,6 +1,6 @@
 ---
 title: Java并发
-date: 2021-09-18
+date: 2021-09-31
 description: Java 并发知识, 包括线程的创建、销毁、等待、唤醒、同步等操作。
 tags: ['Java']
 series: Java语言学习笔记
