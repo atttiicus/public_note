@@ -13,9 +13,17 @@ export type RenderItem =
     | { type: 'series'; group: SeriesGroup }
 
 export function buildRenderItems(notes: CollectionEntry<'notes'>[]): RenderItem[] {
-    const sorted = [...notes].sort((a, b) =>
-        a.data.title.localeCompare(b.data.title, 'zh-CN')
-    )
+    // 按日期从新到旧排序，无日期排末尾，同日按标题排序
+    const sorted = [...notes].sort((a, b) => {
+        const aDate = a.data.date
+        const bDate = b.data.date
+        if (!aDate && !bDate) return a.data.title.localeCompare(b.data.title, 'zh-CN')
+        if (!aDate) return 1
+        if (!bDate) return -1
+        const diff = bDate.valueOf() - aDate.valueOf()
+        if (diff !== 0) return diff
+        return a.data.title.localeCompare(b.data.title, 'zh-CN')
+    })
 
     const renderItems: RenderItem[] = []
     const seriesMap: Record<string, SeriesGroup> = {}
