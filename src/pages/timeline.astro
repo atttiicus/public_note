@@ -41,7 +41,7 @@ for (const note of datedNotes) {
         monthGroups.push({
             year: y,
             month: m,
-            label: `${y}年${m}月`,
+            label: `${y}-${String(m).padStart(2, '0')}`,
             iso: `${y}-${String(m).padStart(2, '0')}`,
             notes: [],
         })
@@ -49,7 +49,16 @@ for (const note of datedNotes) {
     monthGroups[monthGroups.length - 1].notes.push(note)
 }
 
-const totalMonths = monthGroups.length
+// "坚持N天"：全局最后一篇笔记与第一篇笔记的日期差 + 1
+const totalSpanDays =
+    datedNotes.length > 1
+        ? Math.ceil(
+              (datedNotes[0].data.date!.getTime() -
+                  datedNotes[datedNotes.length - 1].data.date!.getTime()) /
+                  (1000 * 60 * 60 * 24)
+          ) + 1
+        : datedNotes.length
+
 const totalDated = datedNotes.length
 ---
 
@@ -64,7 +73,7 @@ const totalDated = datedNotes.length
                 <div class="hero-stats">
                     <span>{totalDated} 篇笔记</span>
                     <span class="stat-sep">·</span>
-                    <span>{totalMonths} 个月份</span>
+                    <span>坚持{totalSpanDays}天</span>
                 </div>
             </div>
         </section>
@@ -74,10 +83,8 @@ const totalDated = datedNotes.length
                 <p class="empty-hint">暂无带日期的笔记，请先为笔记添加 date 字段。</p>
             ) : (
                 <>
-                    <div class="timeline-toolbar">
-                        <TimelineSortToggle client:load />
-                    </div>
                     <div class="timeline">
+                        <TimelineSortToggle client:load />
                     {
                         monthGroups.map((group, i) => {
                             // 编译时确定侧边：偶右奇左，按月交替
@@ -193,38 +200,33 @@ const totalDated = datedNotes.length
         padding: 4rem 1.5rem;
     }
 
-    /* ── 排序工具栏 ── */
-    .timeline-toolbar {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        display: flex;
-        justify-content: flex-end;
-    }
-    .sort-toggle-btn {
+    /* ── 排序悬浮按钮：绝对定位在时间线容器右上角 ── */
+    .sort-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 1.5rem;
+        z-index: 20;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        font-family: var(--font-sans);
-        font-size: 0.8125rem;
-        font-weight: 500;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
         color: var(--color-text-muted);
         background: var(--color-bg-card);
         border: 1px solid var(--color-border);
-        border-radius: 6px;
-        padding: 0.45rem 0.85rem;
+        border-radius: 10px;
+        padding: 0;
         cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         transition:
             color var(--transition-fast),
             border-color var(--transition-fast),
-            background-color var(--transition-fast);
+            box-shadow var(--transition-fast);
     }
-    .sort-toggle-btn:hover {
+    .sort-btn:hover {
         color: var(--color-primary);
         border-color: var(--color-primary-light);
-    }
-    .sort-icon {
-        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(107, 79, 58, 0.12);
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -381,6 +383,13 @@ const totalDated = datedNotes.length
     @media (max-width: 768px) {
         .hero {
             padding: 3rem 1rem 2.5rem;
+        }
+        .sort-btn {
+            top: 0.5rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
         }
         .timeline {
             padding: 2rem 1rem 3rem;

@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - 仔细对比，然后对我进行反问
 - 反问时最好带上你的建议，我会根据你的建议进行调整
+- **重要**：无法读取图片、无法确认页面元素位置、需求不明确时，必须主动追问，不要猜测后直接动手
 
 ## 工作流
 
