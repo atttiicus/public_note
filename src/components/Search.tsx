@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import Fuse from 'fuse.js'
+import Fuse, { type FuseResultMatch } from 'fuse.js'
 
 export interface NoteItem {
     slug: string
@@ -8,11 +8,13 @@ export interface NoteItem {
     tags?: string[]
     content: string
     series?: string
+    type?: 'note' | 'post'
+    url?: string
 }
 
 interface SearchResult {
     item: NoteItem
-    matches?: readonly Fuse.FuseResultMatch[]
+    matches?: readonly FuseResultMatch[]
 }
 
 function highlight(text: string, indices: readonly [number, number][] | undefined): string {
@@ -29,7 +31,7 @@ function highlight(text: string, indices: readonly [number, number][] | undefine
 }
 
 function getMatchIndices(
-    matches: readonly Fuse.FuseResultMatch[] | undefined,
+    matches: readonly FuseResultMatch[] | undefined,
     key: string
 ): readonly [number, number][] | undefined {
     return matches?.find((m) => m.key === key)?.indices as readonly [number, number][] | undefined
@@ -144,9 +146,11 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
                             ? getContentSnippet(item.content, query)
                             : (item.description ?? item.content.slice(0, 100))
 
+                        const itemUrl = item.url ?? `/notes/${item.slug}`
+
                         return (
-                            <li key={item.slug} className="search-result-item">
-                                <a href={`/notes/${item.slug}`} className="search-result-link">
+                            <li key={`${item.type ?? 'note'}-${item.slug}`} className="search-result-item">
+                                <a href={itemUrl} className="search-result-link">
                                     <div className="search-result-body">
                                         <span
                                             className="search-result-title"
@@ -154,6 +158,9 @@ export default function Search({ notes }: { notes: NoteItem[] }) {
                                                 __html: highlight(item.title, titleIndices),
                                             }}
                                         />
+                                        {item.type === 'post' && (
+                                            <span className="search-result-type-badge">博客</span>
+                                        )}
                                         {item.series && (
                                             <span className="search-result-series">
                                                 {item.series}

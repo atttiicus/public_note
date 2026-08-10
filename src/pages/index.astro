@@ -1,120 +1,129 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import NoteCard from '../components/NoteCard.astro'
-import Pagination from '../components/Pagination.astro'
+import BlogCard from '../components/BlogCard.astro'
 import { getCollection } from 'astro:content'
-import { buildRenderItems, getPage } from '../utils/notes'
 
-const notes = await getCollection('notes')
-const allItems = buildRenderItems(notes)
-const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
+/**
+ * 性能优化思路：
+ * 1. 所有数据处理在 Astro SSG 构建时完成，客户端零 JS 开销
+ * 2. 首页只取 5+5=10 条数据，数量小保证了子列表构建 O(n)
+ * 3. 笔记按日期排序，博客按 modDatetime/pubDatetime 排序
+ * 4. 卡片使用原生 <a> 标签，无 React 水合
+ * 5. 封面图片使用了 loading="lazy" + decoding="async" 延迟加载
+ * 6. hover 效果仅使用 CSS transform/opacity，触发 GPU 合成
+ * 7. 首页无分页，减少构建路径数量
+ */
+
+const allNotes = await getCollection('notes')
+const allPosts = await getCollection('posts')
+
+// 笔记：按日期从新到旧排序（无日期排末尾），取前 5
+const sortedNotes = [...allNotes]
+    .sort((a, b) => {
+        const aDate = a.data.date
+        const bDate = b.data.date
+        if (!aDate && !bDate) return a.data.title.localeCompare(b.data.title, 'zh-CN')
+        if (!aDate) return 1
+        if (!bDate) return -1
+        const diff = bDate.valueOf() - aDate.valueOf()
+        if (diff !== 0) return diff
+        return a.data.title.localeCompare(b.data.title, 'zh-CN')
+    })
+    .slice(0, 5)
+
+// 博客：过滤草稿，按 modDatetime/pubreDatetime 从新到旧排序，取前 5
+const visiblePosts = allPosts.filter((p) => !p.data.draft)
+const sortedPosts = [...visiblePosts]
+    .sort((a, b) => {
+        const aTime = (a.data.modDatetime ?? a.data.pubDatetime).valueOf()
+        const bTime = (b.data.modDatetime ?? b.data.pubDatetime).valueOf()
+        return bTime - aTime
+    })
+    .slice(0, 5)
 ---
 
-<BaseLayout title="Cafe Note" description="一个简洁的个人笔记网站，记录学习与思考。">
+<BaseLayout title="Cafe Note" description="一个简洁的个人笔记与博客网站，记录学习与思考。">
     <main class="home-page">
         <!-- 首屏 Hero -->
         <section class="hero" data-enter>
             <div class="hero-inner">
-                <p class="hero-label">NOTES</p>
+                <p class="hero-label">NOTES & BLOG</p>
                 <h1 class="hero-title">Cafe Note</h1>
                 <p class="hero-subtitle">
                     知识的碎片，思维的痕迹。<br />以书写整理思路，以阅读拓展边界。
                 </p>
                 <div class="hero-divider"></div>
-                <div class="hero-stats"><span>{notes.length} 篇笔记</span></div>
+                <div class="hero-stats">
+                    <span>{allNotes.length} 篇笔记</span>
+                    <span class="stat-sep">·</span>
+                    <span>{visiblePosts.length} 篇文章</span>
+                </div>
             </div>
         </section>
 
-        <!-- 笔记列表 -->
-        <section class="notes-section">
-            <div class="notes-inner">
-                <h2 class="section-title">所有笔记</h2>
-                <div class="notes-grid">
-                    {
-                        renderItems.map((item, i) =>
-                            item.type === 'single' ? (
-                                <div data-enter="">
-                                    <NoteCard
-                                        title={item.note.data.title}
-                                        description={item.note.data.description}
-                                        slug={item.note.slug}
-                                        tags={item.note.data.tags}
-                                    />
-                                </div>
+        <!-- 双栏区域：左笔记 / 右博客 -->
+        <section class="dual-section">
+            <div class="dual-inner">
+                <!-- 左栏：笔记 -->
+                <div class="dual-col">
+                    <div class="col-header">
+                        <h2 class="section-title">最新笔记</h2>
+                        <a href="/notes" class="more-link">
+                            查看更多
+                            <span class="more-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                    <div class="col-list">
+                        {
+                            sortedNotes.length === 0 ? (
+                                <p class="empty-hint">暂无笔记。</p>
                             ) : (
-                                <div class="series-group" data-enter="">
-                                    <div class="series-header">
-                                        <div class="series-header-left">
-                                            <svg
-                                                width="15"
-                                                height="15"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2.2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="series-icon"
-                                                aria-hidden="true"
-                                            >
-                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                                            </svg>
-                                            <span class="series-name">{item.group.name}</span>
-                                            <span class="series-badge">
-                                                {item.group.items.length} 篇
-                                            </span>
-                                        </div>
-                                        {item.group.tags.length > 0 && (
-                                            <div class="series-tags">
-                                                {item.group.tags.map((tag) => (
-                                                    <a
-                                                        href={`/tags/${encodeURIComponent(tag)}`}
-                                                        class="stag"
-                                                    >
-                                                        {tag}
-                                                    </a>
-                                                ))}
-                                            </div>
-                                        )}
+                                sortedNotes.map((note) => (
+                                    <div data-enter="">
+                                        <NoteCard
+                                            title={note.data.title}
+                                            description={note.data.description}
+                                            slug={note.slug}
+                                            tags={note.data.tags}
+                                        />
                                     </div>
-                                    <ul class="series-list">
-                                        {item.group.items.map(({ slug, title, description }) => {
-                                            const prefix = item.group.name + '-'
-                                            const label = title.startsWith(prefix)
-                                                ? title.slice(prefix.length)
-                                                : title
-                                            return (
-                                                <li>
-                                                    <a href={`/notes/${slug}`} class="series-item">
-                                                        <div class="series-item-body">
-                                                            <span class="series-item-title">
-                                                                {label}
-                                                            </span>
-                                                            {description && (
-                                                                <span class="series-item-desc">
-                                                                    {description}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <span
-                                                            class="series-item-arrow"
-                                                            aria-hidden="true"
-                                                        >
-                                                            →
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
-                                </div>
+                                ))
                             )
-                        )
-                    }
+                        }
+                    </div>
                 </div>
-                {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
-                <Pagination currentPage={1} totalPages={totalPages} />
+
+                <!-- 右栏：博客 -->
+                <div class="dual-col">
+                    <div class="col-header">
+                        <h2 class="section-title">最新文章</h2>
+                        <a href="/posts" class="more-link">
+                            查看更多
+                            <span class="more-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                    <div class="col-list">
+                        {
+                            sortedPosts.length === 0 ? (
+                                <p class="empty-hint">暂无文章。</p>
+                            ) : (
+                                sortedPosts.map((post) => (
+                                    <div data-enter="">
+                                        <BlogCard
+                                            title={post.data.title}
+                                            description={post.data.description}
+                                            slug={post.slug}
+                                            pubDatetime={post.data.pubDatetime}
+                                            tags={post.data.tags}
+                                            coverImage={post.data.coverImage}
+                                        />
+                                    </div>
+                                ))
+                            )
+                        }
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -173,15 +182,37 @@ const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
         font-size: 0.9375rem;
         color: var(--color-text-muted);
     }
+    .stat-sep {
+        margin: 0 0.5rem;
+        color: var(--color-border);
+    }
 
-    /* ── Notes section ── */
-    .notes-section {
+    /* ── 双栏区域 ── */
+    .dual-section {
         padding: 3rem 1.5rem;
     }
-    .notes-inner {
+    .dual-inner {
         max-width: 780px;
         margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        align-items: start;
     }
+
+    .dual-col {
+        min-width: 0;
+    }
+
+    .col-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
     .section-title {
         font-family: var(--font-sans);
         font-size: 0.8125rem;
@@ -189,169 +220,63 @@ const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
         letter-spacing: 0.15em;
         text-transform: uppercase;
         color: var(--color-text-muted);
-        margin: 0 0 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--color-border);
+        margin: 0;
+        padding: 0;
+        border: none;
     }
-    .notes-grid {
+
+    .more-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--color-primary);
+        text-decoration: none;
+        transition:
+            color var(--transition-fast),
+            gap var(--transition-fast);
+    }
+
+    .more-link:hover {
+        color: var(--color-primary-hover);
+        gap: 0.5rem;
+    }
+
+    .more-arrow {
+        transition: transform var(--transition-fast);
+    }
+
+    .more-link:hover .more-arrow {
+        transform: translateX(3px);
+    }
+
+    .col-list {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
+
     .empty-hint {
         color: var(--color-text-muted);
         font-style: italic;
         text-align: center;
-        padding: 3rem 0;
-    }
-
-    /* ── 系列组 ── */
-    .series-group {
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        background-color: var(--color-bg-card);
-        overflow: hidden;
-        transition:
-            border-color var(--transition-fast),
-            box-shadow var(--transition-fast);
-    }
-    .series-group:hover {
-        border-color: var(--color-primary-light);
-        box-shadow: 0 4px 16px rgba(107, 79, 58, 0.09);
-    }
-
-    .series-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        padding: 0.875rem 1.25rem;
-        background-color: var(--color-bg-secondary);
-        border-bottom: 1px solid var(--color-border);
-    }
-    .series-header-left {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .series-icon {
-        color: var(--color-primary);
-        flex-shrink: 0;
-    }
-    .series-name {
-        font-family: var(--font-serif);
-        font-size: 1.0625rem;
-        font-weight: 600;
-        color: var(--color-text);
-    }
-    .series-badge {
-        font-family: var(--font-sans);
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--color-primary);
-        background-color: var(--color-hover);
-        border: 1px solid var(--color-primary-light);
-        border-radius: 100px;
-        padding: 0.1em 0.6em;
-    }
-    .series-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.3rem;
-    }
-    .stag {
-        font-size: 0.75rem;
-        font-family: var(--font-sans);
-        padding: 0.2em 0.6em;
-        background-color: var(--color-bg-secondary);
-        color: var(--color-text-muted);
-        border-radius: 6px;
-        border: 1px solid var(--color-border);
-        text-decoration: none;
-        transition:
-            background-color var(--transition-fast),
-            border-color var(--transition-fast),
-            color var(--transition-fast);
-    }
-    .stag:hover {
-        background-color: var(--color-hover);
-        border-color: var(--color-primary-light);
-        color: var(--color-primary);
-    }
-
-    .series-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-    .series-list li {
-        border-bottom: 1px solid var(--color-border);
-    }
-    .series-list li:last-child {
-        border-bottom: none;
-    }
-
-    .series-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 0.75rem 1.25rem;
-        text-decoration: none;
-        color: inherit;
-        transition: background-color var(--transition-fast);
-    }
-    .series-item:hover {
-        background-color: var(--color-hover);
-    }
-
-    .series-item-body {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-    }
-    .series-item-title {
-        font-family: var(--font-sans);
+        padding: 2rem 0;
         font-size: 0.9375rem;
-        font-weight: 500;
-        color: var(--color-text);
-        transition: color var(--transition-fast);
-    }
-    .series-item:hover .series-item-title {
-        color: var(--color-primary);
-    }
-    .series-item-desc {
-        font-size: 0.8125rem;
-        color: var(--color-text-muted);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .series-item-arrow {
-        font-size: 1rem;
-        color: var(--color-text-muted);
-        flex-shrink: 0;
-        transition:
-            color var(--transition-fast),
-            transform var(--transition-fast);
-    }
-    .series-item:hover .series-item-arrow {
-        color: var(--color-primary);
-        transform: translateX(4px);
     }
 
+    /* ── 响应式：768px 以下单栏堆叠 ── */
     @media (max-width: 768px) {
         .hero {
             padding: 3rem 1rem 2.5rem;
         }
-        .notes-section {
+        .dual-section {
             padding: 2rem 1rem;
         }
-        .series-item-desc {
-            display: none;
+        .dual-inner {
+            grid-template-columns: 1fr;
+            gap: 2rem;
         }
     }
 </style>

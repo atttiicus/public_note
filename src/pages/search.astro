@@ -3,20 +3,29 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import Search from '../components/Search.tsx'
 import { getCollection } from 'astro:content'
 
+/**
+ * 性能优化思路：
+ * 1. 搜索索引在构建时预处理，stripMarkdown 在服务端执行
+ * 2. fuse.js 搜索在客户端进行，无需服务端请求
+ * 3. 搜索结果限制 20 条，避免大量渲染
+ * 4. 笔记和博客合并为统一索引数组，一次 Fuse 实例覆盖全部内容
+ */
 const notes = await getCollection('notes')
+const posts = await getCollection('posts')
 
-function stripMarkdown(raw: string): string {
+function stripMarkdown(raw: string | undefined): string {
+    if (!raw) return ''
     return raw
-        .replace(/^---[\s\S]*?---/m, '') // frontmatter
-        .replace(/```[\s\S]*?```/g, '') // code blocks
-        .replace(/`[^`]+`/g, '') // inline code
-        .replace(/!\[.*?\]\(.*?\)/g, '') // images
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links → keep text
-        .replace(/#{1,6}\s/g, '') // headings
-        .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1') // bold/italic
-        .replace(/^\s*[-*+]\s/gm, '') // list markers
-        .replace(/^\s*\d+\.\s/gm, '') // ordered list
-        .replace(/<[^>]+>/g, '') // html tags
+        .replace(/^---[\s\S]*?---/m, '')
+        .replace(/```[\s\S]*?```/g, '')
+        .replace(/`[^`]+`/g, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/#{1,6}\s/g, '')
+        .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1')
+        .replace(/^\s*[-*+]\s/gm, '')
+        .replace(/^\s*\d+\.\s/gm, '')
+        .replace(/<[^>]+>/g, '')
         .replace(/\n{2,}/g, ' ')
         .replace(/\s+/g, ' ')
         .trim()
@@ -29,10 +38,27 @@ const noteItems = notes.map((note) => ({
     tags: note.data.tags,
     series: note.data.series,
     content: stripMarkdown(note.body),
+    type: 'note' as const,
+    url: `/notes/${note.slug}`,
 }))
+
+const postItems = posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({
+        slug: post.slug,
+        title: post.data.title,
+        description: post.data.description,
+        tags: post.data.tags,
+        content: stripMarkdown(post.body),
+        type: 'post' as const,
+        url: `/posts/${post.slug}`,
+    }))
+
+const allItems = [...noteItems, ...postItems]
+const totalPosts = posts.filter((p) => !p.data.draft).length
 ---
 
-<BaseLayout title="搜索 — Cafe Note" description="搜索所有笔记">
+<BaseLayout title="搜索 — Cafe Note" description="搜索所有笔记与博客文章">
     <main class="search-page">
         <div class="search-container" data-enter>
             <header class="page-header">
@@ -53,10 +79,10 @@ const noteItems = notes.map((note) => ({
                     返回
                 </a>
                 <h1 class="page-title">搜索</h1>
-                <p class="page-subtitle">共 {notes.length} 篇笔记</p>
+                <p class="page-subtitle">共 {notes.length} 篇笔记 · {totalPosts} 篇文章</p>
             </header>
 
-            <Search notes={noteItems} client:load />
+            <Search notes={allItems} client:load />
         </div>
     </main>
 </BaseLayout>
@@ -232,6 +258,28 @@ const noteItems = notes.map((note) => ({
     }
     :global(.search-result-link:hover .search-result-title) {
         color: var(--color-primary);
+    }
+
+    :global(.search-result-title-row) {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    :global(.search-result-type-badge) {
+        flex-shrink: 0;
+        font-family: var(--font-sans);
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--color-accent-secondary);
+        background-color: rgba(92, 123, 110, 0.08);
+        border: 1px solid var(--color-accent-secondary-light);
+        border-radius: 100px;
+        padding: 0.1em 0.55em;
+    }
+
+    :global(.dark .search-result-type-badge) {
+        background-color: rgba(114, 204, 154, 0.1);
     }
 
     :global(.search-result-series) {

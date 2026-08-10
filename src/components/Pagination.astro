@@ -2,11 +2,18 @@
 interface Props {
     currentPage: number
     totalPages: number
+    basePath?: string
 }
 
-const { currentPage, totalPages } = Astro.props
+const { currentPage, totalPages, basePath = '/' } = Astro.props
 
-const pageUrl = (page: number) => (page === 1 ? '/' : `/page/${page}`)
+/**
+ * 性能优化思路：
+ * 1. 所有分页链接在构建时预计算，无客户端开销
+ * 2. 组件仅在 totalPages > 1 时渲染，大部分页面零 DOM
+ * 3. 内联 active/disabled 判断在模板层完成，无 JS 运行时
+ */
+const pageUrl = (page: number) => (page === 1 ? basePath : `${basePath}/page/${page}`)
 ---
 
 {

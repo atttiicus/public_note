@@ -18,6 +18,14 @@ const { currentPath = '/' } = Astro.props
         <nav class="header-nav">
             <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>首页</a>
             <a
+                href="/notes"
+                class:list={['nav-link', { active: currentPath.startsWith('/notes') }]}>笔记</a
+            >
+            <a
+                href="/posts"
+                class:list={['nav-link', { active: currentPath.startsWith('/posts') }]}>博客</a
+            >
+            <a
                 href="/timeline"
                 class:list={['nav-link', { active: currentPath.startsWith('/timeline') }]}>时间线</a
             >

@@ -7,33 +7,61 @@ import { getCollection } from 'astro:content'
  * 性能优化思路：
  * 1. 所有数据处理在 Astro SSG 构建时完成，客户端仅排序切换有少量 JS
  * 2. getCollection 是构建时 API，无运行时请求
- * 3. 月份分组使用单次遍历，O(n) 复杂度
+ * 3. 月份分组使用单次遍历 O(n)，笔记和博客合并后仅一次遍历
  * 4. 侧边归属在编译时由索引奇偶确定，客户端无计算
  * 5. 时间线视觉完全由 CSS flex + 伪元素实现
  * 6. 卡片使用原生 <a> 标签，无 React 水合开销
  * 7. hover 动效仅使用 transform，触发 GPU 合成层
  * 8. SortToggle 为独立 React island（client:load），反转 DOM 顺序 O(n)
+ * 9. 类型徽章（笔记/博客）在构建时生成，客户端无差异化开销
  */
 
 const allNotes = await getCollection('notes')
+const allPosts = await getCollection('posts')
 
-// 默认按日期从新到旧排序
-const datedNotes = allNotes
-    .filter((note) => note.data.date != null)
-    .sort((a, b) => b.data.date!.valueOf() - a.data.date!.valueOf())
+interface TimelineEntry {
+    type: 'note' | 'post'
+    title: string
+    description: string | undefined
+    date: Date
+    url: string
+}
+
+// 合并笔记和博客为统一时间线条目
+// 笔记使用 date 字段，博客使用 pubDatetime
+const entries: TimelineEntry[] = [
+    ...allNotes
+        .filter((n) => n.data.date != null)
+        .map((n) => ({
+            type: 'note' as const,
+            title: n.data.title,
+            description: n.data.description,
+            date: n.data.date!,
+            url: `/notes/${n.slug}`,
+        })),
+    ...allPosts
+        .filter((p) => !p.data.draft && p.data.pubDatetime != null)
+        .map((p) => ({
+            type: 'post' as const,
+            title: p.data.title,
+            description: p.data.description,
+            date: p.data.pubDatetime,
+            url: `/posts/${p.slug}`,
+        })),
+].sort((a, b) => b.date.valueOf() - a.date.valueOf())
 
 interface MonthGroup {
     year: number
     month: number
     label: string
     iso: string
-    notes: typeof datedNotes
+    entries: TimelineEntry[]
 }
 
 // 单次遍历分组，O(n)
 const monthGroups: MonthGroup[] = []
-for (const note of datedNotes) {
-    const d = note.data.date!
+for (const entry of entries) {
+    const d = entry.date
     const y = d.getFullYear()
     const m = d.getMonth() + 1
     const last = monthGroups[monthGroups.length - 1]
@@ -43,26 +71,27 @@ for (const note of datedNotes) {
             month: m,
             label: `${y}-${String(m).padStart(2, '0')}`,
             iso: `${y}-${String(m).padStart(2, '0')}`,
-            notes: [],
+            entries: [],
         })
     }
-    monthGroups[monthGroups.length - 1].notes.push(note)
+    monthGroups[monthGroups.length - 1].entries.push(entry)
 }
 
-// "坚持N天"：全局最后一篇笔记与第一篇笔记的日期差 + 1
+const totalNotes = allNotes.filter((n) => n.data.date != null).length
+const totalPosts = allPosts.filter((p) => !p.data.draft).length
+const totalDated = entries.length
+
+// "坚持N天"：最新条目与最早条目的日期差 + 1
 const totalSpanDays =
-    datedNotes.length > 1
+    entries.length > 1
         ? Math.ceil(
-              (datedNotes[0].data.date!.getTime() -
-                  datedNotes[datedNotes.length - 1].data.date!.getTime()) /
+              (entries[0].date.getTime() - entries[entries.length - 1].date.getTime()) /
                   (1000 * 60 * 60 * 24)
           ) + 1
-        : datedNotes.length
-
-const totalDated = datedNotes.length
+        : entries.length
 ---
 
-<BaseLayout title="时间线" description="按时间顺序浏览所有笔记。">
+<BaseLayout title="时间线" description="按时间顺序浏览所有笔记与博客文章。">
     <main class="timeline-page">
         <section class="hero" data-enter>
             <div class="hero-inner">
@@ -71,7 +100,9 @@ const totalDated = datedNotes.length
                 <p class="hero-subtitle">按时间追溯知识的积累与成长。</p>
                 <div class="hero-divider"></div>
                 <div class="hero-stats">
-                    <span>{totalDated} 篇笔记</span>
+                    <span>{totalNotes} 篇笔记</span>
+                    <span class="stat-sep">·</span>
+                    <span>{totalPosts} 篇文章</span>
                     <span class="stat-sep">·</span>
                     <span>坚持{totalSpanDays}天</span>
                 </div>
@@ -80,14 +111,13 @@ const totalDated = datedNotes.length
 
         {
             totalDated === 0 ? (
-                <p class="empty-hint">暂无带日期的笔记，请先为笔记添加 date 字段。</p>
+                <p class="empty-hint">暂无带日期的笔记或文章，请先为内容添加日期字段。</p>
             ) : (
                 <>
                     <div class="timeline">
                         <TimelineSortToggle client:load />
                     {
                         monthGroups.map((group, i) => {
-                            // 编译时确定侧边：偶右奇左，按月交替
                             const side = i % 2 === 0 ? 'right' : 'left'
                             const spacer = <div class="tl-spacer"></div>
                             const marker = (
@@ -100,17 +130,29 @@ const totalDated = datedNotes.length
                             )
                             const cards = (
                                 <div class="tl-cards">
-                                    {group.notes.map((note) => (
+                                    {group.entries.map((entry) => (
                                         <a
-                                            href={`/notes/${note.slug}`}
+                                            href={entry.url}
                                             class="tl-card"
                                         >
-                                            <span class="card-title">
-                                                {note.data.title}
-                                            </span>
-                                            {note.data.description && (
+                                            <div class="tl-card-header">
+                                                <span class="card-title">
+                                                    {entry.title}
+                                                </span>
+                                                <span
+                                                    class:list={[
+                                                        'type-badge',
+                                                        entry.type === 'note'
+                                                            ? 'type-note'
+                                                            : 'type-post',
+                                                    ]}
+                                                >
+                                                    {entry.type === 'note' ? '笔记' : '博客'}
+                                                </span>
+                                            </div>
+                                            {entry.description && (
                                                 <span class="card-desc">
-                                                    {note.data.description}
+                                                    {entry.description}
                                                 </span>
                                             )}
                                         </a>
@@ -129,8 +171,8 @@ const totalDated = datedNotes.length
                             )
                         })
                     }
-                </div>
-                    </>
+                    </div>
+                </>
             )
         }
     </main>
@@ -200,7 +242,7 @@ const totalDated = datedNotes.length
         padding: 4rem 1.5rem;
     }
 
-    /* ── 排序悬浮按钮：绝对定位在时间线容器右上角 ── */
+    /* ── 排序悬浮按钮 ── */
     .sort-btn {
         position: absolute;
         top: 0.75rem;
@@ -231,12 +273,6 @@ const totalDated = datedNotes.length
 
     /* ═══════════════════════════════════════════════════════════════
        时间线主体
-
-       布局原理：
-       - 每行是 flex 容器，结构为 [spacer 1fr] [marker auto] [cards 1fr]
-       - spacer 和 cards 各占剩余空间的一半，marker 居中（恰好在 50% 处）
-       - 中心线是 .timeline 的 ::before 伪元素，位于 left: 50%
-       - 中心线恰好穿过 marker 列的正中央
        ═══════════════════════════════════════════════════════════════ */
 
     .timeline {
@@ -246,7 +282,6 @@ const totalDated = datedNotes.length
         padding: 3rem 1.5rem 4rem;
     }
 
-    /* 中心垂直线：伪元素绘制，无额外 DOM 节点 */
     .timeline::before {
         content: '';
         position: absolute;
@@ -265,7 +300,6 @@ const totalDated = datedNotes.length
         pointer-events: none;
     }
 
-    /* ── 每行：flex 三列布局 ── */
     .tl-row {
         position: relative;
         display: flex;
@@ -276,15 +310,12 @@ const totalDated = datedNotes.length
         margin-top: 2rem;
     }
 
-    /* 左右各半的弹性区域 */
     .tl-spacer,
     .tl-cards {
         flex: 1;
         min-width: 0;
     }
 
-    /* ── 中心标记列 ──
-       固定宽度，内部垂直排列 dot + 日期标签 */
     .tl-marker {
         flex: 0 0 auto;
         display: flex;
@@ -293,7 +324,6 @@ const totalDated = datedNotes.length
         padding: 0 1.25rem;
     }
 
-    /* ── 时间线圆点 ── */
     .tl-dot {
         width: 12px;
         height: 12px;
@@ -308,7 +338,6 @@ const totalDated = datedNotes.length
             box-shadow var(--transition-base);
     }
 
-    /* ── 月份标签 ── */
     .tl-date {
         font-family: var(--font-sans);
         font-size: 0.8125rem;
@@ -325,7 +354,6 @@ const totalDated = datedNotes.length
             background-color var(--transition-base);
     }
 
-    /* ── 卡片列表 ── */
     .tl-cards {
         display: flex;
         flex-direction: column;
@@ -333,8 +361,7 @@ const totalDated = datedNotes.length
         padding-top: 0.15rem;
     }
 
-    /* ── 单张卡片 ──
-       hover 仅修改 transform/box-shadow，GPU 合成 */
+    /* ── 单张卡片 ── */
     .tl-card {
         display: flex;
         flex-direction: column;
@@ -355,6 +382,13 @@ const totalDated = datedNotes.length
         box-shadow: 0 4px 16px rgba(107, 79, 58, 0.1);
         transform: translateY(-2px);
     }
+
+    .tl-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     .card-title {
         font-family: var(--font-sans);
         font-size: 0.9375rem;
@@ -362,10 +396,13 @@ const totalDated = datedNotes.length
         color: var(--color-text);
         line-height: 1.4;
         transition: color var(--transition-fast);
+        flex: 1;
+        min-width: 0;
     }
     .tl-card:hover .card-title {
         color: var(--color-primary);
     }
+
     .card-desc {
         font-family: var(--font-serif);
         font-size: 0.8125rem;
@@ -377,8 +414,36 @@ const totalDated = datedNotes.length
         -webkit-box-orient: vertical;
     }
 
+    /* ── 类型徽章：笔记 vs 博客 ── */
+    .type-badge {
+        flex-shrink: 0;
+        font-family: var(--font-sans);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        border-radius: 100px;
+        padding: 0.15em 0.65em;
+        line-height: 1.4;
+    }
+
+    .type-note {
+        color: var(--color-primary);
+        background-color: var(--color-hover);
+        border: 1px solid var(--color-primary-light);
+    }
+
+    .type-post {
+        color: var(--color-accent-secondary);
+        background-color: rgba(92, 123, 110, 0.08);
+        border: 1px solid var(--color-accent-secondary-light);
+    }
+
+    .dark .type-post {
+        background-color: rgba(114, 204, 154, 0.1);
+    }
+
     /* ═══════════════════════════════════════════════════════════════
-       移动端 (< 768px)：时间线左移，内容统一右侧
+       移动端 (< 768px)
        ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
         .hero {
@@ -398,7 +463,6 @@ const totalDated = datedNotes.length
             left: 1.25rem;
         }
 
-        /* 改为两列：固定 marker + 弹性 cards，spacer 隐藏 */
         .tl-row {
             flex-direction: row !important;
         }

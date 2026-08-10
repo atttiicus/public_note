@@ -1,0 +1,284 @@
+---
+import BaseLayout from './BaseLayout.astro'
+
+export interface Props {
+    title: string
+    description?: string
+    tags?: string[]
+    pubDatetime?: Date
+}
+
+const { title, description, tags = [], pubDatetime } = Astro.props
+
+/**
+ * 性能优化思路：
+ * 1. 纯静态布局，无 React 水合开销
+ * 2. 代码块增强（语言标签 + 复制按钮）通过原生 DOM 实现，零依赖
+ * 3. astro:after-swap 事件处理路由切换后重新初始化
+ * 4. 内联 <script> 使用浏览器原生 API，无框架开销
+ */
+---
+
+<BaseLayout
+    title={`${title} — 博客`}
+    description={description}
+>
+    <main class="post-page">
+        <div class="post-container" data-enter>
+            <header class="post-header">
+                <a href="/posts" class="back-link">
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    返回博客列表
+                </a>
+                <h1 class="post-title">{title}</h1>
+                {pubDatetime && (
+                    <time class="post-date" datetime={pubDatetime.toISOString()}>
+                        {pubDatetime.toLocaleDateString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        })}
+                    </time>
+                )}
+                {description && <p class="post-description">{description}</p>}
+                {
+                    tags.length > 0 && (
+                        <div class="post-tags">
+                            {tags.map((tag) => (
+                                <a href={`/tags/${encodeURIComponent(tag)}`} class="tag">
+                                    {tag}
+                                </a>
+                            ))}
+                        </div>
+                    )
+                }
+            </header>
+
+            <article class="post-content prose">
+                <slot />
+            </article>
+        </div>
+    </main>
+</BaseLayout>
+
+<!-- 代码块增强：语言标签 + 复制按钮（从 NoteLayout 复用） -->
+<script>
+    function setupCodeBlocks() {
+        document.querySelectorAll<HTMLElement>('pre.astro-code').forEach((pre) => {
+            if (pre.dataset.enhanced) return
+            if (pre.dataset.language === 'mermaid') return
+            pre.dataset.enhanced = '1'
+
+            const lang = pre.dataset.language || 'text'
+            const wrapper = document.createElement('div')
+            wrapper.className = 'code-wrapper'
+
+            const header = document.createElement('div')
+            header.className = 'code-header'
+
+            const langBadge = document.createElement('span')
+            langBadge.className = 'code-lang'
+            langBadge.textContent = lang
+
+            const copyBtn = document.createElement('button')
+            copyBtn.className = 'code-copy-btn'
+            copyBtn.setAttribute('aria-label', '复制代码')
+            copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span>`
+
+            copyBtn.addEventListener('click', async () => {
+                const code = pre.querySelector('code')?.textContent ?? ''
+                try {
+                    await navigator.clipboard.writeText(code)
+                    copyBtn.querySelector('span')!.textContent = '已复制'
+                    copyBtn.classList.add('copied')
+                    setTimeout(() => {
+                        copyBtn.querySelector('span')!.textContent = '复制'
+                        copyBtn.classList.remove('copied')
+                    }, 2000)
+                } catch {
+                    /* silent */
+                }
+            })
+
+            header.appendChild(langBadge)
+            header.appendChild(copyBtn)
+
+            pre.parentNode!.insertBefore(wrapper, pre)
+            wrapper.appendChild(header)
+            wrapper.appendChild(pre)
+        })
+    }
+
+    setupCodeBlocks()
+    document.addEventListener('astro:after-swap', () => {
+        setupCodeBlocks()
+    })
+</script>
+
+<style>
+    .post-page {
+        min-height: calc(100vh - var(--header-height));
+        padding: 3rem 1.5rem;
+    }
+
+    .post-container {
+        max-width: var(--content-max-width);
+        margin: 0 auto;
+    }
+
+    .post-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: color var(--transition-fast);
+    }
+
+    .back-link:hover {
+        color: var(--color-primary);
+    }
+
+    .post-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0 0 0.5rem;
+        line-height: 1.25;
+    }
+
+    .post-date {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        margin-bottom: 0.75rem;
+    }
+
+    .post-description {
+        font-family: var(--font-serif);
+        font-size: 1.0625rem;
+        color: var(--color-text-muted);
+        margin: 0 0 1rem;
+        font-style: italic;
+        line-height: 1.7;
+    }
+
+    .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+    }
+
+    .tag {
+        font-size: 0.8125rem;
+        font-family: var(--font-sans);
+        padding: 0.25em 0.7em;
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-muted);
+        border-radius: 6px;
+        border: 1px solid var(--color-border);
+        text-decoration: none;
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
+            color var(--transition-fast);
+    }
+
+    .tag:hover {
+        background-color: var(--color-hover);
+        border-color: var(--color-primary-light);
+        color: var(--color-primary);
+    }
+
+    .post-content {
+    }
+
+    /* ── 代码块包装器 ── */
+    :global(.code-wrapper) {
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+    }
+
+    :global(.code-wrapper pre.astro-code) {
+        margin: 0;
+        border-radius: 0;
+        border: none;
+    }
+
+    :global(.code-header) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.45rem 1rem;
+        background-color: var(--color-bg-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    :global(.code-lang) {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--color-primary);
+        text-transform: lowercase;
+        letter-spacing: 0.03em;
+    }
+
+    :global(.code-copy-btn) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        background: none;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 0.2rem 0.55rem;
+        cursor: pointer;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    :global(.code-copy-btn:hover) {
+        color: var(--color-primary);
+        border-color: var(--color-primary-light);
+        background-color: var(--color-hover);
+    }
+
+    :global(.code-copy-btn.copied) {
+        color: #3d9970;
+        border-color: #3d9970;
+    }
+
+    @media (max-width: 768px) {
+        .post-page {
+            padding: 2rem 1rem;
+        }
+    }
+</style>

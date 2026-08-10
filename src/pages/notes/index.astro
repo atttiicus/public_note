@@ -3,36 +3,18 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 import NoteCard from '../../components/NoteCard.astro'
 import Pagination from '../../components/Pagination.astro'
 import { getCollection } from 'astro:content'
-import { buildRenderItems, getPage, ITEMS_PER_PAGE } from '../../utils/notes'
+import { buildRenderItems, getPage } from '../../utils/notes'
 
-export async function getStaticPaths() {
-    const notes = await getCollection('notes')
-    const allItems = buildRenderItems(notes)
-    const totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE)
-
-    return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map((page) => {
-        const { pageItems } = getPage(allItems, page)
-        return {
-            params: { page: String(page) },
-            props: { pageItems, totalPages, noteCount: notes.length },
-        }
-    })
-}
-
-const { pageItems: renderItems, totalPages, noteCount } = Astro.props
-const currentPage = Number(Astro.params.page)
+const notes = await getCollection('notes')
+const allItems = buildRenderItems(notes)
+const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
 ---
 
-<BaseLayout
-    title={`Cafe Note · 第 ${currentPage} 页`}
-    description={`Cafe Note第 ${currentPage} 页，共 ${noteCount} 篇`}
->
+<BaseLayout title="所有笔记" description={`共 ${notes.length} 篇笔记`}>
     <main class="home-page">
         <section class="notes-section">
             <div class="notes-inner">
-                <h2 class="section-title">
-                    所有笔记 <span class="page-indicator">· 第 {currentPage} 页</span>
-                </h2>
+                <h2 class="section-title">所有笔记</h2>
                 <div class="notes-grid">
                     {
                         renderItems.map((item) =>
@@ -117,7 +99,12 @@ const currentPage = Number(Astro.params.page)
                         )
                     }
                 </div>
-                <Pagination currentPage={currentPage} totalPages={totalPages} />
+                {notes.length === 0 && <p class="empty-hint">暂无笔记。</p>}
+                <Pagination
+                    currentPage={1}
+                    totalPages={totalPages}
+                    basePath="/notes"
+                />
             </div>
         </section>
     </main>
@@ -127,7 +114,6 @@ const currentPage = Number(Astro.params.page)
     .home-page {
         min-height: calc(100vh - var(--header-height));
     }
-
     .notes-section {
         padding: 3rem 1.5rem;
     }
@@ -146,26 +132,24 @@ const currentPage = Number(Astro.params.page)
         padding-bottom: 0.75rem;
         border-bottom: 1px solid var(--color-border);
     }
-    .page-indicator {
-        font-weight: 400;
-        letter-spacing: 0;
-        text-transform: none;
-    }
     .notes-grid {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
+    .empty-hint {
+        color: var(--color-text-muted);
+        font-style: italic;
+        text-align: center;
+        padding: 3rem 0;
+    }
 
-    /* ── 系列组（与 index.astro 保持一致） ── */
     .series-group {
         border: 1px solid var(--color-border);
         border-radius: 8px;
         background-color: var(--color-bg-card);
         overflow: hidden;
-        transition:
-            border-color var(--transition-fast),
-            box-shadow var(--transition-fast);
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
     .series-group:hover {
         border-color: var(--color-primary-light);
@@ -234,13 +218,7 @@ const currentPage = Number(Astro.params.page)
         transition: background-color var(--transition-fast);
     }
     .series-item:hover { background-color: var(--color-hover); }
-    .series-item-body {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-    }
+    .series-item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.2rem; }
     .series-item-title {
         font-family: var(--font-sans);
         font-size: 0.9375rem;

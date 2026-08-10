@@ -47,21 +47,29 @@
     --transition-slow: 350ms ease;
 }
 
-/* 暗色主题 */
-.dark {
-    /* 背景：暖棕深色，而非近黑 */
-    --color-bg: #1e1a16;
-    --color-bg-secondary: #28221d;
-    --color-bg-card: #302a24;
+/* 博客文章类型标识色（与暖棕主色互补的柔和绿色） */
+    --color-accent-secondary: #5c7b6e;
+    --color-accent-secondary-light: #7daa92;
 
-    /* 文字：暖白，保持高对比度 */
-    --color-text: #ede5da;
-    --color-text-muted: #b8a898;
+    /* 暗色主题 */
+    .dark {
+        /* 背景：暖棕深色，而非近黑 */
+        --color-bg: #1e1a16;
+        --color-bg-secondary: #28221d;
+        --color-bg-card: #302a24;
+
+        /* 文字：暖白，保持高对比度 */
+        --color-text: #ede5da;
+        --color-text-muted: #b8a898;
 
     /* 主色调：偏亮的暖棕，在深色背景上清晰可见 */
     --color-primary: #cc9a72;
     --color-primary-light: #d9ae88;
     --color-primary-hover: #e0bc98;
+
+    /* 博客文章标识色：更亮的柔和绿 */
+    --color-accent-secondary: #72cc9a;
+    --color-accent-secondary-light: #8de0b0;
 
     /* 边框：提升至可感知的亮度 */
     --color-border: #5a4d44;

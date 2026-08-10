@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import BlogCard from '../../components/BlogCard.astro'
+import Pagination from '../../components/Pagination.astro'
+import { getCollection } from 'astro:content'
+
+const allPosts = await getCollection('posts')
+const posts = allPosts
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => {
+        const aTime = (a.data.modDatetime ?? a.data.pubDatetime).valueOf()
+        const bTime = (b.data.modDatetime ?? b.data.pubDatetime).valueOf()
+        return bTime - aTime
+    })
+
+const ITEMS_PER_PAGE = 10
+const totalPages = Math.ceil(posts.length / ITEMS_PER_PAGE)
+const pageItems = posts.slice(0, ITEMS_PER_PAGE)
+---
+
+<BaseLayout title="博客文章" description={`共 ${posts.length} 篇文章`}>
+    <main class="home-page">
+        <section class="posts-section">
+            <div class="posts-inner">
+                <h2 class="section-title">博客文章</h2>
+                <div class="posts-grid">
+                    {pageItems.map((post) => (
+                        <div data-enter="">
+                            <BlogCard
+                                title={post.data.title}
+                                description={post.data.description}
+                                slug={post.slug}
+                                pubDatetime={post.data.pubDatetime}
+                                tags={post.data.tags}
+                                coverImage={post.data.coverImage}
+                            />
+                        </div>
+                    ))}
+                </div>
+                {posts.length === 0 && <p class="empty-hint">暂无文章。</p>}
+                <Pagination currentPage={1} totalPages={totalPages} basePath="/posts" />
+            </div>
+        </section>
+    </main>
+</BaseLayout>
+
+<style>
+    .home-page { min-height: calc(100vh - var(--header-height)); }
+    .posts-section { padding: 3rem 1.5rem; }
+    .posts-inner { max-width: 780px; margin: 0 auto; }
+    .section-title {
+        font-family: var(--font-sans);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+        margin: 0 0 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+    .posts-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .empty-hint { color: var(--color-text-muted); font-style: italic; text-align: center; padding: 3rem 0; }
+    @media (max-width: 768px) { .posts-section { padding: 2rem 1rem; } }
+</style>

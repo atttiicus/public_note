@@ -87,9 +87,9 @@ export default defineConfig({
             },
         },
         fontFamily: {
-            serif: ['Lora', 'Noto Serif SC', 'Georgia', 'serif'],
-            display: ['Playfair Display', 'Georgia', 'serif'],
-            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            serif: 'Lora, Noto Serif SC, Georgia, serif',
+            display: 'Playfair Display, Georgia, serif',
+            mono: 'JetBrains Mono, Fira Code, monospace',
         },
     },
     shortcuts: {
