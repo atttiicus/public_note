@@ -45,7 +45,9 @@ const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : null
     </head>
     <body>
         <Header currentPath={Astro.url.pathname} />
-        <slot />
+        <div class="wrapper">
+            <slot />
+        </div>
         <footer class="site-footer">
             <div class="footer-inner">
                 <p>以书为友，以思为行。</p>
