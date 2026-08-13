@@ -1,6 +1,6 @@
 ---
 title: JavaScript 中的 this
-description: 从 JavaScript 执行上下文视角讲 this
+description: this 与执行上下文绑定，每个执行上下文中都有一个 this。文章延续前面对执行上下文的讨论，从全局执行上下文中的 this 讲起：在浏览器控制台打印 console.log(this) 得到的是 window 对象，这也让 this 成为与作用域链的唯一交点。随后重点讲解函数执行上下文中的 this：通过 call/apply/bind 显式绑定、通过对象方法调用时的隐式绑定、普通函数调用时指向全局对象的默认绑定，以及箭头函数中 this 的静态词法绑定。文章逐一剖析各种调用方式下 this 的指向规则，并结合典型面试题与易错场景分析，帮助读者彻底告别对 this 的困惑。
 pubDatetime: 2024-03-31 13:30:00
 tags:
     - 前端

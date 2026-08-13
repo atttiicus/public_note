@@ -1,6 +1,6 @@
 ---
 title: 浏览器渲染页面流程
-description: HTML、CSS和JavaScript是如何变成页面的
+description: 编写好的 HTML、CSS、JavaScript 文件经过浏览器变成屏幕上的像素，这中间的渲染模块就是本文的主题。文章先解释三者的分工：HTML 由标记与文本组成，标签带有语义；CSS 通过选择器与属性决定元素的外观；JavaScript 则负责动态改变页面。随后沿着渲染流程逐步展开——解析 HTML 构建 DOM 树、解析 CSS 构建 CSSOM、两者合并生成布局树、进行布局计算、绘制图层并最终合成输出。文章还特别讨论了 JavaScript 与 CSS 对渲染过程的阻塞作用、以及如何优化关键渲染路径来减少白屏时间，帮助前端开发者从原理上理解性能优化。
 pubDatetime: 2023-11-06 20:30:00
 tags:
     - 前端

@@ -1,6 +1,6 @@
 ---
 title: Vue.nextTick 机制
-description: Vue 采用的「异步更新策略」，当监听到数据发生变化的时候不会立即去更新DOM
+description: Vue 的响应式并非数据一变 DOM 立刻更新，而是异步批量更新：侦听到数据变化后，Vue 会把同一事件循环中的所有变更缓冲进队列，同一个 Watcher 被多次触发只入队一次，等下一个 tick 再统一刷新队列执行实际的 DOM 操作，这种去重机制避免了不必要的计算与 DOM 操作。文章先从 JavaScript 单线程与事件循环的前置知识讲起——同步任务、异步任务与任务队列、宏任务与微任务的调度——再剖析 Vue 内部对异步队列的实现：优先尝试 Promise.then 与 MutationObserver，不支持时退化为 setTimeout。理解 nextTick 对排查异步更新问题与优化 Vue 应用至关重要。
 pubDatetime: 2023-05-15 12:00:00
 tags:
     - 前端

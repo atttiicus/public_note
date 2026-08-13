@@ -1,6 +1,6 @@
 ---
 title: var 的设计缺陷
-description: var缺陷以及为什么要引入let和const
+description: 变量提升特性导致了大量与直觉不符的代码，这是 JavaScript 一个重要设计缺陷。虽然 ES6 已经通过块级作用域与 let、const 避开这一问题，但 JavaScript 需要保持向下兼容，变量提升在相当长时间内还会继续存在。文章按「探病因、开药方」的思路展开：先分析为什么 JavaScript 中会存在变量提升——这要从作用域讲起，var 声明会穿透块级作用域、变量声明被提升到函数作用域顶部并初始化为 undefined；再介绍如何用 let、const 配合块级作用域修复这些缺陷，对比 var 与 let 在暂时性死区等机制上的差异。理解这套机制，才能真正深入 JavaScript 的本质。
 pubDatetime: 2024-03-20 13:30:00
 tags:
     - 前端

@@ -1,6 +1,6 @@
 ---
 title: keep-alive 原理
-description: keep-alive 是 Vue 的抽象组件，包裹动态组件时缓存不活动的组件实例而不是销毁它们。
+description: keep-alive 是 Vue 的抽象组件：它自身不渲染任何 DOM 元素，也不会出现在父组件链中，用 keep-alive 包裹动态组件时，会缓存不活动的组件实例而不是销毁它们。文章用一个常见场景说明它的价值：用户在列表页筛选数据后进入详情页，返回时希望保留筛选状态，keep-alive 正是为此设计，同时它还能避免组件反复创建渲染、有效提升性能。文章覆盖了完整用法——在动态组件与 vue-router 中的应用、include 白名单、exclude 黑名单与 max 缓存上限，并深入源码剖析其内部实现：缓存 key 的计算、LRU 置换策略、以及组件激活与停用钩子的触发机制。
 pubDatetime: 2024-04-17 12:00:00
 tags:
     - Vue

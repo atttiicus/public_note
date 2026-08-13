@@ -1,6 +1,6 @@
 ---
 title: setTimeout 原理
-description: setTimeout是怎么实现的
+description: setTimeout 是开发者再熟悉不过的定时器：指定某个函数在多少毫秒后执行，返回定时器编号，可用来取消。文章不只是讲用法，而是深入浏览器内部，揭示 setTimeout 到底是怎么实现的：回顾事件循环系统，渲染进程中运行在主线程上的所有任务都要先进入消息队列，定时器任务也不例外——浏览器维护延迟队列，到期后任务被移入消息队列等待执行。文章还详细分析了 setTimeout 使用中的注意事项：为什么 setTimeout 有延迟精度问题、嵌套调用超过一定层数会被强制至少延迟 4 毫秒、未激活页面中的定时器会被节流、以及 setTimeout 与 requestAnimationFrame 的适用场景区别，帮助开发者避开常见的坑。
 pubDatetime: 2024-08-12 13:30:00
 tags:
     - 前端

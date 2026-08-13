@@ -1,6 +1,6 @@
 ---
 title: Promise 详解
-description: 使用Promise告别回调函数
+description: DOM/BOM API 中新增的大多数 API 都建立在 Promise 之上，新的前端框架也大量使用 Promise，它已经成为现代前端的「水」和「电」。文章开篇先厘清 Promise 解决的本质问题——异步编码风格问题，而非其他；随后回顾 JavaScript 的异步编程模型与事件循环，分析回调地狱产生的根源，再逐步拆解 Promise 的核心机制：三种状态（pending、fulfilled、rejected）与状态不可逆、then 与 catch 的链式调用、错误传播、以及 async/await 如何让异步代码回归同步写法。文中穿插大量代码示例与面试常见问题，帮助读者从动机到实现、从原理到实战彻底掌握 Promise。
 pubDatetime: 2024-08-24 13:30:00
 tags:
     - 前端

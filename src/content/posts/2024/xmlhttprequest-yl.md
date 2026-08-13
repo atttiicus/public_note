@@ -1,6 +1,6 @@
 ---
 title: XMLHttpRequest 原理
-description: XMLHttpRequest是怎么实现的
+description: 在 XMLHttpRequest 出现之前，服务器数据有更新就必须刷新整个页面；XHR 提供了从 Web 服务器获取数据的能力，只更新页面的一部分，既高效又不打扰用户。文章把 XHR 当作教学范例，因为它是非常典型的 Web API，能通过它把前面学到的 HTTP 协议实践一遍：创建 XHR 对象、配置请求方法与地址、设置请求头、发送请求、通过 readystatechange 或 onload 监听响应状态，理解 readyState 各阶段与 status 状态码。同时文章还讨论了浏览器如何实现 Web API（渲染进程与浏览器进程的通信、IPC 机制），以及 XHR 使用中的安全注意事项，是理解浏览器 API 体系非常好的切入点。
 pubDatetime: 2024-08-15 13:30:00
 tags:
     - 前端
