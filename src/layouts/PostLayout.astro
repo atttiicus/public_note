@@ -9,14 +9,6 @@ export interface Props {
 }
 
 const { title, description, tags = [], pubDatetime } = Astro.props
-
-/**
- * 性能优化思路：
- * 1. 纯静态布局，无 React 水合开销
- * 2. 代码块增强（语言标签 + 复制按钮）通过原生 DOM 实现，零依赖
- * 3. astro:after-swap 事件处理路由切换后重新初始化
- * 4. 内联 <script> 使用浏览器原生 API，无框架开销
- */
 ---
 
 <BaseLayout
