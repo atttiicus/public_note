@@ -1,6 +1,17 @@
 ---
 import ThemeToggle from './ThemeToggle.tsx'
 
+/**
+ * 性能优化思路（移动端折叠导航）：
+ * 1. 折叠逻辑用「隐藏 checkbox + label」纯 CSS 实现，零 JS、零水合开销，无需新增 React island
+ *   （未用 <details>/<summary>：闭合的 details 会隐藏全部子内容，桌面端需依赖 display:contents
+ *   等引擎差异行为才能让导航常显，Safari 下不可靠；checkbox 方案全引擎行为一致）
+ * 2. 开合状态由 checkbox 原生 checked 状态维护（DOM 状态），View Transitions 换页后自动复位为收起
+ * 3. checkbox 视觉隐藏但保留可聚焦性，键盘可用；label 提供点击热区与 focus-visible 提示环
+ * 4. 下拉面板仅在移动端渲染样式（absolute 定位），桌面端无任何额外层叠上下文开销
+ * 5. 汉堡/关闭图标为两个内联 SVG，用 CSS 切换显隐，无图片请求
+ */
+
 export interface Props {
     currentPath?: string
 }
@@ -15,32 +26,66 @@ const { currentPath = '/' } = Astro.props
             <span class="logo-text">Cafe Note</span>
         </a>
 
+        <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-label="切换导航菜单" />
+        <label for="nav-toggle" class="nav-toggle">
+            <svg
+                class="icon-menu"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <line x1="4" y1="7" x2="20" y2="7"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="17" x2="20" y2="17"></line>
+            </svg>
+            <svg
+                class="icon-close"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </label>
         <nav class="header-nav">
-            <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>首页</a>
-            <a
-                href="/notes"
-                class:list={['nav-link', { active: currentPath.startsWith('/notes') }]}>笔记</a
-            >
-            <a
-                href="/posts"
-                class:list={['nav-link', { active: currentPath.startsWith('/posts') }]}>博客</a
-            >
-            <a
-                href="/timeline"
-                class:list={['nav-link', { active: currentPath.startsWith('/timeline') }]}>时间线</a
-            >
-            <a href="/tags" class:list={['nav-link', { active: currentPath.startsWith('/tags') }]}
-                >标签</a
-            >
-            <a
-                href="/websites"
-                class:list={['nav-link', { active: currentPath.startsWith('/websites') }]}>网站</a
-            >
-            <a
-                href="/search"
-                class:list={['nav-link', { active: currentPath.startsWith('/search') }]}>搜索</a
-            >
-        </nav>
+                <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>首页</a>
+                <a
+                    href="/notes"
+                    class:list={['nav-link', { active: currentPath.startsWith('/notes') }]}>笔记</a
+                >
+                <a
+                    href="/posts"
+                    class:list={['nav-link', { active: currentPath.startsWith('/posts') }]}>博客</a
+                >
+                <a
+                    href="/timeline"
+                    class:list={['nav-link', { active: currentPath.startsWith('/timeline') }]}
+                    >时间线</a
+                >
+                <a href="/tags" class:list={['nav-link', { active: currentPath.startsWith('/tags') }]}
+                    >标签</a
+                >
+                <a
+                    href="/websites"
+                    class:list={['nav-link', { active: currentPath.startsWith('/websites') }]}
+                    >网站</a
+                >
+                <a
+                    href="/search"
+                    class:list={['nav-link', { active: currentPath.startsWith('/search') }]}>搜索</a
+                >
+            </nav>
 
         <div class="header-actions">
             <ThemeToggle client:load />
@@ -126,13 +171,111 @@ const { currentPath = '/' } = Astro.props
         gap: 0.5rem;
     }
 
-    @media (max-width: 640px) {
+    /* ── 折叠导航（移动端 < 768px，纯 CSS：隐藏 checkbox + label 汉堡按钮） ── */
+
+    /* checkbox 视觉隐藏但保留可聚焦性（display:none 会移除键盘可达性） */
+    .nav-toggle-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+    }
+    /* 桌面端：汉堡按钮与关闭图标不渲染，导航照常参与 flex 布局 */
+    .nav-toggle {
+        display: none;
+    }
+    .icon-close {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
         .header-inner {
             padding: 0 1rem;
+            gap: 0.75rem;
+        }
+        /* 汉堡按钮紧贴右侧操作区：取消操作区 auto 边距，让按钮吃掉剩余空间 */
+        .header-actions {
+            margin-left: 0;
+        }
+        .nav-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            margin-left: auto;
+            padding: 0;
+            color: var(--color-text-muted);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition:
+                color var(--transition-fast),
+                border-color var(--transition-fast),
+                background-color var(--transition-fast);
+        }
+        .nav-toggle:hover,
+        .nav-toggle-input:checked + .nav-toggle {
+            color: var(--color-primary);
+            border-color: var(--color-primary-light);
+            background-color: var(--color-hover);
+        }
+        /* 键盘聚焦提示环（checkbox 视觉隐藏但可聚焦） */
+        .nav-toggle-input:focus-visible + .nav-toggle {
+            outline: 2px solid var(--color-primary-light);
+            outline-offset: 2px;
         }
 
-        .logo-text {
+        /* 打开时切换汉堡/关闭图标 */
+        .nav-toggle-input:checked + .nav-toggle .icon-menu {
             display: none;
+        }
+        .nav-toggle-input:checked + .nav-toggle .icon-close {
+            display: block;
+        }
+
+        /* 收起时隐藏导航 */
+        .header-nav {
+            display: none;
+        }
+
+        /* 展开面板：绝对定位于 header 下方（.site-header 为 sticky 定位祖先），
+           不挤压页面内容，仅勾选时参与渲染层叠 */
+        .nav-toggle-input:checked ~ .header-nav {
+            display: flex;
+            position: absolute;
+            top: 100%;
+            left: 1rem;
+            right: 1rem;
+            z-index: 90;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            margin-left: 0;
+            padding: 0.5rem;
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(107, 79, 58, 0.12);
+        }
+        .dark .nav-toggle-input:checked ~ .header-nav {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .nav-link {
+            padding: 0.7rem 1rem;
+            border-bottom: none;
+            border-radius: 6px;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            border-bottom-color: transparent;
+            background-color: var(--color-hover);
         }
     }
 </style>

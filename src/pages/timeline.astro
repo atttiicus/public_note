@@ -405,13 +405,11 @@ const totalSpanDays =
         .timeline {
             padding: 2rem 1rem 3rem;
         }
+        /* 竖线位于容器 2.75rem 处，与 marker 圆点中心（1rem 内边距 + 1.75rem）重合 */
         .timeline::before {
-            left: 1.25rem;
+            left: 2.75rem;
         }
 
-        .tl-row {
-            flex-direction: row !important;
-        }
         .tl-row + .tl-row {
             margin-top: 1.75rem;
         }
@@ -419,10 +417,16 @@ const totalSpanDays =
             display: none;
         }
 
+        /*
+         * 移动端统一为「线在左、卡片在右」：
+         * - order: -1 让标记无视 DOM 顺序恒排最左（修正奇偶行左右交替错乱）
+         * - min-width 3.5rem：圆点中心正好落在 2.75rem 竖线上，且容纳日期底片
+         */
         .tl-marker {
+            order: -1;
             flex: 0 0 auto;
-            padding: 0 0.5rem 0 0;
-            min-width: 2.5rem;
+            padding: 0;
+            min-width: 3.5rem;
             align-items: center;
         }
         .tl-dot {
@@ -434,8 +438,7 @@ const totalSpanDays =
         }
         .tl-date {
             font-size: 0.6875rem;
-            padding: 0;
-            background: none;
+            padding: 0.1rem 0.25rem;
             margin-top: 0.35rem;
         }
 
