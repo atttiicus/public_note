@@ -170,7 +170,7 @@ const { title, description, tags = [], pubDatetime } = Astro.props
 
     .post-description {
         font-family: var(--font-serif);
-        font-size: 1.0625rem;
+        font-size: .8625rem;
         color: var(--color-text-muted);
         margin: 0 0 1rem;
         font-style: italic;
@@ -271,6 +271,9 @@ const { title, description, tags = [], pubDatetime } = Astro.props
     @media (max-width: 768px) {
         .post-page {
             padding: 2rem 1rem;
+        }
+        .post-description {
+            font-size: .75rem;
         }
     }
 </style>

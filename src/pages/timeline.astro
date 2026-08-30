@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
 import TimelineSortToggle from '../components/TimelineSortToggle'
 import { getCollection } from 'astro:content'
 
@@ -14,6 +15,7 @@ import { getCollection } from 'astro:content'
  * 7. hover 动效仅使用 transform，触发 GPU 合成层
  * 8. SortToggle 为独立 React island（client:load），反转 DOM 顺序 O(n)
  * 9. 类型徽章（笔记/博客）在构建时生成，客户端无差异化开销
+ * 10. 页面头部复用 PageHeader 静态组件：零 JS、样式单一来源，统计数字在构建时算出直接输出文本
  */
 
 const allNotes = await getCollection('notes')
@@ -93,21 +95,12 @@ const totalSpanDays =
 
 <BaseLayout title="时间线" description="按时间顺序浏览所有笔记与博客文章。">
     <main class="timeline-page">
-        <section class="hero" data-enter>
-            <div class="hero-inner">
-                <p class="hero-label">TIMELINE</p>
-                <h1 class="hero-title">时间线</h1>
-                <p class="hero-subtitle">按时间追溯知识的积累与成长。</p>
-                <div class="hero-divider"></div>
-                <div class="hero-stats">
-                    <span>{totalNotes} 篇笔记</span>
-                    <span class="stat-sep">·</span>
-                    <span>{totalPosts} 篇文章</span>
-                    <span class="stat-sep">·</span>
-                    <span>坚持{totalSpanDays}天</span>
-                </div>
-            </div>
-        </section>
+        <div class="page-container">
+            <PageHeader
+                title="时间线"
+                subtitle={`共 ${totalNotes} 篇笔记、${totalPosts} 篇文章，坚持 ${totalSpanDays} 天`}
+            />
+        </div>
 
         {
             totalDated === 0 ? (
@@ -115,7 +108,7 @@ const totalSpanDays =
             ) : (
                 <>
                     <div class="timeline">
-                        <TimelineSortToggle client:load />
+                        {/* <TimelineSortToggle client:load /> */}
                     {
                         monthGroups.map((group, i) => {
                             const side = i % 2 === 0 ? 'right' : 'left'
@@ -183,57 +176,10 @@ const totalSpanDays =
         min-height: calc(100vh - var(--header-height) - 10rem);
     }
 
-    /* ── Hero ── */
-    .hero {
-        background-color: var(--color-bg-secondary);
-        border-bottom: 1px solid var(--color-border);
-        padding: 5rem 1.5rem 4rem;
-        text-align: center;
-        transition: background-color var(--transition-base);
-    }
-    .hero-inner {
+    .page-container {
         max-width: 780px;
         margin: 0 auto;
-    }
-    .hero-label {
-        font-family: var(--font-sans);
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.2em;
-        color: var(--color-primary);
-        text-transform: uppercase;
-        margin: 0 0 1rem;
-    }
-    .hero-title {
-        font-family: var(--font-display);
-        font-size: clamp(2.5rem, 6vw, 3.5rem);
-        font-weight: 700;
-        color: var(--color-text);
-        margin: 0 0 1rem;
-        line-height: 1.15;
-    }
-    .hero-subtitle {
-        font-family: var(--font-serif);
-        font-size: 1.125rem;
-        color: var(--color-text-muted);
-        margin: 0 0 2rem;
-        font-style: italic;
-    }
-    .hero-divider {
-        width: 3rem;
-        height: 3px;
-        background-color: var(--color-primary);
-        border-radius: 2px;
-        margin: 0 auto 1.5rem;
-    }
-    .hero-stats {
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        color: var(--color-text-muted);
-    }
-    .stat-sep {
-        margin: 0 0.5rem;
-        color: var(--color-border);
+        padding: 3rem 1.5rem 0;
     }
     .empty-hint {
         text-align: center;
@@ -277,7 +223,7 @@ const totalSpanDays =
 
     .timeline {
         position: relative;
-        max-width: 960px;
+        max-width: 780px;
         margin: 0 auto;
         padding: 3rem 1.5rem 4rem;
     }
@@ -391,7 +337,7 @@ const totalSpanDays =
 
     .card-title {
         font-family: var(--font-sans);
-        font-size: 0.9375rem;
+        font-size: 1.0375rem;
         font-weight: 600;
         color: var(--color-text);
         line-height: 1.4;
@@ -410,7 +356,7 @@ const totalSpanDays =
         line-height: 1.5;
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
     }
 
@@ -446,8 +392,8 @@ const totalSpanDays =
        移动端 (< 768px)
        ═══════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
-        .hero {
-            padding: 3rem 1rem 2.5rem;
+        .page-container {
+            padding: 2rem 1rem 0;
         }
         .sort-btn {
             top: 0.5rem;

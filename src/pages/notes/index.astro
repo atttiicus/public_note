@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import PageHeader from '../../components/PageHeader.astro'
 import NoteCard from '../../components/NoteCard.astro'
 import Pagination from '../../components/Pagination.astro'
 import { getCollection } from 'astro:content'
@@ -14,7 +15,7 @@ const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
     <main class="home-page">
         <section class="notes-section">
             <div class="notes-inner">
-                <h2 class="section-title">所有笔记</h2>
+                <PageHeader title="所有笔记" subtitle={`共 ${notes.length} 篇笔记`} />
                 <div class="notes-grid">
                     {
                         renderItems.map((item) =>
@@ -120,17 +121,6 @@ const { pageItems: renderItems, totalPages } = getPage(allItems, 1)
     .notes-inner {
         max-width: 780px;
         margin: 0 auto;
-    }
-    .section-title {
-        font-family: var(--font-sans);
-        font-size: 0.8125rem;
-        font-weight: 600;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--color-text-muted);
-        margin: 0 0 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--color-border);
     }
     .notes-grid {
         display: flex;

@@ -1,0 +1,96 @@
+---
+/**
+ * PageHeader — 列表页统一头部（返回链接 + 标题 + 副标题）
+ *
+ * 性能优化思路：
+ * 1. 纯静态 Astro 组件：SSG 构建期直接输出 HTML，零客户端 JS、零水合开销
+ * 2. scoped style 随组件编译，9 个页面共用同一份样式来源，避免复制粘贴导致的 CSS 体积膨胀与样式漂移
+ * 3. 返回箭头为内联 SVG（16×16、stroke 描边），无图标字体/图片请求，首屏无额外网络开销
+ * 4. hover 反馈仅过渡 color（不触发布局重排与重绘外开销），符合最小化重绘原则
+ * 5. 字体与颜色全部走 CSS 变量，明暗主题切换零 JS 干预，与全站主题保持一致
+ */
+
+interface Props {
+    /** 页面主标题，如「所有笔记」 */
+    title: string
+    /** 标题前缀（可选），以主题色渲染，如标签详情页的 # */
+    titlePrefix?: string
+    /** 副标题说明，如「共 53 个标签，38 篇笔记」 */
+    subtitle?: string
+    /** 返回链接地址，默认首页 / */
+    backHref?: string
+    /** 返回链接文字，默认「返回」 */
+    backText?: string
+}
+
+const { title, titlePrefix, subtitle, backHref = '/', backText = '返回' } = Astro.props
+---
+
+<header class="page-header">
+    <a href={backHref} class="back-link">
+        <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+        >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        {backText}
+    </a>
+    <h1 class="page-title">
+        {titlePrefix && <span class="title-prefix">{titlePrefix}</span>}
+        {title}
+    </h1>
+    {subtitle && <p class="page-subtitle">{subtitle}</p>}
+</header>
+
+<style>
+    .page-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: color var(--transition-fast);
+    }
+    .back-link:hover {
+        color: var(--color-primary);
+    }
+
+    .page-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0 0 0.5rem;
+        line-height: 1.25;
+    }
+
+    .title-prefix {
+        color: var(--color-primary);
+        font-weight: 400;
+        margin-right: 0.2em;
+    }
+
+    .page-subtitle {
+        font-family: var(--font-sans);
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        margin: 0;
+    }
+</style>

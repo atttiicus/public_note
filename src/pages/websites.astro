@@ -1,31 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import PageHeader from '../components/PageHeader.astro'
 import { WEB_SITE_LIST } from '../data/website'
 ---
 
 <BaseLayout title="网站收藏 — Cafe Note" description="收藏的优质网站与学习资源">
     <main class="websites-page">
         <div class="websites-container">
-            <header class="page-header">
-                <a href="/" class="back-link">
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                        <polyline points="12 19 5 12 12 5"></polyline>
-                    </svg>
-                    返回
-                </a>
-                <h1 class="page-title">网站收藏</h1>
-                <p class="page-subtitle">共 {WEB_SITE_LIST.length} 个网站</p>
-            </header>
+            <PageHeader
+                title="网站收藏"
+                subtitle={`共 ${WEB_SITE_LIST.length} 个网站`}
+            />
 
             {
                 WEB_SITE_LIST.length === 0 ? (
@@ -138,42 +123,6 @@ import { WEB_SITE_LIST } from '../data/website'
     .websites-container {
         max-width: 780px;
         margin: 0 auto;
-    }
-
-    .page-header {
-        margin-bottom: 2.5rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid var(--color-border);
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        font-size: 0.875rem;
-        color: var(--color-text-muted);
-        text-decoration: none;
-        margin-bottom: 1.5rem;
-        transition: color var(--transition-fast);
-    }
-    .back-link:hover {
-        color: var(--color-primary);
-    }
-
-    .page-title {
-        font-family: var(--font-display);
-        font-size: clamp(1.75rem, 4vw, 2.5rem);
-        font-weight: 700;
-        color: var(--color-text);
-        margin: 0 0 0.5rem;
-        line-height: 1.25;
-    }
-
-    .page-subtitle {
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        color: var(--color-text-muted);
-        margin: 0;
     }
 
     .site-list {

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import PageHeader from '../../components/PageHeader.astro'
 import NoteCard from '../../components/NoteCard.astro'
 import { getCollection } from 'astro:content'
 
@@ -22,28 +23,13 @@ const notes = allNotes
 <BaseLayout title={`${tag} — 标签 — Cafe Note`} description={`标签「${tag}」下的所有笔记`}>
     <main class="tag-page">
         <div class="tag-container">
-            <header class="page-header">
-                <a href="/tags" class="back-link">
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                        <polyline points="12 19 5 12 12 5"></polyline>
-                    </svg>
-                    所有标签
-                </a>
-                <div class="heading-row">
-                    <span class="tag-badge">{tag}</span>
-                </div>
-                <p class="page-subtitle">{notes.length} 篇笔记</p>
-            </header>
+            <PageHeader
+                title={tag}
+                titlePrefix="#"
+                subtitle={`${notes.length} 篇笔记`}
+                backHref="/tags"
+                backText="所有标签"
+            />
 
             <div class="notes-grid">
                 {
@@ -73,56 +59,6 @@ const notes = allNotes
     .tag-container {
         max-width: 780px;
         margin: 0 auto;
-    }
-
-    .page-header {
-        margin-bottom: 2.5rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid var(--color-border);
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        font-size: 0.875rem;
-        color: var(--color-text-muted);
-        text-decoration: none;
-        margin-bottom: 1.25rem;
-        transition: color var(--transition-fast);
-    }
-    .back-link:hover {
-        color: var(--color-primary);
-    }
-
-    .heading-row {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .tag-badge {
-        display: inline-flex;
-        align-items: center;
-        font-family: var(--font-display);
-        font-size: clamp(1.5rem, 4vw, 2.25rem);
-        font-weight: 700;
-        color: var(--color-text);
-        line-height: 1.25;
-    }
-    .tag-badge::before {
-        content: '#';
-        color: var(--color-primary);
-        margin-right: 0.2em;
-        font-weight: 400;
-    }
-
-    .page-subtitle {
-        font-family: var(--font-sans);
-        font-size: 0.9375rem;
-        color: var(--color-text-muted);
-        margin: 0;
     }
 
     .notes-grid {
