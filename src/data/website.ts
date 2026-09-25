@@ -41,6 +41,16 @@ const WEB_SITE_LIST: WebSite[] = [
         tags: ['杂志', '科技周边'],
         read_experience: '',
     },
+    {
+        site_name: '前端学习路线',
+        site_description: '一个帮助新手、初级、中级前端开发者不断精进学习的网站，前端学习路上，不再迷茫~',
+        // logo_url: 'https://www.ruanyifeng.com/blog/images/person2_s.jpg',
+        site_url: 'https://objtube.github.io/front-end-roadmap/',
+        github_url: 'https://github.com/objtube/front-end-roadmap',
+        // tips: '建议看Github仓库，在线链接查看全文需要微信公众号扫码',
+        tags: ['前端', '学习路线'],
+        read_experience: '',
+    },
 ]
 
 export { WEB_SITE_LIST }
